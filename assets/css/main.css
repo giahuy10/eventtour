@@ -4,7 +4,9 @@ img{width: 100%}
 .navbar-custom img {width: 160px;}
 .nav-item {margin:0 20px}
 .footer{
-    background-color: #448dc2;color: #73a3b0;
+    background-color: #4288bc;color: #73a3b0;
+    background-image: url('/imgs/footer-shadow.png');
+    background-repeat: no-repeat;
 }
 .footer p, .footer h6{
    color: #fff;

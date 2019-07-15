@@ -29,6 +29,7 @@
     "bootstrap-vue": "^2.0.0-rc.11",
     "cookie-parser": "^1.4.4",
     "cookieparser": "^0.1.0",
+    "firebase": "^6.3.0",
     "hooper": "^0.3.1",
     "jquery": "^3.4.1",
     "js-cookie": "^2.2.0",

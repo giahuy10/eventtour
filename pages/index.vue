@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="home-banner">
-            <img width="100%" src="/imgs/home-banner.jpg" alt="">
+            <img width="100%" src="imgs/home-banner.jpg" alt="">
             <div class="header-content">
                 <p>Ban ước mơ một ngày được khám phá xứ sở Kim Chi nhưng điều kiên chưa cho phép</p>
                 <a href="#introduce4" class="text-uppercase btn btn-join btn-warning">Tham gia cuôc thi</a>
@@ -67,7 +67,7 @@
                                 <b>01 Giải Nhất</b>
                                 <p><b class="fee">16.000.000/người</b></p>
                                 <p><b>Tài trợ 100% chi phí</b><br>
-                                    Chuyến du lịch Hàn Quốc cho đôi thắng
+                                    Chuyến du lịch Hàn Quốc cho đội thắng cuộc
                                 </p>
                             </div>
                         </div>
@@ -80,7 +80,7 @@
                             <div class="img-content">
                                 <b>01 Giải Ba</b>
                                 <p><b class="fee">12.000.000/người</b></p>
-                                <p>Tài trợ 75% chi phí chuyến du lịch<br> Hàn Quốc cho đôi thắng
+                                <p>Tài trợ 75% chi phí chuyến du lịch<br> Hàn Quốc cho đội thắng cuộc
                                 </p>
                             </div>
                          </div>
@@ -210,8 +210,8 @@
             <div class="container">
                 <div class="row">
                     <div class="text-center col-md-12" v-if="!getAuth">
-                        <b-button variant="info" v-b-modal.modal-register class="btn-resg">Đăng ký</b-button>
-                        <b-button variant="warning" v-b-modal.modal-login class="btn-login">Đăng nhập</b-button>
+                        <b-button variant="info" @click="$router.push({path: '/user/register'})" class="btn-resg">Đăng ký</b-button>
+                        <b-button variant="warning" @click="$router.push({path: '/user/login'})" class="btn-login">Đăng nhập</b-button>
                     </div>
                     <div class="text-center col-md-12" v-else>
                         <nuxt-link class="btn-login btn btn-warning" to="/single-info" no-prefetch>Tham gia</nuxt-link>
@@ -242,6 +242,7 @@
                                 - Người thắng giải chịu mọi chi phí phát sinh khác (nếu có) <br>
                                 - Quyết định cuối cùng của cuộc thi thuộc về BTC <br>
                                 - Mọi chi tiết thắc mắc, các bạn vui lòng liên hệ qua Fanpage Tổng cục Du lịch Hàn Quốc tại Việt Nam – KTO để được giải đáp nhé! <br>
+                                - Để tham khảo chi tiết cơ chế cuộc thi, thể lệ cuộc thi và giải thưởng, vui lòng tham khảo <a href=""><b>TẠI ĐÂY</b></a>
                             </p>
                         </div>
                     </div>
@@ -257,7 +258,7 @@
         
         <section class="bottom-img">
             <div>
-                <img src="/imgs/footter.png" alt="">
+                <img src="imgs/footter.png" alt="">
             </div>
         </section>
 

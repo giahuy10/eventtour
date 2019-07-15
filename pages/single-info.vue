@@ -119,7 +119,7 @@
 <script>
 import VeeValidate from 'vee-validate';
 export default {
-    middleware: 'authenticated',
+    // middleware: 'authenticated',
     mounted: function () {
 
     },
