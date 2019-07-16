@@ -1,0 +1,804 @@
+<template>
+    <div class="planing inner-page">
+        <div class="planing-inner inner-box">
+            <div class="overview">
+                <h3 class="text-uppercase text-center gr-title text-blue">Thông tin chung</h3>
+                <input type="text" class="form-control text-center" v-model="tour.name" placeholder="Hãy đặt tên cho tour du lịch của bạn nhé!">
+                <br><br><br>
+                <h3 class="text-uppercase text-center gr-title text-blue">Thời gian dự kiến</h3>
+                <br><br>
+                <div class="select-days">
+                    <vue-slider @error="error" v-model="tour.day" :min="min" :tooltip="'always'" :data="days" :marks="true" @change="changeDays">
+                        <template v-slot:tooltip="{ value }">
+                            <div class="custom-tooltip">{{ parseInt(value) * 200}}$</div>
+                        </template>
+                        <template v-slot:label="{ label, active }">
+                            <div :class="['vue-slider-mark-label', 'custom-label-'+label, { active }]">
+                                <span v-if="label > 2">{{ label }} ngày</span>
+                                <span v-if="label == 1">Thời gian dự kiến</span>
+                            </div>
+                        </template>
+                    </vue-slider>
+                </div>
+                
+            </div> 
+        </div>
+
+        <div class="planing-inner inner-box">
+            <div class="progress-table">
+                <h3 class="text-uppercase text-center gr-title text-blue">Bảng lịch trình</h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td>Ngày</td>
+                            <td>Thành phố</td>
+                            <td>Thời gian</td>
+                            <td>Hoạt động</td>
+                            <td>Chi phí hoạt động</td>
+                            <td>Phương tiện di chuyển</td>
+                            <td>Chi phí di chuyển</td>
+                            <td>Ẩm thực</td>
+                            <td>Chi phí ăn uống</td>
+                            <td>Nơi ở</td>
+                            <td>Chi phí nơi ở</td>
+                            <td>Tổng chi phí</td>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="progress-list">
+                <h3 class="text-uppercase text-center gr-title text-blue">Lịch trình</h3>
+                <div class="days-button text-center">
+                    <button class="btn btn-day" v-for="(day, index) in numberDays" :key="index" :class="currentDay == day ? 'active' : ''" @click.prevent="currentDay = day">Ngày {{day}}</button>
+                </div>
+               
+                <multiselect v-model="selectedCity" :options="cities" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="-- Chọn thành phố --" label="name" track-by="name">
+                    <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} thành phố đang được chọn</span></template>
+                </multiselect>
+                
+               
+               <div class="row">
+                   <div class="col-12 col-md-3">
+                       <vue-timepicker :yourFormat="yourFormat" :minute-interval="15" v-model="start"></vue-timepicker>
+                       <vue-timepicker :yourFormat="yourFormat" :minute-interval="15" v-model="end"></vue-timepicker>
+                        <div v-if="selectedCity.length > 0"><button @click="selectCity(city)" class="btn btn-city" :class="currentCity == city.id ? 'active' : ''" v-for="city in tour['day'+currentDay].cities" :key="city.id">{{city.name}}</button></div>
+                   </div>
+                   <div class="col-12 col-md-9">
+                       <div class="activities">
+                           <div class="row">
+                               <div class="col-12 col-md-4" v-for="activity in currentCityObject.activities" :key="activity.id">
+                                   {{activity.name}}
+                                   <input type="checkbox" :value="activity.id" v-model="selectedActivities"/>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+            </div>
+        </div>
+
+     
+    </div>
+</template>
+
+<script>
+import Multiselect from 'vue-multiselect'
+import VueTimepicker from 'vue2-timepicker'
+
+import VueSlider from 'vue-slider-component'
+import 'vue-slider-component/theme/default.css'
+export default {
+    components: {
+        VueSlider, Multiselect, VueTimepicker
+    },
+    data () {
+        return {
+            selectedActivities: [],
+            yourFormat: 'hh:mm:ss a',
+            start: {
+                hh: '00',
+                mm: '00',
+                ss: '00',
+                a: 'am'
+            },
+            end: {
+                hh: '00',
+                mm: '00',
+                ss: '00',
+                a: 'am'
+            },
+          
+            tour: {
+                name: '',
+                day: '3'
+            },
+            min: 3,
+            days: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+            currentDay: 1,
+            cities: [
+                { id: 1, name: 'Seoul',
+                    transport: [
+                        { id: 1, name: 'Xe buýt', price: '8', thumb: ''}, 
+                        { id: 2, name: 'Tàu điện ngầm', price: '10', thumb: ''},
+                        { id: 3, name: 'Tàu cao tốc', price: '11', thumb: ''},
+                        { id: 4, name: 'Taxi', price: '20', thumb: ''},
+                        { id: 5, name: 'Tàu hoả', price: '45', thumb: ''}
+                    ],
+                    food: [
+                        { id: 1, name: 'Canh xương hầm cay Gamjatang', price: '5.2', thumb: ''},
+                        { id: 2, name: 'Mỳ lạnh Pyongyang', price: '11', thumb: ''},
+                        { id: 3, name: 'Dồi lợn Sundae', price: '2.5', thumb: ''},
+                        { id: 4, name: 'Giò heo Jokbal', price: '11', thumb: ''},
+                        { id: 5, name: 'Bạch tuộc mini Jjukkumi', price: '12', thumb: ''}
+                    ],
+                    accommodations: [
+                        { id: 1, name: 'Resort', price: '200 ', thumb: ''},
+                        { id: 2, name: 'Khách sạn', price: '120', thumb: ''},
+                        { id: 3, name: 'Nhà cổ', price: '110', thumb: ''},
+                        { id: 4, name: 'Homestay', price: '40', thumb: ''},
+                        { id: 5, name: 'Nhà nghỉ', price: '20', thumb: ''}
+                    ],
+                    activities: [
+                        { id: 1, name: 'Thăm quan nhà cổ Gongbuglu', address:'165 Geumseong-dong, Gongju', time:'Luôn mở cửa', price: '0', thumb: ''},
+                        { id: 2, name: 'Vui chơi tại công viên Naejangsan National Park', address:'936 Naejangsan-ro, Naejang-dong, Jeongeup', time:'7AM - 6PM', price: '26', thumb: ''},
+                        { id: 3, name: 'Leo núi Naejangsan', address:'Biên giới Jeolla Bắc - Nam', time:'Luôn mở cửa', price: '0', thumb: ''},
+                        { id: 4, name: 'Thăm quan làng cổ Jeonju', address:'99 Girin-daero, Pungnamdong 3(sam)-ga, Wansan-gu, Jeonju', time:'Luôn mở cửa', price: '0', thumb: ''},
+                        { id: 5, name: 'Thăm quan đền Gyeonggijeon', address:'44 Taejo-ro, Pungnam-dong, Wansan-gu, Jeonju', time:'Luôn mở cửa', price: '0', thumb: ''},
+                        { id: 5, name: 'Đi chợ Nambu Market', address:'19-3 Pungnammun 1-gil, Jeonong 3(sam)-ga, Wansan-gu, Jeonju', time:'8AM - 6PM', price: '0', thumb: ''}
+                    ]
+                }, 
+                { id: 2, name: 'Busan',
+                    transport: [
+                        { id: 1, name: 'Xe buýt', price: '8'}, 
+                        { id: 2, name: 'Tàu điện ngầm', price: '10'},
+                        { id: 3, name: 'Tàu cao tốc', price: '11'},
+                        { id: 4, name: 'Taxi', price: '20'},
+                        { id: 5, name: 'Tàu hoả', price: '45'}
+                    ],
+                    food: [
+                        { id: 1, name: 'Bánh cá Eomuk', price: '8.5', thumb: ''},
+                        { id: 2, name: 'Bánh Hotteok Ssiat', price: '1', thumb: ''},
+                        { id: 3, name: 'Mỳ gạo lạnh Milmyeon', price: '4.3', thumb: ''},
+                        { id: 4, name: 'Canh thịt heo Dwaeji Gukbap', price: '5', thumb: ''},
+                        { id: 5, name: 'Combo gà-bia Chimaek', price: '22', thumb: ''},
+
+                    ],
+                    accommodations: [
+                        { id: 1, name: 'Resort', price: '170', thumb: ''},
+                        { id: 2, name: 'Khách sạn', price: '80', thumb: ''},
+                        { id: 3, name: 'Nhà cổ', price: '70', thumb: ''},
+                        { id: 4, name: 'Homestay', price: '30', thumb: ''},
+                        { id: 5, name: 'Nhà nghỉ', price: '15', thumb: ''},
+
+                    ],
+                    activities: [
+                        { id: 1, name: 'Thăm quan chùa cổ Haedong Yonggungsa', address:'86 Yonggung-gil, Gijang-eup, Gijang, Busan', time:'5AM - Hoàng hôn', price: 'Miễn phí', thumb: ''},
+                        { id: 2, name: 'Thăm quan tháp Busan', address:'37-30 Yongdusan-gil, Gwangbokdong 2(i)-ga, Jung-gu, Busan', time:'10AM - 11PM', price: '6.84', thumb: ''},
+                        { id: 3, name: 'Thăm quan, trải nghiệm Skywalk tại đảo Oryukdo', address:'936 Yongho-dong, Nam-gu, Busan', time:'9AM - 6PM', price: 'Miễn phí', thumb: ''},
+                        { id: 4, name: 'Thăm quan đài thiên văn Cheongsapo Daritdol', address:'Jungdong 1-ro, Jung 2(i)-dong, Haeundae, Busan', time:'9AM - 6PM', price: 'Miễn phí', thumb: ''},
+                        { id: 5, name: 'Trải nghiệm cáp treo ở bãi biển Songdo', address:'171 Songdohaebyeon-ro, Amnam-dong, Seo-gu, Busan', time:'9AM - 9.30PM (T6, T7 đến 10PM)', price: '12.82', thumb: ''},
+
+                    ]
+                },
+                { id: 3, name: 'Daegu',
+                    transport: [
+                        { id: 1, name: 'Xe buýt', price: '8'}, 
+                        { id: 2, name: 'Tàu điện ngầm', price: '10'},
+                        { id: 3, name: 'Tàu cao tốc', price: '11'},
+                        { id: 4, name: 'Taxi', price: '20'},
+                        { id: 5, name: 'Tàu hoả', price: '45'}
+                    ],
+                    food: [
+                        { id: 1, name: 'Thịt bò tươi Mungtigi', price: '33', thumb: ''},
+                        { id: 2, name: 'Sườn bò nấu ớt Jjimgalbi', price: '9', thumb: ''},
+                        { id: 3, name: 'Lòng bò nướng Makchang', price: '9', thumb: ''},
+                        { id: 4, name: 'Cá đuối nướng Bokeo Bulgogi', price: '7.6', thumb: ''},
+                        { id: 5, name: 'Gỏi cá Hwe Moochim', price: '8', thumb: ''},
+
+                    ],
+                    accommodations: [
+                        { id: 1, name: 'Resort', price: '170', thumb: ''},
+                        { id: 2, name: 'Khách sạn', price: '80', thumb: ''},
+                        { id: 3, name: 'Nhà cổ', price: '70', thumb: ''},
+                        { id: 4, name: 'Homestay', price: '30', thumb: ''},
+                        { id: 5, name: 'Nhà nghỉ', price: '15', thumb: ''},
+
+                    ],
+                    activities: [
+                        { id: 1, name: 'Thăm quan tháp 83 E-WORLD', address:'200 Duryugongwon-ro, Duryu-dong, Dalseo-gu, Daegu', time:'10.30AM - 10PM (cuối tuần từ 10AM)', price: '8.54', thumb: ''},
+                        { id: 2, name: 'Mua sắm tại chợ Seomun', address:'45 Keunjang-ro 26-gil, Daesin-dong, Jung-gu, Daegu', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 3, name: 'Thăm quan đền Donghwasa', address:'1 Donghwasa 1-gil, Dohak-dong, Dong-gu, Daegu', time:'Luôn mở cửa', price: '2.14', thumb: ''},
+                        { id: 4, name: 'Thăm quan bảo tàng quốc gia Daegu', address:'321 Cheongho-ro, Hwanggeum-dong, Suseong-gu, Daegu', time:'9AM - 6PM (T7, CN đến 7PM)', price: 'Miễn phí', thumb: ''},
+                        { id: 5, name: 'Ghé thăm làng tranh Mabijeong', address:'Bonri-ri, Hwawon-eup, Dalseong-gun, Daegu', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+
+                    ]
+                },
+                { id: 4, name: 'Incheon',
+                    transport: [
+                        { id: 1, name: 'Xe buýt', price: '8'}, 
+                        { id: 2, name: 'Tàu điện ngầm', price: '10'},
+                        { id: 3, name: 'Tàu cao tốc', price: '11'},
+                        { id: 4, name: 'Taxi', price: '20'},
+                        { id: 5, name: 'Tàu hoả', price: '45'}
+                    ],
+                    food: [
+                        { id: 1, name: 'Bánh xèo hải sản Haemul pajeon', price: '5', thumb: ''},
+                        { id: 2, name: 'Gà chiên sốt chua ngọt Dakgangjeong', price: '12', thumb: ''},
+                        { id: 3, name: 'Hotdog chiên khoai tây', price: '1.2', thumb: ''},
+                        { id: 4, name: 'Cơm cuộn Kimbab', price: '8', thumb: ''},
+                        { id: 5, name: 'Dồi lợn Sundae', price: '2.5', thumb: ''},
+
+                    ],
+                    accommodations: [
+                        { id: 1, name: 'Resort', price: '170', thumb: ''},
+                        { id: 2, name: 'Khách sạn', price: '80', thumb: ''},
+                        { id: 3, name: 'Nhà cổ', price: '70', thumb: ''},
+                        { id: 4, name: 'Homestay', price: '30', thumb: ''},
+                        { id: 5, name: 'Nhà nghỉ', price: '15', thumb: ''},
+
+                    ],
+                    activities: [
+                        { id: 1, name: 'Vui chơi, mua sắm tại đảo Wolmido', address:'36, Wolmimunhwa-ro, Jung-gu, Incheon', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 2, name: 'Vui chơi tại công viên trung tâm Songdo', address:'196 Technopark-ro, Songdo-dong, Yeonsu-gu, Incheon', time:'Luôn mở cửa', price: 'Miễn phí vào cổng', thumb: ''},
+                        { id: 3, name: 'Mua sắm, ăn uống tại Incheon Chinatown', address:'Gaho-dong, Jung-gu, Incheon', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 4, name: 'Thăm quan làng cổ tích Songwol-dong', address:'Jayugongwonseo-ro 45beon-gil, Songwol-dong 3(sam)-ga, Jung-gu, Incheon', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 5, name: 'Mua sắm ở chợ quốc tế Sinpo', address:'11-5 Uhyeon-ro 49beon-gil, Sinpo-dong, Jung-gu, Incheon', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+
+                    ]
+                }, 
+                { id: 5, name: 'Daejeon',
+                    transport: [
+                        { id: 1, name: 'Xe buýt', price: '8'}, 
+                        { id: 2, name: 'Tàu điện ngầm', price: '10'},
+                        { id: 3, name: 'Tàu cao tốc', price: '11'},
+                        { id: 4, name: 'Taxi', price: '20'},
+                        { id: 5, name: 'Tàu hoả', price: '45'}
+                    ],
+                    food: [
+                        { id: 1, name: 'Salad thạch hạt sồi Gujeuk Dotorimuk', price: '2', thumb: ''},
+                        { id: 2, name: 'Mỳ tam giác mạch Sutgol', price: '6', thumb: ''},
+                        { id: 3, name: 'Gà hầm nhân sâm Samgyetang', price: '8', thumb: ''},
+                        { id: 4, name: 'Cơm hầm rau củ Dolsotbap', price: '8', thumb: ''},
+                        { id: 5, name: 'Canh xương bò hầm Seolleongtang', price: '10', thumb: ''},
+
+                    ],
+                    accommodations: [
+                        { id: 1, name: 'Resort', price: '170', thumb: ''},
+                        { id: 2, name: 'Khách sạn', price: '80', thumb: ''},
+                        { id: 3, name: 'Nhà cổ', price: '70', thumb: ''},
+                        { id: 4, name: 'Homestay', price: '30', thumb: ''},
+                        { id: 5, name: 'Nhà nghỉ', price: '15', thumb: ''},
+
+                    ],
+                    activities: [
+                        { id: 1, name: 'Vui chơi tại công viên giải trí Daejeon O-World', address:'70 Sajeonggongwon-ro, Sajeong-dong, Jung-gu, Daejeon', time:'9:30Am - 6PM', price: '10', thumb: ''},
+                        { id: 2, name: 'Thăm quan bảo tàng khoa học quốc gia Daejeon', address:'481 Daedeok-daero, Guseong-dong, Yuseong-gu, Daejeon', time:'9:30AM - 5:20PM', price: '1.7', thumb: ''},
+                        { id: 3, name: 'Thăm quan, vui chơi tại khu du lịch Hanbat', address:'Daejeon, Seo-gu, Mannyeon-dong, 396', time:'8AM - 7PM', price: 'Miễn phí', thumb: ''},
+                        { id: 4, name: 'Đi dã ngoại ở rừng Jangtae', address:'Daejeon, Seo-gu, Giseong-dong, 461', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 5, name: 'Thăm quan Bảo tàng nghệ thuật Daejeon', address:'Daejeon, Seo-gu, Mannyeon-dong, 155', time:'10AM - 7PM', price: '2', thumb: ''},
+
+                    ]
+                },
+                { id: 6, name: 'Gwangju',
+                    transport: [
+                        { id: 1, name: 'Xe buýt', price: '8'}, 
+                        { id: 2, name: 'Tàu điện ngầm', price: '10'},
+                        { id: 3, name: 'Tàu cao tốc', price: '11'},
+                        { id: 4, name: 'Taxi', price: '20'},
+                        { id: 5, name: 'Tàu hoả', price: '45'}
+                    ],
+                    food: [
+                        { id: 1, name: 'Cơm lúa mạch Boribap', price: '4', thumb: ''},
+                        { id: 2, name: 'Thịt viên nướng Tteok-galbi', price: '12', thumb: ''},
+                        { id: 3, name: 'Gỏi xà lách cuốn đồ chiên xào', price: '9', thumb: ''},
+                        { id: 4, name: 'Gỏi lợn cuốn Bossam', price: '9', thumb: ''},
+                        { id: 5, name: 'Cơm gói Ssambap', price: '16', thumb: ''},
+
+                    ],
+                    accommodations: [
+                        { id: 1, name: 'Resort', price: '170', thumb: ''},
+                        { id: 2, name: 'Khách sạn', price: '80', thumb: ''},
+                        { id: 3, name: 'Nhà cổ', price: '70', thumb: ''},
+                        { id: 4, name: 'Homestay', price: '30', thumb: ''},
+                        { id: 5, name: 'Nhà nghỉ', price: '15', thumb: ''},
+
+                    ],
+                    activities: [
+                        { id: 1, name: 'Thăm quan vườn Soswaewon', address:'123 Jigok-ri, Nam-myeon, Damyang, Jeollanam', time:'9AM - 6PM', price: '1.7', thumb: ''},
+                        { id: 2, name: 'Vui chơi tại trung tâm văn hoá châu Á', address:'38 Munhwajeondang-ro, Gwangsan-dong, Dong-gu, Kwangju', time:'10AM - 6PM', price: '0.85', thumb: ''},
+                        { id: 3, name: 'Vui chơi, mua sắm tại Chợ ga Songjeong 1913', address:'13 Songjeong-ro 8beon-gil, Songjeong-dong, Gwangsan-gu, Gwangju', time:'9AM - 10PM', price: 'Miễn phí', thumb: ''},
+                        { id: 4, name: 'Vui chơi tại công viên Gwangju Familyland', address:'677 Uchi-ro, Saengyong-dong, Buk-gu, Gwangju', time:'9:30AM - 9PM', price: '4.24', thumb: ''},
+                        { id: 5, name: 'Thăm quan chùa Phật giáo Jeungsim', address:'177 Jeungsimsa-gil, Hagun-dong, Dong-gu, Kwangju', time:'9AM - 6PM', price: 'Miễn phí', thumb: ''},
+
+                    ]
+                },
+                { id: 7, name: 'Ulsan',
+                    transport: [
+                        { id: 1, name: 'Xe buýt', price: '8'}, 
+                        { id: 2, name: 'Tàu điện ngầm', price: '10'},
+                        { id: 3, name: 'Tàu cao tốc', price: '11'},
+                        { id: 4, name: 'Taxi', price: '20'},
+                        { id: 5, name: 'Tàu hoả', price: '45'}
+                    ],
+                    food: [
+                        { id: 1, name: 'Thịt ba chỉ nướng Samgyupsal', price: '17', thumb: ''},
+                        { id: 2, name: 'Cơm trộn Bibimbap', price: '7.6', thumb: ''},
+                        { id: 3, name: 'Canh hầm cá ngừ Chamchi Jiggae', price: '15', thumb: ''},
+                        { id: 4, name: 'Thịt heo chiên sốt Donkasu', price: '8.5', thumb: ''},
+                        { id: 5, name: 'Thịt bò chiên Bulgogi', price: '17', thumb: ''},
+
+                    ],
+                    accommodations: [
+                        { id: 1, name: 'Resort', price: '170', thumb: ''},
+                        { id: 2, name: 'Khách sạn', price: '80', thumb: ''},
+                        { id: 3, name: 'Nhà cổ', price: '70', thumb: ''},
+                        { id: 4, name: 'Homestay', price: '30', thumb: ''},
+                        { id: 5, name: 'Nhà nghỉ', price: '15', thumb: ''},
+
+                    ],
+                    activities: [
+                        { id: 1, name: 'Vui chơi, thăm quan mỏm Ganjeolgot', address:'39-2 Ganjeolgot 1-gil, Seosaeng-myeon, Ulju-gun, Ulsan', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 2, name: 'Vui chơi công viên Ulsan Grand Park', address:'94 Daegongwon-ro, Ok-dong, Nam-gu, Ulsan', time:'5Am - 23PM', price: 'Miễn phí', thumb: ''},
+                        { id: 3, name: 'Thăm quan bảo tàng cá voi Jangsaengpo', address:'244, Jangsaengpogorae-ro, Nam-gu, Ulsan', time:'9AM - 6PM', price: '2', thumb: ''},
+                        { id: 4, name: 'Thăm quan bảo tàng khắc đá Bangudae', address:'285 Bangudaean-gil, Eonyang-eup, Ulju-gun, Ulsan', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 5, name: 'Khám phá hang động thạch anh Ulsan', address:'112 Jasujeong-ro, Samnam-myeon, Ulju-gun, Ulsan', time:'9AM - 5PM', price: '6', thumb: ''},
+
+                    ]
+                }, 
+                { id: 8, name: 'Gyeonggi',
+                    transport: [
+                        { id: 1, name: 'Xe buýt', price: '8'}, 
+                        { id: 2, name: 'Tàu điện ngầm', price: '10'},
+                        { id: 3, name: 'Tàu cao tốc', price: '11'},
+                        { id: 4, name: 'Taxi', price: '20'},
+                        { id: 5, name: 'Tàu hoả', price: '45'}
+                    ],
+                    food: [
+                        { id: 1, name: 'Gà luộc cơm cháy Nurungji Baeksuk', price: '30', thumb: ''},
+                        { id: 2, name: 'Cua sống ướp sốt đậu Ganjang Gejang', price: '14.4', thumb: ''},
+                        { id: 3, name: 'Cháo gà ninh Namhansanseong Dakjuk', price: '21', thumb: ''},
+                        { id: 4, name: 'Gà rán chua ngọt Yangnyeom Tongdak', price: '11.86', thumb: ''},
+                        { id: 5, name: 'Sườn bò om cay Maeun Galbi Jjim', price: '12.7', thumb: ''},
+
+                    ],
+                    accommodations: [
+                        { id: 1, name: 'Resort', price: '150', thumb: ''},
+                        { id: 2, name: 'Khách sạn', price: '70', thumb: ''},
+                        { id: 3, name: 'Nhà cổ', price: '69', thumb: ''},
+                        { id: 4, name: 'Homestay', price: '25', thumb: ''},
+                        { id: 5, name: 'Nhà nghỉ', price: '12', thumb: ''},
+
+                    ],
+                    activities: [
+                        { id: 1, name: 'Vui chơi tại công viên Everland', address:'199 Everland-ro, Pogog-eup, Cheoin-gu, Yongin-si, Gyeonggi', time:'10AM - 9PM', price: '32', thumb: ''},
+                        { id: 2, name: 'Thăm quan thành cổ Hwaseong', address:'1-2 Jangan-dong, Paldal-gu, Suwon, Gyeonggi', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 3, name: 'Thăm làng cổ Minsok', address:' 90 KR, Minsokchon-ro, Giheung-gu, Yongin-si, Gyeonggi', time:'9:30AM - 5:30PM', price: 'Miễn phí', thumb: ''},
+                        { id: 4, name: 'Vui chơi tại công viên Seoul Grand Park', address:'102 Daegongwongwangjang-ro, Makgye-dong, Gwacheon-si, Gyeonggi', time:'10AM - 9PM', price: '20', thumb: ''},
+                        { id: 5, name: 'Vui chơi tại công viên Seoul Land', address:'181 Gwangmyeong-ro, Makgye-dong, Gwacheon-si, Gyeonggi', time:'9:30AM - 10PM', price: '22', thumb: ''},
+
+                    ]
+                },
+                { id: 9, name: 'Gangwon',
+                    transport: [
+                        { id: 1, name: 'Xe buýt', price: '8'}, 
+                        { id: 2, name: 'Tàu điện ngầm', price: '10'},
+                        { id: 3, name: 'Tàu cao tốc', price: '11'},
+                        { id: 4, name: 'Taxi', price: '20'},
+                        { id: 5, name: 'Tàu hoả', price: '45'}
+                    ],
+                    food: [
+                        { id: 1, name: 'Cơm chay rau củ Gondre-bap', price: '6', thumb: ''},
+                        { id: 2, name: 'Gà xào bắp cải Dakgalbi', price: '9', thumb: ''},
+                        { id: 3, name: 'Cua tuyết Sokcho', price: '10.2', thumb: ''},
+                        { id: 4, name: 'Canh cá minh thái Hwangtae', price: '11', thumb: ''},
+                        { id: 5, name: 'Bánh bao nhân đậu đỏ Anheung Jjinbbang', price: '1', thumb: ''},
+
+                    ],
+                    accommodations: [
+                        { id: 1, name: 'Resort', price: '150', thumb: ''},
+                        { id: 2, name: 'Khách sạn', price: '70', thumb: ''},
+                        { id: 3, name: 'Nhà cổ', price: '69', thumb: ''},
+                        { id: 4, name: 'Homestay', price: '25', thumb: ''},
+                        { id: 5, name: 'Nhà nghỉ', price: '12', thumb: ''},
+
+                    ],
+                    activities: [
+                        { id: 1, name: 'Thăm quan đảo Nami', address:'1 Namisum-gil, Namsan-myeon, Chuncheon, Gangwon', time:'7:30AM - 9:45PM', price: '7', thumb: ''},
+                        { id: 2, name: 'Thăm đền Woljeongsa', address:'Odaesan-ro, Jinbu-myeon, Pyeongchang-gun, Gangwon', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 3, name: 'Vui chơi tắm biển Gyeongpo', address:'1 Anhyeon-dong, Gangneung, Gangwon', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 4, name: 'Leo núi Taebaeksan', address:'Gangun-gun, Gangnam', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 5, name: 'Thăm quan đền Naksansa', address:'100 Naksansa-ro, Ganghyeon-myeon, Yangyang, Gangwon', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+
+                    ]
+                },
+                { id: 10, name: 'Chungcheong Bắc',
+                    transport: [
+                        { id: 1, name: 'Xe buýt', price: '8'}, 
+                        { id: 2, name: 'Tàu điện ngầm', price: '10'},
+                        { id: 3, name: 'Tàu cao tốc', price: '11'},
+                        { id: 4, name: 'Taxi', price: '20'},
+                        { id: 5, name: 'Tàu hoả', price: '45'}
+                    ],
+                    food: [
+                        { id: 1, name: 'Cá ốt-me chiên sốt rau củ Dori Baengbaeng', price: '8.47', thumb: ''},
+                        { id: 2, name: 'Gà sashimi Ggweonghoe', price: '33', thumb: ''},
+                        { id: 3, name: 'Lẩu bò niêu đất Ttukbaegi Bulgogi', price: '10.2', thumb: ''},
+                        { id: 4, name: 'Gỏi lợn cuốn Bossam', price: '8.5', thumb: ''},
+                        { id: 5, name: 'Lẩu bò nấm HQ Bulgogi Jeongol', price: '14.4', thumb: ''},
+
+                    ],
+                    accommodations: [
+                        { id: 1, name: 'Resort', price: '150', thumb: ''},
+                        { id: 2, name: 'Khách sạn', price: '70', thumb: ''},
+                        { id: 3, name: 'Nhà cổ', price: '69', thumb: ''},
+                        { id: 4, name: 'Homestay', price: '25', thumb: ''},
+                        { id: 5, name: 'Nhà nghỉ', price: '12', thumb: ''},
+
+                    ],
+                    activities: [
+                        { id: 1, name: 'Thăm quan đền thờ Beopjusa', address:'405 beopjusa-ro, Songnisan-myeon, Boeun-gun', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 2, name: 'Công viên Songnisan National Park', address:'84 beopjusa-ro, Songnisan-myeon, 속리산면 Boeun-gun', time:'9AM - 6PM', price: '4', thumb: ''},
+                        { id: 3, name: 'Leo núi Sobaeksan', address:'Yeongju', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 4, name: 'Thăm quan hang động Hang động Gosu', address:'8 Gosudonggul-gil, Danyang-eup, Danyang-gun', time:'9AM - 5PM', price: '11.2', thumb: ''},
+                        { id: 5, name: 'Thăm quan Dodamsambong Peaks', address:'Byeonsan-bando National Park', time:'Luôn mở cửa', price: '30', thumb: ''},
+
+                    ]
+                }, 
+                { id: 11, name: 'Chungcheong Nam',
+                    transport: [
+                        { id: 1, name: 'Xe buýt', price: '8'}, 
+                        { id: 2, name: 'Tàu điện ngầm', price: '10'},
+                        { id: 3, name: 'Tàu cao tốc', price: '11'},
+                        { id: 4, name: 'Taxi', price: '20'},
+                        { id: 5, name: 'Tàu hoả', price: '45'}
+                    ],
+                    food: [
+                        { id: 1, name: 'Cơm niêu hàu Gulbap', price: '8.5', thumb: ''},
+                        { id: 2, name: 'Hải sản ướp muối Jeotgal Jeongsik', price: '7', thumb: ''},
+                        { id: 3, name: 'Lẩu trai sò Saejogae Shabu Shabu', price: '23', thumb: ''},
+                        { id: 4, name: 'Cơm trộn Bibimbap', price: '8', thumb: ''},
+                        { id: 5, name: 'Lẩu hải sản Haemul Ddukbaegi', price: '28', thumb: ''},
+
+                    ],
+                    accommodations: [
+                        { id: 1, name: 'Resort', price: '150', thumb: ''},
+                        { id: 2, name: 'Khách sạn', price: '70', thumb: ''},
+                        { id: 3, name: 'Nhà cổ', price: '69', thumb: ''},
+                        { id: 4, name: 'Homestay', price: '25', thumb: ''},
+                        { id: 5, name: 'Nhà nghỉ', price: '12', thumb: ''},
+
+                    ],
+                    activities: [
+                        { id: 1, name: 'Thăm quan Baeghwajeong', address:'4 Ssangbuk-ri, Buyeo-eup, Buyeo, Chungcheongnam', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 2, name: 'Thăm quan nhà Chung-Uisa', address:'261 Chusagotaek-ro, Sinam-myeon, Yesan-gun', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 3, name: 'Vui chơi tại bãi biển Daecheon', address:'Boryeong', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 4, name: 'Thăm quan chùa Daeungjeon', address:'640 Gwangdeok-ri, Gwangdeok-myeon, Dongnam-gu, Cheonan', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 5, name: 'Thăm quan nhà cổ Gongbuglu', address:'165 Geumseong-dong, Gongju', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+
+                    ]
+                },
+                { id: 12, name: 'Jeolla Bắc',
+                    transport: [
+                        { id: 1, name: 'Xe buýt', price: '8'}, 
+                        { id: 2, name: 'Tàu điện ngầm', price: '10'},
+                        { id: 3, name: 'Tàu cao tốc', price: '11'},
+                        { id: 4, name: 'Taxi', price: '20'},
+                        { id: 5, name: 'Tàu hoả', price: '45'}
+                    ],
+                    food: [
+                       { id: 1, name: 'Cháo trai Baekhapjuk', price: '4.3', thumb: ''},
+                        { id: 2, name: 'Lợn non hầm Aejeojjim', price: '5', thumb: ''},
+                        { id: 3, name: 'Canh cá chạch Chueotang', price: '4.5', thumb: ''},
+                        { id: 4, name: 'Canh giá đỗ Kongnamul Gukbap', price: '4.5', thumb: ''},
+                        { id: 5, name: 'Mực xào cay Ojingeo-bokkeum', price: '7', thumb: ''},
+
+                    ],
+                    accommodations: [
+                        { id: 1, name: 'Resort', price: '150', thumb: ''},
+                        { id: 2, name: 'Khách sạn', price: '70', thumb: ''},
+                        { id: 3, name: 'Nhà cổ', price: '69', thumb: ''},
+                        { id: 4, name: 'Homestay', price: '25', thumb: ''},
+                        { id: 5, name: 'Nhà nghỉ', price: '12', thumb: ''},
+
+                    ],
+                    activities: [
+                        { id: 1, name: 'Vui chơi tại công viên Naejangsan National Park', address:'936 Naejangsan-ro, Naejang-dong, Jeongeup', time:'7AM - 6PM', price: '26', thumb: ''},
+                        { id: 2, name: 'Leo núi Naejangsan', address:'Biên giới Jeolla Bắc - Nam', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 3, name: 'Thăm quan làng cổ Jeonju', address:'99 Girin-daero, Pungnamdong 3(sam)-ga, Wansan-gu, Jeonju', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 4, name: 'Thăm quan đền Gyeonggijeon', address:'44 Taejo-ro, Pungnam-dong, Wansan-gu, Jeonju', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 5, name: 'Đi chợ Nambu Market', address:'19-3 Pungnammun 1-gil, Jeonong 3(sam)-ga, Wansan-gu, Jeonju', time:'8AM - 6PM', price: 'Miễn phí', thumb: ''},
+
+                    ]
+                },
+                { id: 13, name: 'Jeolla Nam',
+                    transport: [
+                        { id: 1, name: 'Xe buýt', price: '8'}, 
+                        { id: 2, name: 'Tàu điện ngầm', price: '10'},
+                        { id: 3, name: 'Tàu cao tốc', price: '11'},
+                        { id: 4, name: 'Taxi', price: '20'},
+                        { id: 5, name: 'Tàu hoả', price: '45'}
+                    ],
+                    food: [
+                        { id: 1, name: 'Bò nướng than Gwangyang Bulgogi', price: '12', thumb: ''},
+                        { id: 2, name: 'Cơm ống tre Daetongbap', price: '2.5', thumb: ''},
+                        { id: 3, name: 'Cá hương nướng Euneogui', price: '4', thumb: ''},
+                        { id: 4, name: 'Cháo bào ngư Jeonbokjuk', price: '5.3', thumb: ''},
+                        { id: 5, name: 'Bạch tuộc xào Nakji Bokkeum', price: '13', thumb: ''},
+
+                    ],
+                    accommodations: [
+                        { id: 1, name: 'Resort', price: '150', thumb: ''},
+                        { id: 2, name: 'Khách sạn', price: '70', thumb: ''},
+                        { id: 3, name: 'Nhà cổ', price: '69', thumb: ''},
+                        { id: 4, name: 'Homestay', price: '25', thumb: ''},
+                        { id: 5, name: 'Nhà nghỉ', price: '12', thumb: ''},
+
+                    ],
+                    activities: [
+                        { id: 1, name: 'Thăm quan công viên Suncheon Bay National Garde', address:'Suncheon, Ocheon-dong, 162-11', time:'8:30AM - 6PM', price: '2.5', thumb: ''},
+                        { id: 2, name: 'Vui chơi tại công viên Dadohaehaesang National Park', address:'446-1 Geumo-ro, Nam-myeon, Yeosu', time:'9AM - 6PM', price: '16.8', thumb: ''},
+                        { id: 3, name: 'Thăm quan hòn đảo Hongdo', address:'Bờ biển tây nam của cảng Mokpo', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 4, name: 'Thăm quan đền chùa Songgwangsa', address:'Suncheon-si, Songgwang-myeon, Sinpyeong-ri, 12', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 5, name: 'Leo núi đến công viên núi Wolchulsan', address:'Quận Gangjin và Yeongam', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+
+                    ]
+                },
+                { id: 14, name: 'Gyeongsang Bắc',
+                    transport: [
+                        { id: 1, name: 'Xe buýt', price: '8'}, 
+                        { id: 2, name: 'Tàu điện ngầm', price: '10'},
+                        { id: 3, name: 'Tàu cao tốc', price: '11'},
+                        { id: 4, name: 'Taxi', price: '20'},
+                        { id: 5, name: 'Tàu hoả', price: '45'}
+                    ],
+                    food: [
+                        { id: 1, name: 'Cua hoàng đế hấp Daege jjim', price: '55', thumb: ''},
+                        { id: 2, name: 'Mì thạch hạt sồi Dotori Sujebi', price: '11', thumb: ''},
+                        { id: 3, name: 'Cá cờ một nắng Gwamegi', price: '7', thumb: ''},
+                        { id: 4, name: 'Đậu phụ non Sundubu', price: '4.6', thumb: ''},
+                        { id: 5, name: 'Mì gà cay Jjimdak', price: '5.6', thumb: ''},
+
+                    ],
+                    accommodations: [
+                        { id: 1, name: 'Resort', price: '150', thumb: ''},
+                        { id: 2, name: 'Khách sạn', price: '70', thumb: ''},
+                        { id: 3, name: 'Nhà cổ', price: '69', thumb: ''},
+                        { id: 4, name: 'Homestay', price: '25', thumb: ''},
+                        { id: 5, name: 'Nhà nghỉ', price: '12', thumb: ''},
+
+                    ],
+                    activities: [
+                        { id: 1, name: 'Thăm quan đền phật giáo Phật Quốc tự', address:'15-1 Jinhyeon-dong, Gyeongju', time:'7:30AM - 6PM', price: '4.24', thumb: ''},
+                        { id: 2, name: 'Thăm quan cung điện Donggung Palace and Wolji Pond', address:'102 Wonhwa-ro, Inwang-dong, Gyeongju', time:'9AM- 10PM', price: '1.7', thumb: ''},
+                        { id: 3, name: 'Thăm quan động Seokguram', address:'Jinhyeon-dong, Gyeongju', time:'6:30AM - 6PM', price: '4.24', thumb: ''},
+                        { id: 4, name: 'Thăm quan Làng dân gian Hahoe', address:'Andong, Pungcheon-myeon, 40', time:'9AM - 6PM', price: '4.24', thumb: ''},
+                        { id: 5, name: 'Thăm quan đài quan sát thiên văn Cheomseongdae', address:'839-1 Inwang-dong, Gyeongju', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+
+                    ]
+                },
+                { id: 15, name: 'Gyeongsang Nam',
+                    transport: [
+                        { id: 1, name: 'Xe buýt', price: '8'}, 
+                        { id: 2, name: 'Tàu điện ngầm', price: '10'},
+                        { id: 3, name: 'Tàu cao tốc', price: '11'},
+                        { id: 4, name: 'Taxi', price: '20'},
+                        { id: 5, name: 'Tàu hoả', price: '45'}
+                    ],
+                    food: [
+                        { id: 1, name: 'Cơm trộn bò tươi Yukhoe bibimbap', price: '8', thumb: ''},
+                        { id: 2, name: 'Cá cần câu hầm rau củ Agujjim', price: '11', thumb: ''},
+                        { id: 3, name: 'Cơm cuộn Kimbap', price: '8', thumb: ''},
+                        { id: 4, name: 'Canh thịt heo Dwaeji Gukbap', price: '5', thumb: ''},
+                        { id: 5, name: 'Gà xiên nướng Dak-kkochi', price: '7', thumb: ''},
+
+                    ],
+                    accommodations: [
+                        { id: 1, name: 'Resort', price: '150', thumb: ''},
+                        { id: 2, name: 'Khách sạn', price: '70', thumb: ''},
+                        { id: 3, name: 'Nhà cổ', price: '69', thumb: ''},
+                        { id: 4, name: 'Homestay', price: '25', thumb: ''},
+                        { id: 5, name: 'Nhà nghỉ', price: '12', thumb: ''},
+
+                    ],
+                    activities: [
+                        { id: 1, name: 'Thăm quan chùa Bát vạn đại tạng kinh', address:'10 Chiin-ri, Gaya-myeon, Hapcheon', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 2, name: 'Vui chơi tại công viên Jirisan National Park', address:'Daeseong-ri, Hwagae-myeon, Hadong', time:'Luôn mở cửa', price: '1.7', thumb: ''},
+                        { id: 3, name: 'Vui chơi tại công viên Hallyeohaesang National Park', address:'Idong-myeon, Namhae', time:'5AM - 11PM', price: '5.08', thumb: ''},
+                        { id: 4, name: 'Thăm quan chùa Tongdosa', address:'108 Tongdosa-ro, Habuk-myeon, Yangsan', time:'9AM - 5PM', price: 'Miễn phí', thumb: ''},
+                        { id: 5, name: 'Thăm quan làng Dongpirang Mural Village', address:'6-18 Dongpirang 1-gil, Dongho-dong, Tongyeong-si', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+
+                    ]
+                },
+                { id: 16, name: 'Jeju',
+                    transport: [
+                        { id: 1, name: 'Xe buýt', price: '8'}, 
+                        { id: 2, name: 'Tàu điện ngầm', price: '10'},
+                        { id: 3, name: 'Tàu cao tốc', price: '11'},
+                        { id: 4, name: 'Taxi', price: '20'},
+                        { id: 5, name: 'Tàu hoả', price: '45'}
+                    ],
+                    food: [
+                        { id: 1, name: 'Cá tráp nướng Okdom Gui', price: '11', thumb: ''},
+                        { id: 2, name: 'Canh cá hố Galchi Jorim', price: '5', thumb: ''},
+                        { id: 3, name: 'Thịt lợn đen nướng Heuk Dwaeji', price: '15', thumb: ''},
+                        { id: 4, name: 'Gỏi mực nang sốt rau củ Hanchi Mulhwae', price: '4.5', thumb: ''},
+                        { id: 5, name: 'Súp tảo mơ Jeju Momguk', price: '3.5', thumb: ''},
+
+                    ],
+                    accommodations: [
+                        { id: 1, name: 'Resort', price: '170', thumb: ''},
+                        { id: 2, name: 'Khách sạn', price: '80', thumb: ''},
+                        { id: 3, name: 'Nhà cổ', price: '70', thumb: ''},
+                        { id: 4, name: 'Homestay', price: '30', thumb: ''},
+                        { id: 5, name: 'Nhà nghỉ', price: '15', thumb: ''},
+
+                    ],
+                    activities: [
+                        { id: 1, name: 'Leo núi, thăm quan hầm nham thạch Manjanggul', address:'182 Manjanggul-gil, Gujwa-eup, Cheju, Jeju-do', time:'9AM - 6PM', price: '1.7', thumb: ''},
+                        { id: 2, name: 'Thăm quan vườn quốc gia Hallasan', address:'2070-61 1100(Cheonbaek)-ro, Odeung-dong, Cheju, Jeju-do', time:'9AM - 5PM', price: 'Miễn phí', thumb: ''},
+                        { id: 3, name: 'Thăm quan công viên tình yêu Jeju Loveland', address:'2894-72 1100(Cheonbaek)-ro, Yeon-dong, Cheju, Jeju-do', time:'9AM - 12PM', price: '7.64', thumb: ''},
+                        { id: 4, name: 'Vui chơi tắm biển Hamdeok Beach', address:'Sinbuk-ro, Jochon-eup, Cheju, Jeju-do', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 5, name: 'Thăm quan bảo tàng Osulloc Tea Museum', address:'15 Sinhwayeoksa-ro, Andeok-myeon, Seogwipo, Jeju-do', time:'9AM - 7PM', price: '10', thumb: ''},
+
+                    ]
+                },
+                { id: 17, name: 'Sejong',
+                    transport: [
+                        { id: 1, name: 'Xe buýt', price: '8'}, 
+                        { id: 2, name: 'Tàu điện ngầm', price: '10'},
+                        { id: 3, name: 'Tàu cao tốc', price: '11'},
+                        { id: 4, name: 'Taxi', price: '20'},
+                        { id: 5, name: 'Tàu hoả', price: '45'}
+                    ],
+                    food: [
+                        { id: 1, name: 'Trứng hấp Gyeran jjim', price: '2.5', thumb: ''},
+                        { id: 2, name: 'Bánh gạo sốt tương đen Jajang tteokbokki', price: '3.5', thumb: ''},
+                        { id: 3, name: 'Thịt ba chỉ nướng Samgyupsal', price: '7', thumb: ''},
+                        { id: 4, name: 'Lòng lợn hầm Gopchang-jeongol', price: '9', thumb: ''},
+                        { id: 5, name: 'Cơm cuộn Kimbap', price: '8', thumb: ''},
+
+                    ],
+                    accommodations: [
+                        { id: 1, name: 'Resort', price: '170', thumb: ''},
+                        { id: 2, name: 'Khách sạn', price: '80', thumb: ''},
+                        { id: 3, name: 'Nhà cổ', price: '70', thumb: ''},
+                        { id: 4, name: 'Homestay', price: '30', thumb: ''},
+                        { id: 5, name: 'Nhà nghỉ', price: '15', thumb: ''},
+
+                    ],
+                    activities: [
+                        { id: 1, name: 'Thăm quan thư viện quốc gia ', address:'Dasom 3-ro, Sejong', time:'9AM - 9PM', price: '8.47', thumb: ''},
+                        { id: 2, name: 'Thăm quan, vui chơi bên hồ Sejong', address:'216, Dasom-ro, Yeongi-myeon, Sejong', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 3, name: 'Thăm công viên gấu Beartree Park', address:'217, Sinsong-ro, Jeondong-myeon, Sejong', time:'9AM - 7PM', price: '8.47', thumb: ''},
+                        { id: 4, name: 'Leo núi Sangyeobawi', address:'Sejong', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+                        { id: 5, name: 'Thăm quan chùa Yeongpyeong ', address:'Janggun Mountain. Sejong', time:'Luôn mở cửa', price: 'Miễn phí', thumb: ''},
+
+                    ]
+                }
+            ],
+            currentCity: 0,
+            currentCityObject: {},
+            selectedCity: []
+        }
+    },
+    methods: {
+        selectCity (city) {
+            this.currentCity = city.id, this.currentCityObject = city
+            this.tour['day'+this.currentDay].plans = []
+            this.tour['day'+this.currentDay].plans.push(
+                {
+                    timeFrom: this.start,
+                    timeTo: this.end,
+                    city: city
+                }
+            )
+        },
+        changeDays (data) {
+            
+        },
+        error(type, msg) {
+            switch (type) {
+            case ERROR_TYPE.MIN:
+                break
+            case ERROR_TYPE.MAX:
+                break
+            case ERROR_TYPE.VALUE:
+                break
+            }
+            this.errorMsg = msg
+        },
+    },
+    computed: {
+        numberDays () {
+            let arr = []
+            for (let i = 0; i < this.tour.day; i++) { 
+                arr.push(i+1)
+            }
+            return arr
+        }
+    },
+    watch: {
+        selectedCity(old) {
+            let cities = {}
+            this.currentCity = old[0].id
+            old.forEach(item => {
+                cities[item.id] = item
+            });
+            this.tour['day'+this.currentDay] = {
+                cities
+            }
+        }
+    }
+}
+</script>
+
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+
+
+<style lang="scss">
+.planing-inner {
+    width: 900px;
+    .overview {
+        padding: 20px 20px 40px 20px;
+        .select-days {
+            width: 80%;
+            margin: 0 auto;
+        }
+    }
+    
+}
+.vue-slider {
+    .custom-tooltip {
+        background: #f9a049;
+        color: #fff;
+        padding: 0 5px;
+        border-radius: 5px 0 5px 0;
+    }
+    .vue-slider-process  {
+        background: #f9a049;
+    }
+    .vue-slider-mark {
+        height: 10px !important;
+        width: 10px !important;
+    }
+    .vue-slider-mark-step {
+   
+        background-color: rgb(204, 204, 204);
+        cursor: pointer;
+    }
+    .vue-slider-mark-label {
+        cursor: pointer;
+    }
+    .vue-slider-mark-step.vue-slider-mark-step-active {
+        background: #fff;
+        border: 3px solid #f9a049;
+    }
+    .vue-slider-mark-label.custom-label-1 {
+        left: 55px;
+    }
+}
+.progress-table {
+    table {
+        font-size: 12px;
+        thead {
+            td {
+                vertical-align: middle;
+                text-align: center;
+            }
+        }
+    }
+    
+}
+.progress-list {
+    .btn-day {
+        border: 1px solid #ccc;
+        border-radius: 0;
+        margin-right: 2px;
+        &.active{
+            border-bottom: 2px solid #f9a049;
+            color: #f9a049;
+        }
+    }
+}
+</style>
+

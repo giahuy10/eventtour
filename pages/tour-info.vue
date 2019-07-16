@@ -209,7 +209,7 @@ import RangeSlider from 'vue-range-slider'
 import 'vue-range-slider/dist/vue-range-slider.css'
 import 'hooper/dist/hooper.css';
 export default {
-    middleware: 'authenticated',
+    //middleware: 'authenticated',
     mounted: function () {
         let prevScreenData = localStorage.getItem("single-info");
         if (!prevScreenData) {
