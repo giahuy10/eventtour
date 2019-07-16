@@ -1,4 +1,33 @@
-img{width: 100%}
+.cursor {
+    cursor: pointer;
+}
+.btn-google {
+  background: #dd4b39;
+  color:#fff;
+}
+.btn-facebook {
+  background: #3b5998;
+  color:#fff;
+}
+a.reg {
+    color: green;
+}
+.inner-page {
+    background: url('/imgs/clouds.png') no-repeat;
+    padding-top: 170px;
+}
+.inner-box {
+    max-width: 100%;
+    margin: 0 auto;
+    box-shadow: 0 0 2px 2px #f3f3f3;
+    padding: 20px;
+    background: #fff;
+    margin-bottom: 10px;
+}
+.text-blue {
+    color: #2d4197;
+}
+img{max-width: 100%}
 .sidebar {background-color:red !important}
 .navbar-custom{padding: 0}
 .navbar-custom img {width: 160px;}
@@ -135,4 +164,13 @@ label {margin-bottom: 0;color: #2d4197}
 .mes-err {color: red;font-size: 12px}
 @media (min-width:576px) {
     .modal-dialog {margin-top: 130px}
+}
+@media screen and (max-width: 767px) {
+    .inner-box {
+        box-shadow: none;
+    }
+    .inner-page {
+    
+        padding-top: 100px;
+    }
 }

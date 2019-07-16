@@ -3,13 +3,13 @@ import 'firebase/auth'
 
 if (!firebase.apps.length) {
   firebase.initializeApp({
-    apiKey: "AIzaSyCde5_X0MXI3xqUowt9AA7OQF1Xyylpnj8",
-    authDomain: "home-land-2019.firebaseapp.com",
-    databaseURL: "https://home-land-2019.firebaseio.com",
-    projectId: "home-land-2019",
-    storageBucket: "home-land-2019.appspot.com",
-    messagingSenderId: "103632097463",
-    appId: "1:103632097463:web:0f84ac02126d018a"
+    apiKey: "AIzaSyC98GgrN34v5paDdWfexQSA_v2qSfU0yRo",
+    authDomain: "kto-landing.firebaseapp.com",
+    databaseURL: "https://kto-landing.firebaseio.com",
+    projectId: "kto-landing",
+    storageBucket: "kto-landing.appspot.com",
+    messagingSenderId: "343465466923",
+    appId: "1:343465466923:web:2b8abddcea92bd85"
   })
 }
 

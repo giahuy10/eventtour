@@ -1,7 +1,6 @@
 <template>
     <div>
         <div class="home-banner">
-            <img width="100%" src="imgs/home-banner.jpg" alt="">
             <div class="header-content">
                 <p>Ban ước mơ một ngày được khám phá xứ sở Kim Chi nhưng điều kiên chưa cho phép</p>
                 <a href="#introduce4" class="text-uppercase btn btn-join btn-warning">Tham gia cuôc thi</a>
@@ -13,26 +12,7 @@
             </div>
         </div>
 
-        <!-- <section class="introduce" id="introduce">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div>
-                            <img src="/imgs/introduce-img.png" alt="">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div>
-                            <p class="title"><b class="text-uppercase ">giới thiệu</b></p>
-
-                            <h3 class="text-uppercase content">Bạn luôn mơ về một ngày được thưởng thức combo gà-bia bên bờ sông hàn lộng gió</h3>
-                            <p>Hàn Quốc chỉ còn cách bạn một cú click chuột thôi! Lập team "chiến" ngay cuộc thi <span style="font-weight:700;color:#70707a">Tạo tour tự túc, hạnh phúc đi Hàn</span> để nhận ngay tấm vé tới xứ xở Kim Chi</p>
-                            <h5 class="text-uppercase" style="color:#dc4a1d">Hoàn toàn miễn phí</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section> -->
+        
 
         <section class="introduce2" id="introduce2">
             <div class="container">
@@ -209,12 +189,13 @@
         <section class="register" id="register">
             <div class="container">
                 <div class="row">
-                    <div class="text-center col-md-12" v-if="!getAuth">
+                    <div class="text-center col-md-12" v-if="!checkedUser.email">
                         <b-button variant="info" @click="$router.push({path: '/user/register'})" class="btn-resg">Đăng ký</b-button>
                         <b-button variant="warning" @click="$router.push({path: '/user/login'})" class="btn-login">Đăng nhập</b-button>
                     </div>
                     <div class="text-center col-md-12" v-else>
                         <nuxt-link class="btn-login btn btn-warning" to="/single-info" no-prefetch>Tham gia</nuxt-link>
+                        <button class="btn btn-success" @click="logout">Logout</button>
                     </div>
                 </div>
                 <div class="row">
@@ -229,7 +210,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div>
-                            <h4 class="text-uppercase title">lưu ý chung</h4>
+                            <h4 class="text-uppercase title">Lưu ý chung</h4>
                             <p>
                                 - Bằng cách tham gia chương trình, người tham gia xem như đồng ý với tất cả thể lệ chương trình <br>
                                 - Nghiêm cấm các hình thức gian lận trong cuộc thi. BTC có quyền loại người tham gia nếu phát hiện gian lận <br>
@@ -262,24 +243,30 @@
             </div>
         </section>
 
-        <!-- modal -->
-        <modal />
+  
     </div>
 </template>
 
 <script>
-import Modal from '~/components/Modal.vue'
 
 export default {
     css: [
         './assets/css/custom.css'
     ],
-    components: {
-        Modal
+    data () {
+        return {
+            checkedUser: {}
+        }
     },
-    computed: {
-        getAuth () {
-            return this.$store.state.auth
+    mounted () {
+        if (localStorage.getItem('checkUser')) {
+            this.checkedUser = JSON.parse(localStorage.getItem('checkUser'))
+        }
+    },
+    methods: {
+        logout() {
+            localStorage.clear()
+            location.reload()
         }
     }
     
@@ -289,10 +276,7 @@ export default {
 <style scoped>
 .btn-resg {margin-right: 15px;}
 .btn-login {margin-right: 15px;}
-.header-content {
-    position: absolute;
-    top: 320px;left: 0;width: 100%;text-align: center
-}
+
 .header-content p {
     font-weight: 400;font-size: 24px;color: #083e7c;position: relative;padding: 0 25px
 }
@@ -300,3 +284,25 @@ export default {
     font-size: inherit;font-weight: unset;margin-top: 10px
 }
 </style>
+
+<style lang="scss">
+.home-banner {
+    background: url('/imgs/home-banner.jpg');
+    background-position: center bottom;
+    .header-content {
+        text-align: center;
+        padding: 330px 0 440px;
+    }
+}
+.introduce4 {
+    @media screen and (max-width: 767px) {
+        background-position: center bottom;
+    } 
+}
+.introduce3 {
+    @media screen and (max-width: 767px) {
+        background: none;
+    }
+}
+</style>
+

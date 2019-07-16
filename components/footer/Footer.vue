@@ -14,10 +14,10 @@
                 </div>
                 <div class="col-md-6">
                    <div class="row">
-                        <div class="col-md-6 logo-white ">
+                        <div class="col-6 logo-white ">
                            <img src="/imgs/logo-kr.png" alt="">
                         </div>
-                        <div class="col-md-6 logo">
+                        <div class="col-6 logo">
                            <img src="/imgs/logo_white.png" alt="">
                         </div>
                        

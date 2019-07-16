@@ -1,11 +1,11 @@
 <template>
-    <div class="login">
+    <div class="login inner-page">
         
-        <div class="login-box">
+        <div class="login-box inner-box">
             <div class="text-center">
                 <img class="logo-login" src="/imgs/logo.png" alt="">
                 <hr>
-                <h3>ĐĂNG NHẬP</h3>
+                <h3 class="gr-title">ĐĂNG NHẬP</h3>
             </div>
             <div v-if="err.length > 0">
                 <div class="alert alert-warning">
@@ -28,14 +28,15 @@
             </div>
             <div class="row">
                 <div class="col-12 col-md-6">
-                    <b-button block @click.prevent="loginByFacebook" variant="facebook"> <i class="fa fa-facebook"></i> Facebook</b-button>
+                    <Facebook />
                 </div>
                 <div class="col-12 col-md-6">
-                    <b-button block @click.prevent="loginByGoogle" variant="google"> <i class="fa fa-google-plus"></i> Google</b-button>
+                    <Google />
                 </div>
             </div>
             <div class="form-group">
-                <a  href="#" class="btn btn-block btn-login" @click.prevent="postLogin"> 
+                <b-spinner v-if="loading" variant="success" type="grow" label="Spinning"></b-spinner>
+                <a  href="#" v-else class="btn btn-block btn-login" @click.prevent="postLogin"> 
                     Đăng nhập
                 </a>
             </div>
@@ -59,10 +60,13 @@
 
 <script>
 import firebase from '@/plugins/firebase'
-const googleProvider = new firebase.auth.GoogleAuthProvider()
-const facebookProvider = new firebase.auth.FacebookAuthProvider()
+import Facebook from '~/components/FacebookLogin.vue'
+import Google from '~/components/GoogleLogin.vue'
 export default {
     // middleware: 'notAuthenticated',
+    components: {
+        Facebook, Google
+    },
     data () {
         return {
             login: {
@@ -105,34 +109,8 @@ export default {
                 })
             }
         },
-        loginByFacebook () {
-            firebase.auth().signInWithPopup(facebookProvider)
-            .then(data => {
-                console.log('face', data)
-                this.checkEmail(data.user, 'facebook')
-            })
-            .catch(err => {
-                console.log('facee', err)
-                firebase.auth().signInWithCredential(err.credential)
-                    .then(res => console.log(res))
-                firebase.auth().fetchSignInMethodsForEmail(err.email)
-                    .then(providers => {
-                        console.log(providers)
-                    })
-
-            })
-        },
-        loginByGoogle () {
-            firebase.auth().signInWithPopup(googleProvider)
-            .then(data => {
-                console.log('ggg', data)
-                this.checkEmail(data.user, 'google')
-            })
-            .catch(err => {
-                console.log('ggge', err)
-                this.checkEmail ({email: err.email}, 'google')
-            })
-        },
+        
+   
         checkEmail() {
 
         }
@@ -141,26 +119,11 @@ export default {
 </script>
 <style lang="scss">
 
-.btn-google {
-  background: #dd4b39;
-  color:#fff;
-}
-.btn-facebook {
-  background: #3b5998;
-  color:#fff;
-}
-.login {
-    background: url('/imgs/clouds.png') no-repeat;
-    padding-top: 170px;
-}
+
+
 .login-box {
     width: 400px;
-    max-width: 100%;
-    margin: 0 auto;
-    box-shadow: 0 0 2px 2px #f3f3f3;
-    padding: 20px;
-    background: #fff;
-    margin-bottom: 10px;
+    
     .logo-login {
         height: 60px;
         width: auto;

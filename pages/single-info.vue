@@ -1,9 +1,9 @@
 <template>
-    <div>
-        <div class="wraper">
+    <div class="user-info inner-page">
+        <div class="">
             
-            <div class="content">
-                <form action="" v-on:submit.prevent="storeData()" class="">
+            <div class="user-info-inner inner-box">
+             
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12">
@@ -15,7 +15,7 @@
                                 <div class="form-group">
                                     <div class="form-item">
                                         <label for="">
-                                            <b>Họ và tên người cùng đi:</b>
+                                            <b>Họ và tên:</b>
                                         </label>
                                         <input type="text" v-model="person.fullName" autofocus placeholder="Họ và tên của bạn" class="form-control">
                                         <i v-if="errors[0]" class="mes-err">{{ errors[0] }}</i>
@@ -29,8 +29,8 @@
                                     </div>
                                     <!-- <div class="custom-form-control"> -->
                                         <label for="" class="custom-lable"> <b>Giới tính</b></label>
-                                        <b-form-radio v-model="person.sex" value="0">Nam</b-form-radio>
-                                        <b-form-radio v-model="person.sex" value="1">Nữ</b-form-radio>
+                                        <b-form-radio v-model="person.sex" value="1">Nam</b-form-radio>
+                                        <b-form-radio v-model="person.sex" value="-1">Nữ</b-form-radio>
                                         <i v-if="errors[2]" class="mes-err">{{ errors[2] }}</i>
                                     <!-- </div> -->
                                     
@@ -49,9 +49,10 @@
                                         <i v-if="errors[4]" class="mes-err">{{ errors[4] }}</i>
                                     </div>
                                     <div class="form-item">
+                                        <label for=""></label>
                                         <span v-on:click="showMore = !showMore" class="item-non-choice place-name" v-if="!showMore"></span>
                                         <img v-on:click="showMore = !showMore" v-else style=" width: 27px;vertical-align: unset;display: inline;" src="/imgs/tick.png" alt="">
-                                        <span>Tích vào đây nếu bạn đi theo nhóm</span>
+                                        <span v-on:click="showMore = !showMore" class="cursor">Tích vào đây nếu bạn đi theo nhóm</span>
                                     </div>
                                      <div class="choiced-icon">
                                          <label for="">
@@ -64,7 +65,7 @@
                                 <div class="form-group form-group2" v-if="showMore">
                                     <div class="form-item">
                                         <label for="">
-                                            <b>Họ và tên người cùng đi:</b>
+                                            <b>Họ và tên thành viên 1:</b>
                                         </label>
                                         <input type="text" v-model="persons[0].fullName" autofocus placeholder="Họ và tên của bạn" class="form-control">
                                         <i v-if="errors[0]" class="mes-err">{{ errors[0] }}</i>
@@ -78,13 +79,27 @@
                                     </div>
                                     <!-- <div class="custom-form-control"> -->
                                         <label for="" class="custom-lable"> <b>Giới tính</b></label>
-                                        <b-form-radio v-model="persons[0].sex" value="0">Nam</b-form-radio>
-                                        <b-form-radio v-model="persons[0].sex" value="1">Nữ</b-form-radio>
+                                        <b-form-radio v-model="persons[0].sex" value="1">Nam</b-form-radio>
+                                        <b-form-radio v-model="persons[0].sex" value="-1">Nữ</b-form-radio>
                                         <i v-if="errors[2]" class="mes-err">{{ errors[2] }}</i>
                                     <!-- </div> -->
                                     <div class="form-item">
                                         <label for="">
-                                            <b>Họ và tên người cùng đi:</b>
+                                            <b>Số điện thoại:</b>
+                                        </label>
+                                        <input type="text" v-model="persons[0].phoneNumber" placeholder="Số điện thoại của bạn" class="form-control">
+                                        <i v-if="errors[3]" class="mes-err">{{ errors[3] }}</i>
+                                    </div>
+                                    <div class="form-item">
+                                        <label for="">
+                                            <b>Email:</b>
+                                        </label>
+                                        <input type="email" v-model="persons[0].email" placeholder="Email của bạn" class="form-control">
+                                        <i v-if="errors[4]" class="mes-err">{{ errors[4] }}</i>
+                                    </div>
+                                    <div class="form-item">
+                                        <label for="">
+                                            <b>Họ và tên thành viên 2:</b>
                                         </label>
                                         <input type="text" v-model="persons[1].fullName" autofocus placeholder="Họ và tên của bạn" class="form-control">
                                         <i v-if="errors[0]" class="mes-err">{{ errors[0] }}</i>
@@ -98,19 +113,34 @@
                                     </div>
                                     <!-- <div class="custom-form-control"> -->
                                         <label for="" class="custom-lable"> <b>Giới tính</b></label>
-                                        <b-form-radio v-model="persons[1].sex" value="0">Nam</b-form-radio>
-                                        <b-form-radio v-model="persons[1].sex" value="1">Nữ</b-form-radio>
+                                        <b-form-radio v-model="persons[1].sex" value="1">Nam</b-form-radio>
+                                        <b-form-radio v-model="persons[1].sex" value="-1">Nữ</b-form-radio>
                                         <i v-if="errors[2]" class="mes-err">{{ errors[2] }}</i>
                                     <!-- </div> -->
+                                    <div class="form-item">
+                                        <label for="">
+                                            <b>Số điện thoại:</b>
+                                        </label>
+                                        <input type="text" v-model="persons[1].phoneNumber" placeholder="Số điện thoại của bạn" class="form-control">
+                                        <i v-if="errors[3]" class="mes-err">{{ errors[3] }}</i>
+                                    </div>
+                                    <div class="form-item">
+                                        <label for="">
+                                            <b>Email:</b>
+                                        </label>
+                                        <input type="email" v-model="persons[1].email" placeholder="Email của bạn" class="form-control">
+                                        <i v-if="errors[4]" class="mes-err">{{ errors[4] }}</i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="gr-btn">
-                    <button type="submit" class="btn btn btn-login btn-warning">Bắt đầu phần thi</button>
+                    <button type="submit" class="btn btn btn-info" @click="storeData(1)">Gửi lịch trình có sẵn bạn đã chuẩn bị</button>
+                    <button type="submit" class="btn btn btn-login btn-warning" @click="storeData(2)">Bắt đầu phần thi theo khung lịch trình của KTO</button>
                 </div>
-                </form>
+                
             </div>
         </div>
         <div style="background-image:url(/imgs/footter.png);height:390px"></div>
@@ -121,7 +151,13 @@ import VeeValidate from 'vee-validate';
 export default {
     // middleware: 'authenticated',
     mounted: function () {
-
+        if (localStorage.getItem('checkUser')) {
+            var checkedUser = JSON.parse(localStorage.getItem('checkUser'))
+            this.person.fullName = checkedUser.displayName
+            this.person.email = checkedUser.email
+        } else {
+            this.$router.push('/')
+        }
     },
 
 
@@ -131,13 +167,13 @@ export default {
             person: {
                 fullName: '',
                 age: '',
-                sex: '',
+                sex: 1,
                 phoneNumber: '',
                 email: '',
             },
             persons: [
-                { fullName: '', age: '', sex: '' },
-                { fullName: '', age: '', sex: '' },
+                { fullName: '', age: '', sex: 1, email: '', phoneNumber: '' },
+                { fullName: '', age: '', sex: 1, email: '', phoneNumber: '' },
             ],
             showMore: false,
             errors: [],
@@ -145,7 +181,7 @@ export default {
     },
 
     methods: {
-        storeData: function () {
+        storeData: function (type) {
             
 
             this.errors = [];
@@ -172,8 +208,14 @@ export default {
                     this.errors[4] = 'Email chưa đúng!';
             }
             if (this.errors.length === 0) {
-                localStorage.setItem(this.srceenID, JSON.stringify(this.person));
-                this.$router.push('/tour-info');
+                localStorage.setItem('person', JSON.stringify(this.person));
+                localStorage.setItem('persons', JSON.stringify(this.persons));
+                if (type == 1) {
+                    this.$router.push('/upload-tour');
+                } else {
+                    this.$router.push('/tour-info');
+                }
+                
             }
         }, 
         validateEmail: function (email) {
@@ -220,7 +262,7 @@ export default {
     .persion img, .group img {width: 25px;}
     .group img {width: 37px}
     .custom-control-label {color: #595959;font-size: 14px}
-    .custom-radio {display: inline-block;margin-right: 20px}
+    .custom-radio {display: inline-block;margin-right: 10px}
     .gr-title{padding: 10px 0px 30px 0}
     .gr-btn {text-align: center;margin-top: 30px}
     .gr-btn .btn {
@@ -268,5 +310,21 @@ export default {
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+}
+</style>
+
+<style lang="scss">
+.user-info {
+    label {
+        text-align: right;
+        padding-right: 10px;
+        &.custom-lable {
+            padding-right: 0;
+            text-align: left;
+        }
+    }
+}
+.user-info-inner {
+    width: 800px;
 }
 </style>
