@@ -63,7 +63,9 @@
                 </div>
             </div>
             <div class="form-group">
-                <b-spinner v-if="loading" variant="success" type="grow" label="Spinning"></b-spinner>
+                <b-button variant="primary" v-if="loading" disabled>
+                    <b-spinner variant="success" type="grow" label="Spinning"></b-spinner>Vui lòng chờ...
+                </b-button>
 
                 <a v-else href="#" class="btn btn-block btn-login" @click.prevent="handleRegister">
                     Đăng ký

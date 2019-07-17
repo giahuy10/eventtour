@@ -18,7 +18,10 @@
       <div class="question">Điều gì truyền cảm hứng cho bạn khi lên kế hoạch chuyến đi này?</div>
       <textarea name="" v-model="question" id="" cols="30" rows="10" class="form-control"></textarea>
       <div class="text-center">
-        <button type="submit" class="btn btn btn-login btn-warning" @click="save">Tiếp theo</button>
+        <b-button variant="primary" v-if="loading" disabled>
+            <b-spinner variant="success" type="grow" label="Spinning"></b-spinner>Vui lòng chờ...
+        </b-button>
+        <button v-else type="submit" class="btn btn btn-login btn-warning" @click="save">Tiếp theo</button>
       </div>
     </div>
     <img src="/imgs/footter.png" alt="">
@@ -30,7 +33,8 @@ export default {
   data () {
     return {
       tour: {},
-      question: ''
+      question: '',
+      loading: false
     }
   },
   mounted () {
@@ -42,6 +46,7 @@ export default {
   },
   methods: {
     save () {
+      this.loading = true
       localStorage.setItem('tour-upload', JSON.stringify(this.tour))
       localStorage.setItem('tour-upload-question', JSON.stringify(this.question))
       this.$router.push('/final')

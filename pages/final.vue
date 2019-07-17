@@ -33,9 +33,12 @@ export default {
       linkFacebook: 'https://facebook.com',
       giftcode: {
         code: '',
-        number: ''
+        phone: ''
       }
     }
+  },
+  mounted () {
+    console.log(JSON.parse(localStorage.getItem('tour')))
   },
   methods: {
     checkGiftCode () {
