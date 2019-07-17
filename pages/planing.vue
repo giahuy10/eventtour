@@ -46,92 +46,12 @@
                     </thead>
                     <tbody>
                         <tr v-for="(cols, index) in rows" :key="index">
-                            <td :rowspan="col.rowspan" v-for="(col, index) in cols" :key="index">{{col.val}}</td>
+                            <td :class="col.class" :rowspan="col.rowspan" v-for="(col, index) in cols" :key="index">{{col.val}}</td>
                         </tr>
                     </tbody>
                 </table>
                 
-                <div class="col-container" v-for="(day, index) in testData.plans" :key="index">
-                    <div class="col-item tday">
-                        {{index + 1}}
-                    </div>
-                    <div class="col-item tcity">
-                        <div v-for="(city, index) in day" :key="index" class="col-container">
-                            <div class="col-item city-name">{{city.city.name}}</div>
-                            <div class="col-item">
-                                <div class="col-container">
-                                    <div class="col-item t-act">
-                                        <div v-for="(act, index) in city.activities" :key="index">
-                                            <div class="col-container">
-                                                <div class="col-item">{{act.start}}</div>
-                                                <div class="col-item">{{act.activities.name}}</div>
-                                                <div class="col-item">{{act.activities.price}}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-item t-trans">
-                                        <div v-for="(trans, index) in city.transport" :key="index">
-                                            <div class="col-container">
-                                                <div class="col-item">{{trans.name}}</div>
-                                                <div class="col-item">{{trans.price}}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-item t-food">
-                                        <div v-for="(foo, index) in city.food" :key="index">
-                                            <div class="col-container">
-                                                <div class="col-item">{{foo.name}}</div>
-                                                <div class="col-item">{{foo.price}}</div>
-                                            </div>
-                                        </div>                                     
-                                    </div>
-                                    <div class="col-item t-acc">
-                                       
-                                        <div class="col-container">
-                                            <div class="col-item">{{city.accommodation.name}}</div>
-                                            <div class="col-item">{{city.accommodation.price}}</div>
-                                        </div>
-
-                                    </div>
-                                </div>                              
-                            </div>                        
-                        </div>
-                        <div class="col-container">
-                            <div class="col-item city-name">Tổng</div>
-                            <div class="col-item">
-                                <div class="col-container">
-                                    <div class="col-item t-act">
-                                        <div class="col-container">
-                                            <div class="col-item"></div>
-                                            <div class="col-item"></div>
-                                            <div class="col-item"></div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-item t-trans">
-                                        <div class="col-container">
-                                            <div class="col-item"></div>
-                                            <div class="col-item"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-item t-food">
-                                        <div class="col-container">
-                                            <div class="col-item"></div>
-                                            <div class="col-item"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-item t-acc">
-                
-                                        <div class="col-container">
-                                            <div class="col-item"></div>
-                                            <div class="col-item"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            
             </div>
             <div class="progress-list">
                 <h3 class="text-uppercase text-center gr-title text-blue">Lịch trình</h3>
@@ -169,24 +89,39 @@
                        <div class="activities" v-if="currentTab == 1">
                            <div class="row" v-if="currentCity">
                                <div class="col-12 col-md-4" v-for="activity in cities[currentCity].activities" :key="activity.id">
-                                   {{activity.name}} ({{activity.price > 0 ? activity.price : 'Miễn phí'}})
-                                   <input type="radio" :value="activity.id" v-model="selectedActivities"/>
+                                   <div class="activity-selection">
+                                       <img :src="activity.thumb ? activity.thumb : '/imgs/placeholder-600x400.png'" />
+                                       <label><input type="radio" :value="activity.id" v-model="selectedActivities"/> {{activity.name}} <br></label>
+                                        Giá: {{activity.price > 0 ? '$'+activity.price : 'Miễn phí'}}
+                                   </div>
+                                    
+                                   
                                </div>
                            </div>
                        </div>
                        <div class="transporter" v-if="currentTab == 2">
                            <div class="row" v-if="currentCity">
                                <div class="col-12 col-md-4" v-for="transport in cities[currentCity].transport" :key="transport.id">
-                                   {{transport.name}} (${{transport.price}})
-                                   <input type="checkbox" :value="transport.id" v-model="selectedTransport"/>
+                                   <div class="trans-selection">
+                                       <img :src="transport.thumb ? transport.thumb : '/imgs/placeholder-600x400.png'" />
+                                       <label><input type="checkbox" :value="transport.id" v-model="selectedTransport"/>{{transport.name}} <br></label>
+                                       Giá: ${{transport.price}}
+                                   </div>
+                                    
+                                   
                                </div>
                            </div>
                        </div>
                        <div class="food" v-if="currentTab == 3">
                            <div class="row" v-if="currentCity">
                                <div class="col-12 col-md-4" v-for="food in cities[currentCity].food" :key="food.id">
-                                   {{food.name}} (${{food.price}})
-                                   <input type="checkbox" :value="food.id" v-model="selectedFood"/>
+                                   <div class="food-selection">
+                                       <img :src="food.thumb ? food.thumb : '/imgs/placeholder-600x400.png'" />
+                                       <label><input type="checkbox" :value="food.id" v-model="selectedFood"/>{{food.name}} <br></label>
+                                       Giá: ${{food.price}}
+                                    </div>
+                                   
+                                   
                                </div>
                            </div>
                        </div>
@@ -196,9 +131,12 @@
 
                <h4>Lựa chọn chỗ ở</h4>
                <div class="row" v-if="currentCity">
-                    <div class="col-12 col-md-4" v-for="accommodation in cities[currentCity].accommodations" :key="accommodation.id">
-                        {{accommodation.name}} (${{accommodation.price}})
-                        <input type="radio" :value="accommodation.id" v-model="selectedAccommodation"/>
+                    <div class="col-12 col-md-2 text-center" v-for="accommodation in cities[currentCity].accommodations" :key="accommodation.id">
+                        <img src="/imgs/placeholder-600x400.png" alt="">
+                        <label><input type="radio" :value="accommodation.id" v-model="selectedAccommodation"/> <br>
+                        {{accommodation.name}}  </label><br>
+                        Giá:  ${{accommodation.price}}
+                        
                     </div>
                 </div>
 
@@ -210,7 +148,7 @@
             </div>
         </div>
 
-     
+     <img src="/imgs/footter.png" alt="">
     </div>
 </template>
 
@@ -239,13 +177,13 @@ export default {
             testData: {},
             selectedTime: {
                 start: {
-                hh: '00',
-                mm: '00',
-                ss: '00',
-                a: 'am'
+                    HH: '07',
+                    mm: '00',
+                    ss: '00',
+                    a: 'am'
                 },
                 end: {
-                    hh: '00',
+                    HH: '07',
                     mm: '00',
                     ss: '00',
                     a: 'am'
@@ -831,24 +769,26 @@ export default {
     },
     methods: {
         genTable () {
-            console.log('a',this.testData.plans)
             let res = []
             let rows = []
-            this.testData.plans.forEach((day, indexday) => {
+            let total = []
+            this.tour.plans.forEach((day, indexday) => {
                 let maxRow =0
                 let totalact = 0
                 let totaltrans =0 
                 let totalfood = 0
                 let totalacc = 0
                 
+                
                 day.forEach((act, index) => {
                     let max = Math.max(act.activities.length, act.food.length, act.transport.length)
                     maxRow+= max
+                    totalacc+=act.accommodation.price ? parseFloat(act.accommodation.price) : 0
                     for(let i = 0; i < max; i++) {
                         totalact+= act.activities[i] ? parseFloat(act.activities[i].activities.price) : 0
                         totaltrans+=act.transport[i] ? parseFloat(act.transport[i].price) : 0
                         totalfood+=act.food[i] ? parseFloat(act.food[i].price) : 0
-                        totalacc+=parseFloat(act.accommodation.price)
+                        
                         let cols = [
                          
                             {
@@ -874,7 +814,7 @@ export default {
                             }
                         ]
                         if (i == 0) {
-                            cols.splice(1, 0, {
+                            cols.unshift({
                                 val: act.city.name,
                                 rowspan: max 
                             })
@@ -886,37 +826,41 @@ export default {
                                 val: act.accommodation ? act.accommodation.price : '',
                                 rowspan: max
                             })
+                            
                         }
-                        cols.push({
-                            val: ''
-                        })
+                        // cols.push({
+                        //     val: ''
+                        // })
                         rows.push(cols)
                     }
                 })
                 rows.push([
-                    { val: 'Tổng' },
+                    { val: 'Tổng', class: 'bolder' },
                     { val: ''},
                     { val: ''},
-                    { val: totalact},
+                    { val: totalact, class: 'bolder'},
                     { val: ''},
-                    { val: totaltrans},
+                    { val: totaltrans, class: 'bolder'},
                     { val: ''},
-                    { val: totalfood},
+                    { val: totalfood, class: 'bolder'},
                     { val: ''},
-                    { val: totalacc}
+                    { val: totalacc, class: 'bolder'},
+                    //{ val: ''}
                 ])
                 
                 res.push(maxRow)
+                total.push(parseFloat(totalact) + parseFloat(totaltrans) + parseFloat(totalfood) + parseFloat(totalacc))
             })
             console.log(rows)
             console.log(res)
+            console.log(total)
             let day = [0]
             for(let i = 0; i < res.length; i++) {
                 if (i == 0 ) {
                     day.push(day[0] + res[i] + 1 )
                 } 
                 if (i > 0 && i < res.length - 1) {
-                    day.push(res[i-1] + res[i] + 1)
+                    day.push(day[i] + res[i] + 1)
                 }
                 
             }
@@ -925,7 +869,13 @@ export default {
                 if (rows[day[i]]) {
                     rows[day[i]].unshift({
                         val: i+1,
-                        rowspan: res[i] + 1
+                        rowspan: res[i] + 1,
+                        class: 'bolder'
+                    })
+                    rows[day[i]].push({
+                        val: total[i],
+                        rowspan: res[i] + 1,
+                        class: 'bolder'
                     })
                 }
                 
@@ -959,6 +909,7 @@ export default {
             this.selectedTransport = []
             this.selectedFood = []
             this.selectedPlans = []
+            this.genTable()
 
         },
         nextDay () {
@@ -967,12 +918,14 @@ export default {
             this.planOfDay = []
             this.currentCity = 0
             this.selectedPlans = []
+            this.resetTime()
+            this.genTable()
            
         },
         submit () {
             this.nextDay()
             localStorage.setItem('tour', JSON.stringify(this.tour))
-            this.$router.push('/final')
+            this.$router.push('/review-planing')
         },
         saveTime () {
             this.selectedPlans.push(
@@ -988,18 +941,23 @@ export default {
                 }
             )
             this.selectedActivities = 0
+            this.nextTime()
+            this.genTable()
             
+        },
+        nextTime () {
+            this.selectedTime.start = this.selectedTime.end
         },
         resetTime () {
             this.selectedTime = {
                 start: {
-                    hh: '00',
+                    HH: '00',
                     mm: '00',
                     ss: '00',
                     a: 'am'
                 },
                 end: {
-                    hh: '00',
+                    HH: '00',
                     mm: '00',
                     ss: '00',
                     a: 'am'
@@ -1008,8 +966,8 @@ export default {
         },
         convertTime (time) {
             return {
-                start: time.start.hh + ':'+ time.start.mm,
-                end: time.end.hh + ':'+ time.end.mm
+                start: time.start.HH + ':'+ time.start.mm,
+                end: time.end.HH + ':'+ time.end.mm
             }
         },
         selectCity (city) {
@@ -1067,7 +1025,7 @@ export default {
 
 <style lang="scss">
 .planing-inner {
-    width: 900px;
+    width: 1170px;
     .overview {
         padding: 20px 20px 40px 20px;
         .select-days {
@@ -1141,57 +1099,14 @@ export default {
         }
     }
 }
-.col-container {
-  display: table;
-  width: 100%;
-  div {
-      // border: 1px solid #ccc;
-  }
-}
-.col-item {
-    text-align: center;
-    vertical-align: middle;
-    font-size: 13px;
-    display: table-cell;
-    &.tday {
-        width: 50px;
-    }
-    &.city-name {
-        width: 100px;
-    }
-    &.t-act {
-        width: 300px;
-        .col-item:first-child {
-            width: 50px;
-        }
-        .col-item:last-child {
-            width: 50px;
-        }
-    }
-    &.t-trans {
-        width: 150px;
-        .col-item:first-child {
-            width: 100px;
-        }
-    }
-    &.t-food {
-        width: 200px;
-        .col-item:first-child {
-            width: 150px;
-        }
-    }
-    &.t-acc {
-        width: 150px;
-        .col-item:first-child {
-            width: 100px;
-        }
-    }
-}
+
 
 .table th, .table td {
     text-align: center;
     vertical-align: middle;
 }
-
+td.bolder {
+    font-weight: bold;
+}
 </style>
 
