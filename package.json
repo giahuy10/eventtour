@@ -39,6 +39,7 @@
     "vue-persian-datetime-picker": "^2.0.1",
     "vue-range-slider": "^0.6.0",
     "vue-slider-component": "^3.0.33",
+    "vue-uuid": "^1.1.1",
     "vue2-timepicker": "^0.1.4",
     "vuejs-datepicker": "^1.6.2"
   },

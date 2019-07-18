@@ -54,10 +54,10 @@
                 <div class="col-12 col-md-6">
                     <div class="row">
                         <div class="col-12 col-md-6">
-                            <b-button block @click.prevent="loginByFacebook" variant="facebook"> <i class="fa fa-facebook"></i> Facebook</b-button>
+                            <Facebook />
                         </div>
                         <div class="col-12 col-md-6">
-                            <b-button block @click.prevent="loginByGoogle" variant="google"> <i class="fa fa-google-plus"></i> Google</b-button>
+                            <Google />
                         </div>
                     </div>
                 </div>
@@ -80,7 +80,12 @@
 </template>
 
 <script>
+import Facebook from '~/components/FacebookLogin.vue'
+import Google from '~/components/GoogleLogin.vue'
 export default {
+    components: {
+        Facebook, Google
+    },
     data () {
         return {
             err: [],
@@ -158,6 +163,12 @@ export default {
     .logo-login {
         height: 60px;
         width: auto;
+    }
+    @media screen and (max-width: 767px) {
+        .btn-facebook, .btn-google {
+            margin-bottom: 20px;
+        
+        }
     }
 }
 </style>

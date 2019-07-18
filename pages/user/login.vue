@@ -158,5 +158,12 @@ export default {
         left: 43%;
         }
     }
+    @media screen and (max-width: 767px) {
+        .btn-facebook {
+            margin-bottom: 20px;
+        
+        }
+    }
+    
 }
 </style>

@@ -2,6 +2,8 @@
     <div class="inner-page review-planing">
         <div class="inner-box review-planing-inner">
             <h3 class="text-uppercase text-center gr-title text-blue">Tên tour <br> {{tour.name}}</h3>
+            <div class="underline text-center"><span></span></div>
+            <div class="table-responsive">
              <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -25,17 +27,27 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
         </div>
         <div class="review-planing-inner inner-box">
+            <div class="padding">
             <h3 class="text-uppercase text-center gr-title text-blue">Câu hỏi truyền cảm hứng</h3>
-            <div class="underline"><span></span></div>
-            <div class="question">Điều gì truyền cảm hứng cho bạn khi lên kế hoạch chuyến đi này?</div>
+            <div class="underline text-center"><span></span></div>
+            <div class="question">
+                <p> Điều gì truyền cảm hứng cho bạn khi lên kế hoạch chuyến đi này?</p>
+            </div>
             <textarea name="" v-model="question" id="" cols="30" rows="10" class="form-control"></textarea>
+            <div class="alert alert-warning" v-if="err.length > 0">
+                <ul>
+                    <li v-for="(msg, index) in err" :key="index" v-text="msg"></li>
+                </ul>
+            </div>
             <div class="text-center">
                 <b-button variant="primary" v-if="loading" disabled>
                     <b-spinner variant="success" type="grow" label="Spinning"></b-spinner>Vui lòng chờ...
                 </b-button>
                 <button v-else type="submit" class="btn btn btn-login btn-warning" @click="save">Tiếp theo</button>
+            </div>
             </div>
         </div>
         <img src="/imgs/footter.png" alt="">
@@ -47,23 +59,38 @@ export default {
     data () {
         return {
             tour: {},
-            rows: []
+            rows: [],
+            question: '',
+            err: []
         }
     },
     mounted() {
-        this.tour = JSON.parse(localStorage.getItem('tour'))
-        // console.log(this.testData)
-        this.genTable()
+        if (localStorage.getItem('tour')) {
+            this.tour = JSON.parse(localStorage.getItem('tour'))
+            
+            this.genTable()
+        }
+        
     },
     methods: {
         save () {
-            this.$router.push('/final')
+            let check = true
+            this.err = []
+            if (!this.question) {
+                check = false
+                this.err.push('Vui lòng trả lời câu hỏi truyền cảm hứng')
+            }
+            if (check) {
+                this.$router.push('/final')
+            }
+            
         },
         genTable () {
             let res = []
             let rows = []
             let total = []
-            this.tour.plans.forEach((day, indexday) => {
+            for (var key in this.tour.newplans) {
+                var days = this.tour.newplans[key]
                 let maxRow =0
                 let totalact = 0
                 let totaltrans =0 
@@ -71,7 +98,8 @@ export default {
                 let totalacc = 0
                 
                 
-                day.forEach((act, index) => {
+                for (var key in days) {
+                    var act = days[key]
                     let max = Math.max(act.activities.length, act.food.length, act.transport.length)
                     maxRow+= max
                     totalacc+=act.accommodation.price ? parseFloat(act.accommodation.price) : 0
@@ -83,7 +111,7 @@ export default {
                         let cols = [
                          
                             {
-                                val: act.activities[i] ? act.activities[i].start : ''
+                                val: act.activities[i] ? act.activities[i].start + ' - ' + act.activities[i].end : ''
                             },
                             {
                                 val: act.activities[i] ? act.activities[i].activities.name: ''
@@ -109,7 +137,7 @@ export default {
                             })
 
                             cols.push({
-                                val: parseFloat(totalact) + parseFloat(totaltrans) + parseFloat(totalfood) + parseFloat(totalacc),
+                                val: (parseFloat(totalact) + parseFloat(totaltrans) + parseFloat(totalfood) + parseFloat(totalacc)).toFixed(2),
                                 rowspan: max
                             })
                            
@@ -119,12 +147,12 @@ export default {
                         // })
                         rows.push(cols)
                     }
-                })
+                }
                 
                 
                 res.push(maxRow)
                 total.push(parseFloat(totalact) + parseFloat(totaltrans) + parseFloat(totalfood) + parseFloat(totalacc))
-            })
+            }
             console.log(rows)
             console.log(res)
             console.log(total)
@@ -159,7 +187,78 @@ export default {
 
 <style lang="scss">
 .review-planing-inner {
-    width: 1170px;
+    .padding {
+    @media screen and (min-width: 767px){
+      padding:0 80px;
+    }
+    
+  }
+  textarea {
+      margin-bottom: 20px;
+  }
+  table {
+    thead {
+        td {
+            background: #41b6f2;
+            color: #fff;
+            
+        }
+    }
+    td {
+        text-align: center;
+        vertical-align: middle !important;
+    }
 }
+    width: 1170px;
+    .text-blue {
+        font-size: 24px;
+        font-weight: bold;
+        margin-top: 20px;
+    }
+    .question {
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        border: 1px solid #ccc;
+        margin-bottom: 20px;
+        p {
+        position: relative;
+        color: #2d4197;
+        display: inline-block;
+        margin: 10px 0;
+        @media screen and (max-width: 767px) {
+        padding-left: 70px;
+        padding-right: 10px;
+      }
+        &::before {
+            left: -50px;
+            content: '';
+            background: url('/imgs/question.png');
+            display: block;
+            width: 55px;
+            height: 55px;
+            position: absolute;
+            background-size: cover;
+            background-size: cover;
+            top: -15px;
+            left: -60px;
+            @media screen and (max-width: 767px) {
+          left: 10px;
+          top: 0px;
+        }
+        }
+        }
+    }
+}
+.underline {
+    span {
+      display: inline-block;
+      width: 30px;
+      height: 4px;
+      background: #4e4e4e;
+      margin-bottom: 25px;
+    }
+  }
+  
 </style>
 

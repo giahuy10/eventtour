@@ -3,11 +3,11 @@
         <div class="planing-inner inner-box">
             <div class="overview">
                 <h3 class="text-uppercase text-center gr-title text-blue">Thông tin chung</h3>
-                <input type="text" class="form-control text-center" v-model="tour.name" placeholder="Hãy đặt tên cho tour du lịch của bạn nhé!">
+                <input type="text" class="form-control text-center tour-name-input" v-model="tour.name" placeholder="Hãy đặt tên cho tour du lịch của bạn nhé!">
                 <br><br><br>
                 <h3 class="text-uppercase text-center gr-title text-blue">Thời gian dự kiến</h3>
-                <br><br>
-                <div class="select-days">
+               
+                <div class="select-days d-none d-sm-block">
                     <vue-slider @error="error" v-model="tour.day" :min="min" :tooltip="'always'" :data="days" :marks="true" @change="changeDays">
                         <template v-slot:tooltip="{ value }">
                             <div class="custom-tooltip">{{ parseInt(value) * 200}}$</div>
@@ -20,6 +20,13 @@
                         </template>
                     </vue-slider>
                 </div>
+                <div class="select-days d-block d-sm-none">
+                    <select name="" id="" class="form-control" v-model="tour.day">
+                        <option :value="day" v-for="(day, index) in daysmobile" :key="index" v-text="day + 'ngày'"></option>
+                    </select>
+                    <div class="text-center pt-4">Chi phí dự kiến: ${{tour.day * 200}}</div>
+                    
+                </div>
                 
             </div> 
         </div>
@@ -27,6 +34,8 @@
         <div class="planing-inner inner-box">
             <div class="progress-table">
                 <h3 class="text-uppercase text-center gr-title text-blue">Bảng lịch trình</h3>
+                <div class="underline text-center"><span></span></div>
+                <div class="table-responsive">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -50,109 +59,156 @@
                         </tr>
                     </tbody>
                 </table>
+                </div>
                 
-            
+                <div class="underline text-center"><span></span></div>
             </div>
             <div class="progress-list">
-                <h3 class="text-uppercase text-center gr-title text-blue">Lịch trình</h3>
+                <h3 class="text-uppercase text-center gr-title text-blue">Lịch trình <i @click="openVideo" class="cursor fa fa-question-circle" aria-hidden="true"></i>
+</h3>
                 <div class="days-button text-center">
                     <button class="btn btn-day" v-for="(day, index) in numberDays" :key="index" :class="currentDay == day ? 'active' : ''" @click="currentDay = day">Ngày {{day}}</button>
                 </div>
                
-                <select name="" id="" class="form-control" v-model="currentCity">
+                <select name="" id="" class="form-control select-city" v-model="currentCity">
                     <option value="0">-- Chọn thành phố --</option>
                     <option :value="city.id" v-for="city in cities" :key="city.id">{{city.name}}</option>
                 </select>
-                
-               <div class="row select-option">
-                   <div class="col-12 col-md-3">
-                       Lựa chọn thời gian
-                   </div>
-                   <div class="col-12 col-md-3 cursor" @click="currentTab = 1" :class="currentTab == 1 ? 'active': ''">
-                       Lựa chọn hoạt động
-                   </div>
-                   <div class="col-12 col-md-3 cursor" @click="currentTab = 2" :class="currentTab == 2 ? 'active': ''">
-                       Lựa chọn phương tiện
-                   </div>
-                   <div class="col-12 col-md-3 cursor" @click="currentTab = 3" :class="currentTab == 3 ? 'active': ''">
-                       Lựa chọn ẩm thực
-                   </div>
-               </div>
-               <div class="row">
-                   <div class="col-12 col-md-3">
-                       Thời gian bắt đầu
-                       <vue-timepicker :yourFormat="yourFormat" :minute-interval="15" v-model="selectedTime.start"></vue-timepicker>
-                       Thời gian kết thúc
-                       <vue-timepicker :yourFormat="yourFormat" :minute-interval="15" v-model="selectedTime.end"></vue-timepicker>
-                   </div>
-                   <div class="col-12 col-md-9">
-                       <div class="activities" v-if="currentTab == 1">
-                           <div class="row" v-if="currentCity">
-                               <div class="col-12 col-md-4" v-for="activity in cities[currentCity].activities" :key="activity.id">
-                                   <div class="activity-selection">
-                                       <img :src="activity.thumb ? activity.thumb : '/imgs/placeholder-600x400.png'" />
-                                       <label><input type="radio" :value="activity.id" v-model="selectedActivities"/> {{activity.name}} <br></label>
-                                        Giá: {{activity.price > 0 ? '$'+activity.price : 'Miễn phí'}}
-                                   </div>
-                                    
-                                   
-                               </div>
-                           </div>
-                       </div>
-                       <div class="transporter" v-if="currentTab == 2">
-                           <div class="row" v-if="currentCity">
-                               <div class="col-12 col-md-4" v-for="transport in cities[currentCity].transport" :key="transport.id">
-                                   <div class="trans-selection">
-                                       <img :src="transport.thumb ? transport.thumb : '/imgs/placeholder-600x400.png'" />
-                                       <label><input type="checkbox" :value="transport.id" v-model="selectedTransport"/>{{transport.name}} <br></label>
-                                       Giá: ${{transport.price}}
-                                   </div>
-                                    
-                                   
-                               </div>
-                           </div>
-                       </div>
-                       <div class="food" v-if="currentTab == 3">
-                           <div class="row" v-if="currentCity">
-                               <div class="col-12 col-md-4" v-for="food in cities[currentCity].food" :key="food.id">
-                                   <div class="food-selection">
-                                       <img :src="food.thumb ? food.thumb : '/imgs/placeholder-600x400.png'" />
-                                       <label><input type="checkbox" :value="food.id" v-model="selectedFood"/>{{food.name}} <br></label>
-                                       Giá: ${{food.price}}
-                                    </div>
-                                   
-                                   
-                               </div>
-                           </div>
-                       </div>
-                       <button class="btn btn-success" @click="saveTime">Khung thời gian tiếp theo</button>
-                   </div>
-               </div>
-
-               <h4>Lựa chọn chỗ ở</h4>
-               <div class="row" v-if="currentCity">
-                    <div class="col-12 col-md-2 text-center" v-for="accommodation in cities[currentCity].accommodations" :key="accommodation.id">
-                        <img src="/imgs/placeholder-600x400.png" alt="">
-                        <label><input type="radio" :value="accommodation.id" v-model="selectedAccommodation"/> <br>
-                        {{accommodation.name}}  </label><br>
-                        Giá:  ${{accommodation.price}}
+                <div v-if="currentCity" class="wrap-progress">
+                <div class="row select-option">
+                    <div class="col-12 col-md-3">
+                        Lựa chọn thời gian
+                    </div>
+                    <div class="col-12 col-md-3 cursor" @click="currentTab = 1" :class="currentTab == 1 ? 'active': ''">
+                        Lựa chọn hoạt động
+                    </div>
+                    <div class="col-12 col-md-3 cursor" @click="currentTab = 2" :class="currentTab == 2 ? 'active': ''">
+                        Lựa chọn phương tiện
+                    </div>
+                    <div class="col-12 col-md-3 cursor" @click="currentTab = 3" :class="currentTab == 3 ? 'active': ''">
+                        Lựa chọn ẩm thực
+                    </div>
+                </div>
+                <div class="row select-progress">
+                    <div class="col-12 col-md-3">
+                        <div class="time-block text-center">
+                            <div class="time-start">
+                                Thời gian bắt đầu <br>
+                                    <vue-timepicker :yourFormat="yourFormat" :minute-interval="15" v-model="selectedTime.start"></vue-timepicker> <br>
+                            </div>
+                                
+                                <div class="time-end">
+                                    Thời gian kết thúc <br>
+                                    <vue-timepicker :yourFormat="yourFormat" :minute-interval="15" v-model="selectedTime.end"></vue-timepicker>
+                                </div>
+                        </div>
                         
+                    </div>
+                    <div class="col-12 col-md-9 progress-content">
+                        <div class="activities" v-if="currentTab == 1">
+                            <div class="row" v-if="currentCity">
+                                <div class="col-12 col-md-4" v-for="activity in cities[currentCity].activities" :key="activity.id">
+                                    <div class="activity-selection">
+                                        <img :src="activity.thumb ? activity.thumb : '/imgs/placeholder-600x400.png'" />
+                                        <label><input type="radio" :value="activity.id" v-model="selectedActivities"/> {{activity.name}} <br></label>
+                                            Giá: {{activity.price > 0 ? '$'+activity.price : 'Miễn phí'}}
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <div class="add-option text-center">
+                                        <div class="new-name">Hoạt động khác</div>
+                                        <input type="text" class="form-control" v-model="newact.name" placeholder="Tên hoạt động">
+                                        <input type="text" class="form-control" v-model="newact.price" placeholder="Giá ($)">
+                                        <button class="btn btn-add" @click="addNewAct">Thêm hoạt động</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="transporter" v-if="currentTab == 2">
+                            <div class="row" v-if="currentCity">
+                                <div class="col-12 col-md-4" v-for="transport in cities[currentCity].transport" :key="transport.id">
+                                    <div class="trans-selection">
+                                        <img :src="transport.thumb ? transport.thumb : '/imgs/placeholder-600x400.png'" />
+                                        <label><input type="checkbox" :value="transport.id" v-model="selectedTransport"/>{{transport.name}} <br></label>
+                                        Giá: ${{transport.price}}
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <div class="add-option text-center">
+                                        <div class="new-name">Phương tiện khác</div>
+                                        <input type="text" class="form-control" v-model="newtrans.name" placeholder="Tên phương tiện">
+                                        <input type="text" class="form-control" v-model="newtrans.price" placeholder="Giá ($)">
+                                        <button class="btn btn-add" @click="addNewTrans">Thêm phương tiện</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="food" v-if="currentTab == 3">
+                            <div class="row" v-if="currentCity">
+                                <div class="col-12 col-md-4" v-for="food in cities[currentCity].food" :key="food.id">
+                                    <div class="food-selection">
+                                        <img :src="food.thumb ? food.thumb : '/imgs/placeholder-600x400.png'" />
+                                        <label><input type="checkbox" :value="food.id" v-model="selectedFood"/>{{food.name}} <br></label>
+                                        Giá: ${{food.price}}
+                                        </div>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <div class="add-option text-center">
+                                        <div class="new-name">Món ăn khác</div>
+                                        <input type="text" class="form-control" v-model="newfood.name" placeholder="Tên món ăn">
+                                        <input type="text" class="form-control" v-model="newfood.price" placeholder="Giá ($)">
+                                        <button class="btn btn-add" @click="addNewFood">Thêm món ăn</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-success" @click="saveTime"><i class="fa fa-clock-o" aria-hidden="true"></i>
+ Khung thời gian tiếp theo</button>
                     </div>
                 </div>
 
-                <button class="btn btn-success" @click="nextCity">Thành phố tiếp theo</button>
-                <button class="btn btn-success" @click="nextDay" v-if="currentDay < tour.day">
-                    Ngày tiếp theo
-                </button>
-                <button class="btn btn-success" v-else @click="submit">Nộp</button>
+                <h4 class="select-acc-title">Lựa chọn chỗ ở</h4>
+                <div class="row" v-if="currentCity">
+                        <div class="col-12 col-md-2 text-center select-acc" v-for="accommodation in cities[currentCity].accommodations" :key="accommodation.id">
+                            <img :src="accThumb(accommodation.id)" alt=""> <br>
+                            <label><input type="radio" :value="accommodation.id" v-model="selectedAccommodation"/> <br>
+                            {{accommodation.name}}  </label><br>
+                            Giá:  ${{accommodation.price}}
+                            
+                        </div>
+                        <div class="col-12 col-md-2 add-option text-center">
+                            <div class="new-name">Chỗ ở khác</div>
+                            <input type="text" class="form-control" v-model="newacc.name" placeholder="Tên chỗ ở">
+                            <input type="text" class="form-control" v-model="newacc.price" placeholder="Giá ($)">
+                            <button class="btn btn-add" @click="addNewAcc">Thêm chỗ ở</button>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success" @click="nextCity"><i class="fa fa-building-o" aria-hidden="true"></i>
+ Thành phố tiếp theo</button>
+                    <button class="btn btn-success" @click="nextDay" v-if="currentDay < tour.day">
+                        <i class="fa fa-sun-o" aria-hidden="true"></i>
+ Ngày tiếp theo
+                    </button>
+                    <button class="btn btn-success" v-else @click="nextDay, readySubmit = true"><i class="fa fa-history" aria-hidden="true"></i>
+ Xem lại lịch trình</button>
+
+                    <button class="btn btn-success" @click="submit" v-if="readySubmit"> <i class="fa fa-check"></i> Nộp bài</button>
+                </div>
             </div>
         </div>
-
+    <b-modal id="modal-1" ref="my-modal"  size="lg" title="Hướng dẫn tạo lịch trình">
+        <div class="text-center">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/Lky60WNXOro" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </b-modal>
      <img src="/imgs/footter.png" alt="">
     </div>
 </template>
 
 <script>
+import { uuid } from 'vue-uuid'; 
 import Multiselect from 'vue-multiselect'
 import VueTimepicker from 'vue2-timepicker'
 import VueSlider from 'vue-slider-component'
@@ -163,11 +219,37 @@ export default {
     },
     mounted () {
         this.testData = JSON.parse(localStorage.getItem('tour'))
-        // console.log(this.testData)
-        this.genTable()
+        this.genNewTable()
     },
     data () {
         return {
+            newact: {
+                name: '',
+                price: 0,
+                thumb: ''
+            },
+            newacc: {
+                name: '',
+                price: 0,
+                thumb: ''
+            },
+            newfoodarr: [],
+            newfood: {
+                name: '',
+                price: 0,
+                thumb: ''
+            },
+            newtrans: {
+                name: '',
+                price: 0,
+                thumb: ''
+            },
+            newtransarr: [],
+            readySubmit: false,
+            validDay: {
+                acc: false,
+                food: false
+            },
             rows: [],
             currentTab: 1,
             selectedActivities: 0,
@@ -189,17 +271,22 @@ export default {
                     a: 'am'
                 },
             },
+            timeFrames: {},
             selectedPlans: [],
             yourFormat: 'hh:mm:ss a',
             
             planOfDay: [],
+            newplanofday: {},
             tour: {
                 name: '',
                 day: '3',
-                plans: []
+                plans: [],
+                newplans: {}
             },
             min: 3,
             days: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+            daysmobile: ['3', '4', '5', '6', '7', '8', '9', '10'],
+        
             currentDay: 1,
             cities: {
                 1: { id: 1, name: 'Seoul',
@@ -768,6 +855,121 @@ export default {
         }
     },
     methods: {
+        genNewTable () {
+            let res = []
+            let rows = []
+            let total = []
+          
+            for (var key in this.tour.newplans) {
+                var days = this.tour.newplans[key]
+                let maxRow =0
+                let totalact = 0
+                let totaltrans =0 
+                let totalfood = 0
+                let totalacc = 0
+                
+                for (var key in days) {
+                    var act = days[key]
+           
+                    let max = Math.max(act.activities.length, act.food.length, act.transport.length)
+                    maxRow+= max
+                    totalacc+=act.accommodation.price ? parseFloat(act.accommodation.price) : 0
+                    for(let i = 0; i < max; i++) {
+                        totalact+= act.activities[i] ? parseFloat(act.activities[i].activities.price) : 0
+                        totaltrans+=act.transport[i] ? parseFloat(act.transport[i].price) : 0
+                        totalfood+=act.food[i] ? parseFloat(act.food[i].price) : 0
+                        
+                        let cols = [
+                         
+                            {
+                                val: act.activities[i] ? act.activities[i].start +' - '+act.activities[i].end : ''
+                            },
+                            {
+                                val: act.activities[i] ? act.activities[i].activities.name: ''
+                            },
+                            {
+                                val: act.activities[i] ? act.activities[i].activities.price : ''
+                            },
+                            {
+                                val: act.transport[i] ? act.transport[i].name : ''
+                            },
+                            {
+                                val: act.transport[i] ? act.transport[i].price : ''
+                            },
+                            {
+                                val: act.food[i] ? act.food[i].name : ''
+                            },
+                            {
+                                val: act.food[i] ? act.food[i].price : ''
+                            }
+                        ]
+                        if (i == 0) {
+                            cols.unshift({
+                                val: act.city.name,
+                                rowspan: max 
+                            })
+                            cols.push({
+                                val: act.accommodation ? act.accommodation.name : '',
+                                rowspan: max
+                            })
+                            cols.push({
+                                val: act.accommodation ? act.accommodation.price : '',
+                                rowspan: max
+                            })
+                            
+                        }
+                        // cols.push({
+                        //     val: ''
+                        // })
+                        rows.push(cols)
+                    }
+                }
+                rows.push([
+                    { val: 'Tổng', class: 'bolder' },
+                    { val: ''},
+                    { val: ''},
+                    { val: totalact, class: 'bolder'},
+                    { val: ''},
+                    { val: totaltrans, class: 'bolder'},
+                    { val: ''},
+                    { val: totalfood, class: 'bolder'},
+                    { val: ''},
+                    { val: totalacc, class: 'bolder'},
+                    //{ val: ''}
+                ])
+                
+                res.push(maxRow)
+                total.push((parseFloat(totalact) + parseFloat(totaltrans) + parseFloat(totalfood) + parseFloat(totalacc)).toFixed(2))
+            }
+           
+            let day = [0]
+            for(let i = 0; i < res.length; i++) {
+                if (i == 0 ) {
+                    day.push(day[0] + res[i] + 1 )
+                } 
+                if (i > 0 && i < res.length - 1) {
+                    day.push(day[i] + res[i] + 1)
+                }
+                
+            }
+            for( let i = 0; i < day.length; i++) {
+                if (rows[day[i]]) {
+                    rows[day[i]].unshift({
+                        val: i+1,
+                        rowspan: res[i] + 1,
+                        class: 'bolder'
+                    })
+                    rows[day[i]].push({
+                        val: total[i],
+                        rowspan: res[i] + 1,
+                        class: 'bolder'
+                    })
+                }
+                
+            }
+            
+            this.rows = rows
+        },
         genTable () {
             let res = []
             let rows = []
@@ -792,7 +994,7 @@ export default {
                         let cols = [
                          
                             {
-                                val: act.activities[i] ? act.activities[i].start : ''
+                                val: act.activities[i] ? act.activities[i].start +' - '+act.activities[i].end : ''
                             },
                             {
                                 val: act.activities[i] ? act.activities[i].activities.name: ''
@@ -849,11 +1051,9 @@ export default {
                 ])
                 
                 res.push(maxRow)
-                total.push(parseFloat(totalact) + parseFloat(totaltrans) + parseFloat(totalfood) + parseFloat(totalacc))
+                total.push((parseFloat(totalact) + parseFloat(totaltrans) + parseFloat(totalfood) + parseFloat(totalacc)).toFixed(2))
             })
-            console.log(rows)
-            console.log(res)
-            console.log(total)
+           
             let day = [0]
             for(let i = 0; i < res.length; i++) {
                 if (i == 0 ) {
@@ -864,7 +1064,6 @@ export default {
                 }
                 
             }
-            console.log(day)
             for( let i = 0; i < day.length; i++) {
                 if (rows[day[i]]) {
                     rows[day[i]].unshift({
@@ -884,65 +1083,214 @@ export default {
             this.rows = rows
         },
         nextCity () {
-            let city = {
-                city: {},
-                activities: [],
-                accommodation: {},
-                transport: [],
-                food: []
+            this.saveTime()
+            if (this.selectedPlans.length > 0) {
+                if (this.selectedTransport.length > 0) {
+                    let city = {
+                        city: {},
+                        activities: [],
+                        accommodation: {},
+                        transport: [],
+                        food: []
+                    }
+                    city.city = this.cities[this.currentCity]
+                    city.activities = this.selectedPlans
+                    city.newact = this.timeFrames
+                    if (this.selectedAccommodation > 0) {
+                        city.accommodation = this.cities[this.currentCity].accommodations[this.selectedAccommodation] 
+                    } else if (this.validDay.acc) {
+                        city.accommodation = this.newacc
+                    }
+                    this.selectedTransport.forEach(item => {
+                        city.transport.push(this.cities[this.currentCity].transport[item])
+                    })
+                    this.selectedFood.forEach(item => {
+                        city.food.push(this.cities[this.currentCity].food[item])
+                        
+                    }) 
+                    if (this.newfoodarr.length > 0) {
+                        this.newfoodarr.forEach(item => {
+                            city.food.push(item)
+                        })
+                    }
+                    if (this.newtransarr.length > 0) {
+                        this.newtransarr.forEach(item => {
+                            city.transport.push(item)
+                        })
+                    }
+                    this.planOfDay.push(city)
+                    this.newplanofday[this.currentCity] = city
+                    this.tour.plans.push(this.planOfDay)
+                    this.tour.newplans[this.currentDay] = this.newplanofday
+                    this.currentCity = 0
+                    this.selectedAccommodation = 0
+                    this.selectedTransport = []
+                    this.selectedFood = []
+                    this.selectedPlans = []
+                    this.timeFrames = {}
+                    this.currentTab = 1
+                    this.newfoodarr = []
+                    this.newtransarr = []
+                    this.genNewTable()
+                } else {
+                    alert('Vui lòng chọn phương tiện di chuyển cho thành phố này!')
+                }
             }
-            city.city = this.cities[this.currentCity]
-            city.activities = this.selectedPlans
-            if (this.selectedAccommodation > 0) {
-                city.accommodation = this.cities[this.currentCity].accommodations[this.selectedAccommodation]
-            }
-            this.selectedTransport.forEach(item => {
-                city.transport.push(this.cities[this.currentCity].transport[item])
-            })
-            this.selectedFood.forEach(item => {
-                city.food.push(this.cities[this.currentCity].food[item])
-            }) 
-            this.planOfDay.push(city)
-
-            this.currentCity = 0
-            this.selectedAccommodation = 0
-            this.selectedTransport = []
-            this.selectedFood = []
-            this.selectedPlans = []
-            this.genTable()
 
         },
         nextDay () {
-            this.currentDay = this.currentDay + 1
-            this.tour.plans.push(this.planOfDay)
-            this.planOfDay = []
-            this.currentCity = 0
-            this.selectedPlans = []
-            this.resetTime()
-            this.genTable()
+            let check = true
+            if (!this.validDay.acc) {
+                check = false
+                alert('Vui lòng chọn chỗ ở trong ngày')
+            }
+            if (!this.validDay.food) {
+                alert('Vui lòng chọn ẩm thực trong ngày')
+                check = false
+            }
+            if (check) {
+                this.nextCity ()
+                if (this.planOfDay.length > 0) {
+                    
+                    this.currentDay = this.currentDay + 1
+                    this.tour.plans.push(this.planOfDay)
+                    this.planOfDay = []
+                    this.newplanofday = {}
+                    this.currentCity = 0
+                    this.selectedPlans = []
+                    this.validDay = {
+                        acc: false,
+                        food: false
+                    },
+                    this.resetTime()
+                    this.genNewTable()
+                }
+            }
+            
            
         },
+        toast(msg, type) {
+
+            this.$bvToast.toast(msg, {
+                title: 'Thông báo',
+                variant: type,
+                solid: true
+                })
+        },
         submit () {
-            this.nextDay()
-            localStorage.setItem('tour', JSON.stringify(this.tour))
-            this.$router.push('/review-planing')
+            if (!this.tour.name) {
+                alert('Vui lòng nhập tên của chuyến đi')
+            } else {
+                localStorage.setItem('tour', JSON.stringify(this.tour))
+                this.$router.push('/review-planing')
+            }
+            
         },
         saveTime () {
-            this.selectedPlans.push(
-                {
-                    city: {
-                        id: this.currentCity,
-                        name: this.cities[this.currentCity].name
-                    },
-                    start: this.convertTime(this.selectedTime).start,
-                    end: this.convertTime(this.selectedTime).end,
-                    activities: this.cities[this.currentCity].activities[this.selectedActivities],
-                    price: this.cities[this.currentCity].activities[this.selectedActivities].price
+            if (this.selectedActivities) {
+                let act = {
+                        city: {
+                            id: this.currentCity,
+                            name: this.cities[this.currentCity].name
+                        },
+                        start: this.convertTime(this.selectedTime).start,
+                        end: this.convertTime(this.selectedTime).end,
+                        activities: this.cities[this.currentCity].activities[this.selectedActivities],
+                        price: this.cities[this.currentCity].activities[this.selectedActivities].price,
+                        uid: uuid.v1()
+                    }
+                this.selectedPlans.push(act)
+                this.timeFrames[uuid.v1()] = act
+                this.selectedActivities = 0
+                this.nextTime()
+                this.genNewTable()
+                this.toast('Thêm hoạt động thành công', 'success')
+            }
+            
+        },
+        addNewAct () {
+            let check = true
+            if (!this.newact.name) {
+                check = false
+                alert('Vui lòng điền tên hoạt động')
+            }
+            if (check) {
+                let act = {
+                        city: {
+                            id: this.currentCity,
+                            name: this.cities[this.currentCity].name
+                        },
+                        start: this.convertTime(this.selectedTime).start,
+                        end: this.convertTime(this.selectedTime).end,
+                        activities: this.newact,
+                        price: this.newact.price,
+                        uid: uuid.v1()
+                    }
+                this.selectedPlans.push(act)
+                this.timeFrames[uuid.v1()] = act
+                this.selectedActivities = 0
+                this.nextTime()
+                this.genNewTable()
+
+                this.newact = {
+                    name: '',
+                    price: 0,
+                    thumb: ''
                 }
-            )
-            this.selectedActivities = 0
-            this.nextTime()
-            this.genTable()
+                this.toast('Thêm hoạt động thành công', 'success')
+            }
+            
+        },
+        addNewAcc() {
+            let check = true
+            if (!this.newacc.name) {
+                check = false
+                alert('Vui lòng điền tên chỗ ở')
+            }
+            if (check) {
+                this.newacc = {
+                    name: '',
+                    price: 0,
+                    thumb: ''
+                }
+                this.validDay.acc = true
+                this.toast('Thêm chỗ ở thành công', 'success')
+            }
+        },
+        addNewTrans () {
+            let check = true
+            if (!this.newtrans.name) {
+                check = false
+                alert('Vui lòng điền tên phương tiện')
+            }
+            if (check) {
+                this.newtransarr.push(this.newtrans)
+                this.newtrans = {
+                    name: '',
+                    price: 0,
+                    thumb: ''
+                }
+                this.toast('Thêm phương tiện thành công', 'success')
+                
+            }
+            
+        },
+        addNewFood () {
+            let check = true
+            if (!this.newfood.name) {
+                check = false
+                alert('Vui lòng điền tên món ăn')
+            }
+            if (check) {
+                this.newfoodarr.push(this.newfood)
+                this.newfood = {
+                    name: '',
+                    price: 0,
+                    thumb: ''
+                }
+                this.validDay.acc = true
+                this.toast('Thêm món ăn thành công', 'success')
+            }
             
         },
         nextTime () {
@@ -982,6 +1330,13 @@ export default {
             )
         },
         changeDays (data) {
+            console.log(data)
+            if (data < 3) {
+                alert('Số ngày tối thiểu là 3')
+                this.tour.day = 3
+                location.reload()
+            }
+            
             
         },
         error(type, msg) {
@@ -995,6 +1350,30 @@ export default {
             }
             this.errorMsg = msg
         },
+        accThumb(id) {
+            switch(id) {
+                case 1:
+                    return '/imgs/resort.png'
+                    break
+                case 2:
+                    return '/imgs/hotel.png'
+                    break
+                case 3:
+                    return '/imgs/old-house.png'
+                    break
+                case 4:
+                    return '/imgs/homestay.png'
+                    break
+                case 5:
+                    return '/imgs/motel.png'
+                    break
+                default:
+                    return '/imgs/resort.png'
+            }
+        },
+        openVideo () {
+             this.$refs['my-modal'].show()
+        }
     },
     computed: {
         numberDays () {
@@ -1015,7 +1394,24 @@ export default {
             this.tour['day'+this.currentDay] = {
                 cities
             }
+        },
+        selectedAccommodation (val) {
+            console.log('acc', val)
+            if (val > 0) {
+                this.validDay.acc = true
+            }
+            
+        },
+        selectedFood(val) {
+            console.log('food', val)
+            if (val.length > 0) {
+                this.validDay.food = true
+            }
+        },
+        tour(val) {
+            console.log('day change', val.day)
         }
+
     }
 }
 </script>
@@ -1024,14 +1420,31 @@ export default {
 
 
 <style lang="scss">
+.underline {
+    span {
+      display: inline-block;
+      width: 30px;
+      height: 4px;
+      background: #4e4e4e;
+      margin-bottom: 25px;
+    }
+  }
 .planing-inner {
     width: 1170px;
+    h3 {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
     .overview {
         padding: 20px 20px 40px 20px;
         .select-days {
             width: 80%;
             margin: 0 auto;
         }
+    }
+    .tour-name-input {
+        border-radius: 20px;
     }
     
 }
@@ -1107,6 +1520,77 @@ export default {
 }
 td.bolder {
     font-weight: bold;
+}
+table {
+    thead {
+        td {
+            background: #41b6f2;
+            color: #fff;
+        }
+    }
+}
+.select-city {
+    max-width: 500px;
+    border-radius: 30px;
+    margin: 20px auto;
+}
+.select-progress {
+    > div {
+        border:  1px solid #ccc;
+    }
+    .progress-content {
+        padding: 20px 15px;
+        label {
+            cursor: pointer;
+        }
+    }
+}
+.time-block {
+    margin: 20px auto;
+    .time-start {
+        margin-bottom: 20px;
+    }
+}
+.add-option {
+    border: 1px solid #ccc;
+    padding: 10px;
+    .new-name {
+        font-weight: bold;
+    }
+    input {
+        background: none;
+        border-bottom: 2px solid #ccc;
+        height: initial;
+    }
+    .btn-add {
+        background:#f9a049;
+        color: #fff;
+        margin-top: 10px;
+        padding: 5px 10px;
+    }
+}
+.select-acc-title {
+    font-size: 24px;
+    color: #083e7c;
+    font-weight: bold;
+    margin: 20px 0;
+}
+.select-acc {
+    img {
+        height: 100px;
+        width: auto;
+    }
+}
+.wrap-progress {
+    padding: 20px 40px;
+}
+@media screen and (min-width: 768px) {
+    .select-days {
+        padding-top: 40px;
+    }
+}
+iframe {
+    margin: 0 auto;
 }
 </style>
 

@@ -9,127 +9,142 @@
                         <div class="col-md-12">
                             <div>
                                 <h5 class="text-uppercase gr-title text-center">Thông tin người chơi</h5>
-                                <!-- <ul v-if="errors.length !== 0">
-                                    <li v-for="(error, i) in errors" v-bind:key="i"><i class="mes-err">{{ error }}</i></li>
-                                </ul> -->
-                                <div class="form-group">
-                                    <div class="form-item">
-                                        <label for="">
-                                            <b>Họ và tên:</b>
-                                        </label>
-                                        <input type="text" v-model="person.fullName" autofocus placeholder="Họ và tên của bạn" class="form-control">
+  
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label"><b>Họ và tên:</b></label>
+                                    <div class="col-sm-9">
+                                    <input type="text" v-model="person.fullName" autofocus placeholder="Họ và tên của bạn" class="form-control">
+                                    </div>
+                                    <div class="col-12">
                                         <i v-if="errors[0]" class="mes-err">{{ errors[0] }}</i>
                                     </div>
-                                    <div class="form-item custom-form-control">
-                                        <label for="">
-                                            <b>Tuổi:</b>
-                                        </label>
-                                        <input v-model="person.age" type="text" placeholder="" class="form-control">
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 ">
+                                        <b>Tuổi:</b> <br>
                                         <i v-if="errors[1]" class="mes-err">{{ errors[1] }}</i>
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <div class="row"> 
+                                            <div class="col-sm-4">
+                                                <input v-model="person.age" type="text" placeholder="" class="form-control age-mobile">
+                                            </div>
+                                            <div class="col-12 col-md-8">
+                                                <label for="" class="custom-lable"> <b>Giới tính</b></label>
+                                                <b-form-radio v-model="person.sex" value="1">Nam</b-form-radio>
+                                                <b-form-radio v-model="person.sex" value="-1">Nữ</b-form-radio>
+                                                <i v-if="errors[2]" class="mes-err">{{ errors[2] }}</i>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <!-- <div class="custom-form-control"> -->
-                                        <label for="" class="custom-lable"> <b>Giới tính</b></label>
-                                        <b-form-radio v-model="person.sex" value="1">Nam</b-form-radio>
-                                        <b-form-radio v-model="person.sex" value="-1">Nữ</b-form-radio>
-                                        <i v-if="errors[2]" class="mes-err">{{ errors[2] }}</i>
-                                    <!-- </div> -->
-                                    
-                                    <div class="form-item">
-                                        <label for="">
-                                            <b>Số điện thoại:</b>
-                                        </label>
-                                        <input type="text" v-model="person.phoneNumber" placeholder="Số điện thoại của bạn" class="form-control">
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label"><b>Số điện thoại:</b></label>
+                                    <div class="col-sm-9">
+                                    <input type="text" v-model="person.phoneNumber" placeholder="Số điện thoại của bạn" class="form-control"/>
+                                    </div>
+                                    <div class="col-12">
                                         <i v-if="errors[3]" class="mes-err">{{ errors[3] }}</i>
                                     </div>
-                                    <div class="form-item">
-                                        <label for="">
-                                            <b>Email:</b>
-                                        </label>
-                                        <input type="email" v-model="person.email" placeholder="Email của bạn" class="form-control">
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label"><b>Email:</b></label>
+                                    <div class="col-sm-9">
+                                    <input type="email" v-model="person.email" placeholder="Email của bạn" class="form-control">
+                                    </div>
+                                    <div class="col-12">
                                         <i v-if="errors[4]" class="mes-err">{{ errors[4] }}</i>
                                     </div>
-                                    <div class="form-item">
-                                        <label for=""></label>
+                                </div>
+                                <div class="form-group">
+                                    
+                                    
+                                
+                                        <label for="" class="col-sm-3"></label>
+                                        <div class="col-sm-9">
                                         <span v-on:click="showMore = !showMore" class="item-non-choice place-name" v-if="!showMore"></span>
                                         <img v-on:click="showMore = !showMore" v-else style=" width: 27px;vertical-align: unset;display: inline;" src="/imgs/tick.png" alt="">
                                         <span v-on:click="showMore = !showMore" class="cursor">Tích vào đây nếu bạn đi theo nhóm</span>
-                                    </div>
-                                     <div class="choiced-icon">
-                                         <label for="">
-                                            <!-- <b>Email:</b> -->
-                                        </label>
-                                        <!-- <img src="/imgs/tick.png" alt=""> -->
-                                       
-                                    </div>
+                                        </div>
+                                   
+                                  
                                 </div>
                                 <div class="form-group form-group2" v-if="showMore">
-                                    <div class="form-item">
-                                        <label for="">
-                                            <b>Họ và tên thành viên 1:</b>
-                                        </label>
-                                        <input type="text" v-model="persons[0].fullName" autofocus placeholder="Họ và tên của bạn" class="form-control">
-                                        <i v-if="errors[0]" class="mes-err">{{ errors[0] }}</i>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label"><b>Thành viên 1:</b></label>
+                                        <div class="col-sm-9">
+                                        <input type="text" v-model="persons[0].fullName" autofocus placeholder="Họ và tên của thành viên thứ nhất" class="form-control">
+                                        </div>
+                                      
                                     </div>
-                                    <div class="form-item custom-form-control">
-                                        <label for="">
-                                            <b>Tuổi:</b>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 ">
+                                            <b>Tuổi:</b> <br>
                                         </label>
-                                        <input v-model="persons[0].age" type="text" placeholder="" class="form-control">
-                                        <i v-if="errors[1]" class="mes-err">{{ errors[1] }}</i>
+                                        <div class="col-sm-9">
+                                            <div class="row"> 
+                                                <div class="col-sm-4">
+                                                    <input v-model="persons[0].age" type="text" placeholder="" class="form-control age-mobile">
+                                                </div>
+                                                <div class="col-12 col-md-8">
+                                                    <label for="" class="custom-lable"> <b>Giới tính</b></label>
+                                                    <b-form-radio v-model="persons[0].sex" value="1">Nam</b-form-radio>
+                                                    <b-form-radio v-model="persons[0].sex" value="-1">Nữ</b-form-radio>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <!-- <div class="custom-form-control"> -->
-                                        <label for="" class="custom-lable"> <b>Giới tính</b></label>
-                                        <b-form-radio v-model="persons[0].sex" value="1">Nam</b-form-radio>
-                                        <b-form-radio v-model="persons[0].sex" value="-1">Nữ</b-form-radio>
-                                        <i v-if="errors[2]" class="mes-err">{{ errors[2] }}</i>
-                                    <!-- </div> -->
-                                    <div class="form-item">
-                                        <label for="">
-                                            <b>Số điện thoại:</b>
-                                        </label>
-                                        <input type="text" v-model="persons[0].phoneNumber" placeholder="Số điện thoại của bạn" class="form-control">
-                                        <i v-if="errors[3]" class="mes-err">{{ errors[3] }}</i>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label"><b>Số điện thoại:</b></label>
+                                        <div class="col-sm-9">
+                                        <input type="text" v-model="persons[0].phoneNumber" placeholder="Số điện thoại của bạn" class="form-control"/>
+                                        </div>
+                                      
                                     </div>
-                                    <div class="form-item">
-                                        <label for="">
-                                            <b>Email:</b>
-                                        </label>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label"><b>Email:</b></label>
+                                        <div class="col-sm-9">
                                         <input type="email" v-model="persons[0].email" placeholder="Email của bạn" class="form-control">
-                                        <i v-if="errors[4]" class="mes-err">{{ errors[4] }}</i>
+                                        </div>
+                                     
                                     </div>
-                                    <div class="form-item">
-                                        <label for="">
-                                            <b>Họ và tên thành viên 2:</b>
-                                        </label>
-                                        <input type="text" v-model="persons[1].fullName" autofocus placeholder="Họ và tên của bạn" class="form-control">
-                                        <i v-if="errors[0]" class="mes-err">{{ errors[0] }}</i>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label"><b>Thành viên 2:</b></label>
+                                        <div class="col-sm-9">
+                                        <input type="text" v-model="persons[1].fullName" autofocus placeholder="Họ và tên của thành viên thứ hai" class="form-control">
+                                        </div>
+                                      
                                     </div>
-                                    <div class="form-item custom-form-control">
-                                        <label for="">
-                                            <b>Tuổi:</b>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 ">
+                                            <b>Tuổi:</b> <br>
                                         </label>
-                                        <input v-model="persons[1].age" type="text" placeholder="" class="form-control">
-                                        <i v-if="errors[1]" class="mes-err">{{ errors[1] }}</i>
+                                        <div class="col-sm-9">
+                                            <div class="row"> 
+                                                <div class="col-sm-4">
+                                                    <input v-model="persons[1].age" type="text" placeholder="" class="form-control age-mobile">
+                                                </div>
+                                                <div class="col-12 col-md-8">
+                                                    <label for="" class="custom-lable"> <b>Giới tính</b></label>
+                                                    <b-form-radio v-model="persons[1].sex" value="1">Nam</b-form-radio>
+                                                    <b-form-radio v-model="persons[1].sex" value="-1">Nữ</b-form-radio>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <!-- <div class="custom-form-control"> -->
-                                        <label for="" class="custom-lable"> <b>Giới tính</b></label>
-                                        <b-form-radio v-model="persons[1].sex" value="1">Nam</b-form-radio>
-                                        <b-form-radio v-model="persons[1].sex" value="-1">Nữ</b-form-radio>
-                                        <i v-if="errors[2]" class="mes-err">{{ errors[2] }}</i>
-                                    <!-- </div> -->
-                                    <div class="form-item">
-                                        <label for="">
-                                            <b>Số điện thoại:</b>
-                                        </label>
-                                        <input type="text" v-model="persons[1].phoneNumber" placeholder="Số điện thoại của bạn" class="form-control">
-                                        <i v-if="errors[3]" class="mes-err">{{ errors[3] }}</i>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label"><b>Số điện thoại:</b></label>
+                                        <div class="col-sm-9">
+                                        <input type="text" v-model="persons[1].phoneNumber" placeholder="Số điện thoại của bạn" class="form-control"/>
+                                        </div>
+                                       
                                     </div>
-                                    <div class="form-item">
-                                        <label for="">
-                                            <b>Email:</b>
-                                        </label>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label"><b>Email:</b></label>
+                                        <div class="col-sm-9">
                                         <input type="email" v-model="persons[1].email" placeholder="Email của bạn" class="form-control">
-                                        <i v-if="errors[4]" class="mes-err">{{ errors[4] }}</i>
+                                        </div>
+                                       
                                     </div>
                                 </div>
                             </div>
@@ -213,7 +228,7 @@ export default {
                 if (type == 1) {
                     this.$router.push('/upload-tour');
                 } else {
-                    this.$router.push('/tour-info');
+                    this.$router.push('/planing');
                 }
                 
             }
@@ -230,14 +245,7 @@ export default {
 <style lang="scss" scoped>
     .w5 {width: 50%}
     .w8 {width: 80%}
-    .custom-form-control {
-        width: 48%;display: inline-block
-    }
-    fieldset {margin-bottom: 10px !important}
-    .form-group {margin-bottom:0px;padding: 0 50px}
-    .form-group2{
-        padding-top: 20px;padding-bottom: 30px;border-radius: 5px;border:1px solid #ccc
-    }
+
     p {margin-bottom: 0;color: #ffffff;font-size: 14px}
     .persion{margin-right: 5px}
     .col-form-label{padding-bottom: 0}
@@ -311,13 +319,12 @@ export default {
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
-</style>
-
-<style lang="scss">
 .user-info {
     label {
         text-align: right;
-        padding-right: 10px;
+        @media screen and (max-width: 767px){
+            text-align: left;
+        }
         &.custom-lable {
             padding-right: 0;
             text-align: left;
@@ -327,4 +334,31 @@ export default {
 .user-info-inner {
     width: 800px;
 }
+@media screen and (max-width: 767px){
+    .form-group {
+        padding: 0;
+    }
+    .form-item {
+        > label {
+            width: 105px;
+            display: inline-block;
+        }
+    }
+    .gr-btn {
+        button:first-child {
+            margin-bottom: 20px;
+        }
+    }
+    .custom-lable {
+        margin: 0;
+    }
+    .age-mobile {
+        margin-bottom: 20px;
+    }
+} 
+</style>
+
+<style lang="scss">
+  
+
 </style>
