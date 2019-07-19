@@ -1,4 +1,10 @@
 /**
+  * vue-class-component v7.0.1
+  * (c) 2015-present Evan You
+  * @license MIT
+  */
+
+/**
  * @license
  * Copyright 2018 Google Inc.
  *
@@ -151,9 +157,9 @@ and limitations under the License.
   * 
  */
 
-/**
-  * vue-class-component v7.0.1
-  * (c) 2015-present Evan You
+/*!
+  * vue-scrollto v2.15.0
+  * (c) 2019 Randjelovic Igor
   * @license MIT
   */
 

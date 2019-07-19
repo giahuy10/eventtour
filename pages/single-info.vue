@@ -228,7 +228,7 @@ export default {
                 if (type == 1) {
                     this.$router.push('/upload-tour');
                 } else {
-                    this.$router.push('/planing');
+                    this.$router.push('/editplaning');
                 }
                 
             }
@@ -307,7 +307,7 @@ export default {
     }
     .choiced-icon {
                     img {
-                        width: 27px;vertical-align: unset;display: inline;
+                        width: 27px;vertical-align: unset;display: inline-block;
                     }
                     span {
                         display: inline;font-size: 14px;color: #9b9ca1;

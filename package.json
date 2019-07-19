@@ -38,6 +38,7 @@
     "vue-multiselect": "^2.1.6",
     "vue-persian-datetime-picker": "^2.0.1",
     "vue-range-slider": "^0.6.0",
+    "vue-scrollto": "^2.15.0",
     "vue-slider-component": "^3.0.33",
     "vue-uuid": "^1.1.1",
     "vue2-timepicker": "^0.1.4",

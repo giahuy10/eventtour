@@ -64,13 +64,12 @@
                 <div class="underline text-center"><span></span></div>
             </div>
             <div class="progress-list">
-                <h3 class="text-uppercase text-center gr-title text-blue">Lịch trình <i @click="openVideo" class="cursor fa fa-question-circle" aria-hidden="true"></i>
-</h3>
+                <h3 class="text-uppercase text-center gr-title text-blue">Lịch trình <i @click="openVideo" class="cursor fa fa-question-circle" aria-hidden="true"></i></h3>
                 <div class="days-button text-center">
                     <button class="btn btn-day" v-for="(day, index) in numberDays" :key="index" :class="currentDay == day ? 'active' : ''" @click="currentDay = day">Ngày {{day}}</button>
                 </div>
                
-                <select name="" id="" class="form-control select-city" v-model="currentCity">
+                <select name="" id="" class="form-control select-city" v-model="currentCity" >
                     <option value="0">-- Chọn thành phố --</option>
                     <option :value="city.id" v-for="city in cities" :key="city.id">{{city.name}}</option>
                 </select>
@@ -122,6 +121,16 @@
                                         <button class="btn btn-add" @click="addNewAct">Thêm hoạt động</button>
                                     </div>
                                 </div>
+                                <div class="col-12">
+                                  <div class="text-center pt-5">
+                                      <button class="btn btn-add-time" @click="saveTime"><i class="fa fa-clock-o" aria-hidden="true"></i> Khung thời gian tiếp theo</button>
+
+                                      <button class="btn btn-add-time" @click="overrideAct" v-if="tour.progress[currentDay][currentCity].activities.length > 0">
+                                        <i class="fa fa-pencil"></i> Ghi đè lên khung thời gian hiện tại
+                                      </button>
+                                  </div>
+                                </div>
+                                
                             </div>
                         </div>
                         <div class="transporter" v-if="currentTab == 2">
@@ -141,7 +150,11 @@
                                         <button class="btn btn-add" @click="addNewTrans">Thêm phương tiện</button>
                                     </div>
                                 </div>
-
+                                <div class="col-12">
+                                  <div class="text-center pt-5">
+                                      <button class="btn btn-add-time" @click="saveTrans"><i class="fa fa-truck" aria-hidden="true"></i> Lưu phương tiện</button>
+                                  </div>
+                                </div>
                             </div>
                         </div>
                         <div class="food" v-if="currentTab == 3">
@@ -161,17 +174,19 @@
                                         <button class="btn btn-add" @click="addNewFood">Thêm món ăn</button>
                                     </div>
                                 </div>
+                                <div class="col-12">
+                                  <div class="text-center pt-5">
+                                      <button class="btn btn-add-time" @click="saveFood"><i class="fa fa-transgender-alt" aria-hidden="true"></i> Lưu món ăn</button>
+                                  </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="text-center pt-5">
-                            <button class="btn btn-add-time" @click="saveTime"><i class="fa fa-clock-o" aria-hidden="true"></i> Khung thời gian tiếp theo</button>
-
-                        </div>
+                        
                     </div>
                 </div>
 
                 <h4 class="select-acc-title">Lựa chọn chỗ ở</h4>
-                <div class="row" v-if="currentCity">
+                    <div class="row" v-if="currentCity">
                         <div class="col-12 col-md-2 text-center select-acc" v-for="accommodation in cities[currentCity].accommodations" :key="accommodation.id">
                             <img :src="accThumb(accommodation.id)" alt=""> <br>
                             <label><input type="radio" :value="accommodation.id" v-model="selectedAccommodation"/> <br>
@@ -185,9 +200,14 @@
                             <input type="text" class="form-control" v-model="newacc.price" placeholder="Giá ($)">
                             <button class="btn btn-add" @click="addNewAcc">Thêm chỗ ở</button>
                         </div>
+                        <div class="col-12 text-center pt-4">
+                          <p><i>* Có thể bỏ qua nếu bạn không qua đêm ở thành phố này</i></p>
+                        </div>
                     </div>
+                    <div class="underline text-center"><span></span></div>
                     <div class="text-center pt-5">
-                        <button class="btn btn-add-time" @click="nextCity"><i class="fa fa-building-o" aria-hidden="true"></i> Thành phố tiếp theo</button>
+                        <button class="btn btn-add-time" v-if="!readySubmit" @click="nextCity"><i class="fa fa-building-o" aria-hidden="true"></i> Thành phố tiếp theo</button>
+                        <button class="btn btn-add-time" v-if="!readySubmit" @click="editCity"><i class="fa fa-pencil" aria-hidden="true"></i> Sửa lại thành phố</button>
                         <button class="btn btn-next-day" @click="nextDay" v-if="currentDay < tour.day">
                             <i class="fa fa-sun-o" aria-hidden="true"></i> Ngày tiếp theo
                         </button>
@@ -221,6 +241,16 @@ export default {
     mounted () {
         this.testData = JSON.parse(localStorage.getItem('tour'))
         this.genNewTable()
+        let obj = {
+          1: {
+            a: 'name'
+          },
+          2: {
+            a: 'ff',
+            b: 'd'
+          }
+        }
+        console.log('count',Object.keys(obj).length)
     },
     data () {
         return {
@@ -282,7 +312,8 @@ export default {
                 name: '',
                 day: '3',
                 plans: [],
-                newplans: {}
+                newplans: {},
+                progress: {}
             },
             min: 3,
             days: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
@@ -380,7 +411,7 @@ export default {
                     },
                     activities: {
                         1: { id: 1, name: 'Thăm quan tháp 83 E-WORLD', address:'200 Duryugongwon-ro, Duryu-dong, Dalseo-gu, Daegu', time:'10.30AM - 10PM (cuối tuần từ 10AM)', price: '8.54', thumb: ''},
-                        2: { id: 2, name: 'Mua sắm tại chợ Seomun', address:'45 Keunjang-ro 26-gil, Daesin-dong, Jung-gu, Daegu', time:'Luôn mở cửa', price: '0', thumb: ''},
+                        2: { id: 2, name: 'Mua sắm tại chợ Seomun', address:'45 Keunjang-ro 26-gil, Daesin-dong, Jung-gu, Daegu', time:'Luôn mở cửa', price: '0', thumb: ''},
                         3: { id: 3, name: 'Thăm quan đền Donghwasa', address:'1 Donghwasa 1-gil, Dohak-dong, Dong-gu, Daegu', time:'Luôn mở cửa', price: '2.14', thumb: ''},
                         4: { id: 4, name: 'Thăm quan bảo tàng quốc gia Daegu', address:'321 Cheongho-ro, Hwanggeum-dong, Suseong-gu, Daegu', time:'9AM - 6PM (T7, CN đến 7PM)', price: '0', thumb: ''},
                         5: { id: 5, name: 'Ghé thăm làng tranh Mabijeong', address:'Bonri-ri, Hwawon-eup, Dalseong-gun, Daegu', time:'Luôn mở cửa', price: '0', thumb: ''},
@@ -514,7 +545,7 @@ export default {
                         1: { id: 1, name: 'Vui chơi, thăm quan mỏm Ganjeolgot', address:'39-2 Ganjeolgot 1-gil, Seosaeng-myeon, Ulju-gun, Ulsan', time:'Luôn mở cửa', price: '0', thumb: ''},
                         2: { id: 2, name: 'Vui chơi công viên Ulsan Grand Park', address:'94 Daegongwon-ro, Ok-dong, Nam-gu, Ulsan', time:'5Am - 23PM', price: '0', thumb: ''},
                         3: { id: 3, name: 'Thăm quan bảo tàng cá voi Jangsaengpo', address:'244, Jangsaengpogorae-ro, Nam-gu, Ulsan', time:'9AM - 6PM', price: '2', thumb: ''},
-                        4: { id: 4, name: 'Thăm quan bảo tàng khắc đá Bangudae', address:'285 Bangudaean-gil, Eonyang-eup, Ulju-gun, Ulsan', time:'Luôn mở cửa', price: '0', thumb: ''},
+                        4: { id: 4, name: 'Thăm quan bảo tàng khắc đá Bangudae', address:'285 Bangudaean-gil, Eonyang-eup, Ulju-gun, Ulsan', time:'Luôn mở cửa', price: '0', thumb: ''},
                         5: { id: 5, name: 'Khám phá hang động thạch anh Ulsan', address:'112 Jasujeong-ro, Samnam-myeon, Ulju-gun, Ulsan', time:'9AM - 5PM', price: '6', thumb: ''},
 
                     }
@@ -532,7 +563,7 @@ export default {
                         2: { id: 2, name: 'Cua sống ướp sốt đậu Ganjang Gejang', price: '14.4', thumb: ''},
                         3: { id: 3, name: 'Cháo gà ninh Namhansanseong Dakjuk', price: '21', thumb: ''},
                         4: { id: 4, name: 'Gà rán chua ngọt Yangnyeom Tongdak', price: '11.86', thumb: ''},
-                        5: { id: 5, name: 'Sườn bò om cay Maeun Galbi Jjim', price: '12.7', thumb: ''},
+                        5: { id: 5, name: 'Sườn bò om cay Maeun Galbi Jjim', price: '12.7', thumb: ''},
 
                     },
                     accommodations: {
@@ -676,7 +707,7 @@ export default {
 
                     },
                     activities: {
-                        1: { id: 1, name: 'Vui chơi tại công viên Naejangsan National Park', address:'936 Naejangsan-ro, Naejang-dong, Jeongeup', time:'7AM - 6PM', price: '26', thumb: ''},
+                        1: { id: 1, name: 'Vui chơi tại công viên Naejangsan National Park', address:'936 Naejangsan-ro, Naejang-dong, Jeongeup', time:'7AM - 6PM', price: '26', thumb: ''},
                         2: { id: 2, name: 'Leo núi Naejangsan', address:'Biên giới Jeolla Bắc - Nam', time:'Luôn mở cửa', price: '0', thumb: ''},
                         3: { id: 3, name: 'Thăm quan làng cổ Jeonju', address:'99 Girin-daero, Pungnamdong 3(sam)-ga, Wansan-gu, Jeonju', time:'Luôn mở cửa', price: '0', thumb: ''},
                         4: { id: 4, name: 'Thăm quan đền Gyeonggijeon', address:'44 Taejo-ro, Pungnam-dong, Wansan-gu, Jeonju', time:'Luôn mở cửa', price: '0', thumb: ''},
@@ -861,8 +892,8 @@ export default {
             let rows = []
             let total = []
           
-            for (var key in this.tour.newplans) {
-                var days = this.tour.newplans[key]
+            for (var key in this.tour.progress) {
+                var days = this.tour.progress[key]
                 let maxRow =0
                 let totalact = 0
                 let totaltrans =0 
@@ -970,208 +1001,56 @@ export default {
             }
             
             this.rows = rows
+            this.$scrollTo('#pros-table')
         },
-        genTable () {
-            let res = []
-            let rows = []
-            let total = []
-            this.tour.plans.forEach((day, indexday) => {
-                let maxRow =0
-                let totalact = 0
-                let totaltrans =0 
-                let totalfood = 0
-                let totalacc = 0
-                
-                
-                day.forEach((act, index) => {
-                    let max = Math.max(act.activities.length, act.food.length, act.transport.length)
-                    maxRow+= max
-                    totalacc+=act.accommodation.price ? parseFloat(act.accommodation.price) : 0
-                    for(let i = 0; i < max; i++) {
-                        totalact+= act.activities[i] ? parseFloat(act.activities[i].activities.price) : 0
-                        totaltrans+=act.transport[i] ? parseFloat(act.transport[i].price) : 0
-                        totalfood+=act.food[i] ? parseFloat(act.food[i].price) : 0
-                        
-                        let cols = [
-                         
-                            {
-                                val: act.activities[i] ? act.activities[i].start +' - '+act.activities[i].end : ''
-                            },
-                            {
-                                val: act.activities[i] ? act.activities[i].activities.name: ''
-                            },
-                            {
-                                val: act.activities[i] ? act.activities[i].activities.price : ''
-                            },
-                            {
-                                val: act.transport[i] ? act.transport[i].name : ''
-                            },
-                            {
-                                val: act.transport[i] ? act.transport[i].price : ''
-                            },
-                            {
-                                val: act.food[i] ? act.food[i].name : ''
-                            },
-                            {
-                                val: act.food[i] ? act.food[i].price : ''
-                            }
-                        ]
-                        if (i == 0) {
-                            cols.unshift({
-                                val: act.city.name,
-                                rowspan: max 
-                            })
-                            cols.push({
-                                val: act.accommodation ? act.accommodation.name : '',
-                                rowspan: max
-                            })
-                            cols.push({
-                                val: act.accommodation ? act.accommodation.price : '',
-                                rowspan: max
-                            })
-                            
-                        }
-                        // cols.push({
-                        //     val: ''
-                        // })
-                        rows.push(cols)
-                    }
-                })
-                rows.push([
-                    { val: 'Tổng', class: 'bolder' },
-                    { val: ''},
-                    { val: ''},
-                    { val: totalact, class: 'bolder'},
-                    { val: ''},
-                    { val: totaltrans, class: 'bolder'},
-                    { val: ''},
-                    { val: totalfood, class: 'bolder'},
-                    { val: ''},
-                    { val: totalacc, class: 'bolder'},
-                    //{ val: ''}
-                ])
-                
-                res.push(maxRow)
-                total.push((parseFloat(totalact) + parseFloat(totaltrans) + parseFloat(totalfood) + parseFloat(totalacc)).toFixed(2))
-            })
-           
-            let day = [0]
-            for(let i = 0; i < res.length; i++) {
-                if (i == 0 ) {
-                    day.push(day[0] + res[i] + 1 )
-                } 
-                if (i > 0 && i < res.length - 1) {
-                    day.push(day[i] + res[i] + 1)
-                }
-                
-            }
-            for( let i = 0; i < day.length; i++) {
-                if (rows[day[i]]) {
-                    rows[day[i]].unshift({
-                        val: i+1,
-                        rowspan: res[i] + 1,
-                        class: 'bolder'
-                    })
-                    rows[day[i]].push({
-                        val: total[i],
-                        rowspan: res[i] + 1,
-                        class: 'bolder'
-                    })
-                }
-                
-            }
-            
-            this.rows = rows
-        },
+    
         nextCity () {
-            this.saveTime()
-            if (this.selectedPlans.length > 0) {
-                if (this.selectedTransport.length > 0) {
-                    let city = {
-                        city: {},
-                        activities: [],
-                        accommodation: {},
-                        transport: [],
-                        food: []
-                    }
-                    city.city = this.cities[this.currentCity]
-                    city.activities = this.selectedPlans
-                    city.newact = this.timeFrames
-                    if (this.selectedAccommodation > 0) {
-                        city.accommodation = this.cities[this.currentCity].accommodations[this.selectedAccommodation] 
-                    } else if (this.validDay.acc) {
-                        city.accommodation = this.newacc
-                        this.validDay.acc = false
-                        this.newacc = {
-                            name: '',
-                            price: 0,
-                            thumb: ''
-                        }
-                    }
-                    this.selectedTransport.forEach(item => {
-                        city.transport.push(this.cities[this.currentCity].transport[item])
-                    })
-                    this.selectedFood.forEach(item => {
-                        city.food.push(this.cities[this.currentCity].food[item])
-                        
-                    }) 
-                    if (this.newfoodarr.length > 0) {
-                        this.newfoodarr.forEach(item => {
-                            city.food.push(item)
-                        })
-                    }
-                    if (this.newtransarr.length > 0) {
-                        this.newtransarr.forEach(item => {
-                            city.transport.push(item)
-                        })
-                    }
-                    this.planOfDay.push(city)
-                    this.newplanofday[this.currentCity] = city
-                    this.tour.plans.push(this.planOfDay)
-                    this.tour.newplans[this.currentDay] = this.newplanofday
-                    this.currentCity = 0
-                    this.selectedAccommodation = 0
-                    this.selectedTransport = []
-                    this.selectedFood = []
-                    this.selectedPlans = []
-                    this.timeFrames = {}
-                    this.currentTab = 1
-                    this.newfoodarr = []
-                    this.newtransarr = []
-                    this.genNewTable()
-                } else {
-                    alert('Vui lòng chọn phương tiện di chuyển cho thành phố này!')
-                }
-            }
+
+          let check = true
+
+          if (this.tour.progress[this.currentDay][this.currentCity].transport.length == 0) {
+            check = false
+            this.toast('Vui lòng chọn phương tiện di chuyển cho thành phố này ', 'warning')
+          }
+          if (this.tour.progress[this.currentDay][this.currentCity].activities.length == 0) {
+            check = false
+            this.toast('Vui lòng chọn hoạt động cho thành phố này ', 'warning')
+          }
+
+          if (check) {
+            this.currentCity = 0
+            this.currentTab = 1
+            this.genNewTable()
+            this.selectedTransport = []
+            this.selectedFood = []
+            this.selectedAccommodation = 0
+          }
 
         },
         nextDay () {
             let check = true
             if (!this.validDay.acc) {
                 check = false
-                alert('Vui lòng chọn chỗ ở trong ngày')
+                this.toast('Vui lòng chọn nơi ở trong ngày này ', 'warning')
             }
             if (!this.validDay.food) {
-                alert('Vui lòng chọn ẩm thực trong ngày')
+                this.toast('Vui lòng chọn ẩm thực trong ngày', 'warning')
                 check = false
             }
             if (check) {
-                this.nextCity ()
-                if (this.planOfDay.length > 0) {
-                    
-                    this.currentDay = this.currentDay + 1
-                    this.tour.plans.push(this.planOfDay)
-                    this.planOfDay = []
-                    this.newplanofday = {}
-                    this.currentCity = 0
-                    this.selectedPlans = []
-                    this.validDay = {
-                        acc: false,
-                        food: false
-                    },
-                    this.resetTime()
-                    this.genNewTable()
-                }
+              this.currentDay = this.currentDay + 1
+              this.currentCity = 0
+              this.currentTab = 1
+              this.selectedTransport = []
+              this.selectedFood = []
+              this.selectedAccommodation = 0
+              this.validDay = {
+                acc: false,
+                food: false
+              }
+              this.resetTime()
+              this.genNewTable()
+                
             }
             
            
@@ -1206,8 +1085,7 @@ export default {
                         price: this.cities[this.currentCity].activities[this.selectedActivities].price,
                         uid: uuid.v1()
                     }
-                this.selectedPlans.push(act)
-                this.timeFrames[uuid.v1()] = act
+                this.tour.progress[this.currentDay][this.currentCity].activities.push(act)
                 this.selectedActivities = 0
                 this.nextTime()
                 this.genNewTable()
@@ -1215,35 +1093,25 @@ export default {
             }
             
         },
+        overrideAct () {
+          this.tour.progress[this.currentDay][this.currentCity].activities.pop()
+          this.saveTime ()
+        },
         addNewAct () {
             let check = true
             if (!this.newact.name) {
                 check = false
-                alert('Vui lòng điền tên hoạt động')
+                this.toast('Vui lòng điền tên hoạt động', 'warning')
             }
             if (check) {
-                let act = {
-                        city: {
-                            id: this.currentCity,
-                            name: this.cities[this.currentCity].name
-                        },
-                        start: this.convertTime(this.selectedTime).start,
-                        end: this.convertTime(this.selectedTime).end,
-                        activities: this.newact,
-                        price: this.newact.price,
-                        uid: uuid.v1()
-                    }
-                this.selectedPlans.push(act)
-                this.timeFrames[uuid.v1()] = act
-                this.selectedActivities = 0
-                this.nextTime()
-                this.genNewTable()
-
+                this.newact.id = Object.keys(this.cities[this.currentCity].activities).length + 1
+                this.cities[this.currentCity].activities[this.newact.id] = this.newact
                 this.newact = {
                     name: '',
                     price: 0,
                     thumb: ''
                 }
+                
                 this.toast('Thêm hoạt động thành công', 'success')
             }
             
@@ -1252,22 +1120,54 @@ export default {
             let check = true
             if (!this.newacc.name) {
                 check = false
-                alert('Vui lòng điền tên chỗ ở')
+                this.toast('Vui lòng điền tên chỗ ở','warning')
             }
             if (check) {
-
-                this.validDay.acc = true
-                this.toast('Thêm chỗ ở thành công', 'success')
+              this.validDay.acc = true
+              this.tour.progress[this.currentDay][this.currentCity].accommodation = this.newacc
+              this.genNewTable()
+              this.toast('Thêm chỗ ở thành công', 'success')
             }
+        },
+        saveAcc(id) {
+          this.validDay.acc = true
+          this.tour.progress[this.currentDay][this.currentCity].accommodation = this.cities[this.currentCity].accommodations[id]
+          this.toast('Chọn chỗ ở thành công', 'success')
+          this.genNewTable()
+        },
+        saveTrans () {
+          if (this.selectedTransport.length == 0) {
+            this.toast('Vui lòng chọn ít nhất một phương tiện', 'warning')
+          } else {
+            this.tour.progress[this.currentDay][this.currentCity].transport = []
+            this.selectedTransport.forEach(item => {
+              this.tour.progress[this.currentDay][this.currentCity].transport.push(this.cities[this.currentCity].transport[item])
+            })
+            this.genNewTable()
+          }
+          
+        },
+        saveFood () {
+          if (this.selectedFood.length == 0) {
+            this.toast('Vui lòng chọn ít nhất một món ăn', 'warning')
+          } else {
+            this.validDay.food = true
+            this.tour.progress[this.currentDay][this.currentCity].food = []
+            this.selectedFood.forEach(item => {
+              this.tour.progress[this.currentDay][this.currentCity].food.push(this.cities[this.currentCity].food[item])
+            })
+            this.genNewTable()
+          }
         },
         addNewTrans () {
             let check = true
             if (!this.newtrans.name) {
                 check = false
-                alert('Vui lòng điền tên phương tiện')
+                this.toast('Vui lòng điền tên phương tiện', 'warning')
             }
             if (check) {
-                this.newtransarr.push(this.newtrans)
+                this.newtrans.id = Object.keys(this.cities[this.currentCity].transport).length + 1
+                this.cities[this.currentCity].transport[this.newtrans.id] = this.newtrans
                 this.newtrans = {
                     name: '',
                     price: 0,
@@ -1282,16 +1182,16 @@ export default {
             let check = true
             if (!this.newfood.name) {
                 check = false
-                alert('Vui lòng điền tên món ăn')
+                this.toast('Vui lòng điền tên món ăn', 'warning')
             }
             if (check) {
-                this.newfoodarr.push(this.newfood)
+              this.newfood.id = Object.keys(this.cities[this.currentCity].food).length + 1
+              this.cities[this.currentCity].food[this.newfood.id] = this.newfood
                 this.newfood = {
                     name: '',
                     price: 0,
                     thumb: ''
                 }
-                this.validDay.acc = true
                 this.toast('Thêm món ăn thành công', 'success')
             }
             
@@ -1320,17 +1220,6 @@ export default {
                 start: time.start.HH + ':'+ time.start.mm,
                 end: time.end.HH + ':'+ time.end.mm
             }
-        },
-        selectCity (city) {
-            this.currentCity = city.id, this.currentCityObject = city
-            this.tour['day'+this.currentDay].plans = []
-            this.tour['day'+this.currentDay].plans.push(
-                {
-                    timeFrom: this.start,
-                    timeTo: this.end,
-                    city: city
-                }
-            )
         },
         changeDays (data) {
             console.log(data)
@@ -1376,6 +1265,29 @@ export default {
         },
         openVideo () {
              this.$refs['my-modal'].show()
+        },
+        editCity () {
+          this.initialCity(this.currentCity)
+          this.selectedTransport = []
+          this.selectedFood = []
+          this.selectedAccommodation = 0
+          this.genNewTable()
+        },
+        initialCity(cityId) {
+          if (!this.tour.progress[this.currentDay]) {
+            this.tour.progress[this.currentDay] = {}
+          }
+            
+          this.tour.progress[this.currentDay][cityId] = {
+            city : {
+              name: this.cities[cityId].name,
+              id: cityId
+            },
+            activities: [],
+            accommodation: {},
+            transport: [],
+            food: []
+          } 
         }
     },
     computed: {
@@ -1399,9 +1311,10 @@ export default {
             }
         },
         selectedAccommodation (val) {
-            console.log('acc', val)
+            
             if (val > 0) {
                 this.validDay.acc = true
+                this.saveAcc(val)
             }
             
         },
@@ -1413,7 +1326,18 @@ export default {
         },
         tour(val) {
             console.log('day change', val.day)
+        },
+        currentCity: function(newVal, oldVal){
+          console.log('old city : '+oldVal+ ' new city: '+newVal)
+          if (newVal != 0) {
+            if (oldVal != 0) {
+              console.log('delete '+oldVal)
+              delete this.tour.progress[this.currentDay][oldVal]; 
+            }
+            this.initialCity(newVal)
+          }
         }
+        
 
     }
 }

@@ -122,7 +122,7 @@ export default {
     span {
       display: inline-block;
       width: 30px;
-      height: 4px;
+      height: 2px;
       background: #4e4e4e;
       margin-bottom: 25px;
     }
