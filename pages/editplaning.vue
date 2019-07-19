@@ -108,13 +108,13 @@
                             <div class="row" v-if="currentCity">
                                 <div class="col-12 col-md-4" v-for="activity in cities[currentCity].activities" :key="activity.id">
                                     <div class="activity-selection">
-                                        <img :src="activity.thumb ? activity.thumb : '/imgs/placeholder-600x400.png'" />
+                                        <img :src="'/imgs/act/'+currentCity+'/'+activity.id+'.jpg'" />
                                         <label><input type="radio" :value="activity.id" v-model="selectedActivities"/> {{activity.name}} <br></label>
                                             Giá: {{activity.price > 0 ? '$'+activity.price : 'Miễn phí'}}
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-4">
-                                    <div class="add-option text-center">
+                                    <div class="add-option text-center activity-selection">
                                         <div class="new-name">Hoạt động khác</div>
                                         <input type="text" class="form-control" v-model="newact.name" placeholder="Tên hoạt động">
                                         <input type="text" class="form-control" v-model="newact.price" placeholder="Giá ($)">
@@ -138,12 +138,12 @@
                                 <div class="col-12 col-md-4" v-for="transport in cities[currentCity].transport" :key="transport.id">
                                     <div class="trans-selection">
                                         <img :src="transport.thumb ? transport.thumb : '/imgs/placeholder-600x400.png'" />
-                                        <label><input type="checkbox" :value="transport.id" v-model="selectedTransport"/>{{transport.name}} <br></label>
+                                        <label><input type="checkbox" :value="transport.id" v-model="selectedTransport"/>{{transport.name}} </label><br>
                                         Giá: ${{transport.price}}
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-4">
-                                    <div class="add-option text-center">
+                                    <div class="add-option text-center trans-selection">
                                         <div class="new-name">Phương tiện khác</div>
                                         <input type="text" class="form-control" v-model="newtrans.name" placeholder="Tên phương tiện">
                                         <input type="text" class="form-control" v-model="newtrans.price" placeholder="Giá ($)">
@@ -161,13 +161,13 @@
                             <div class="row" v-if="currentCity">
                                 <div class="col-12 col-md-4" v-for="food in cities[currentCity].food" :key="food.id">
                                     <div class="food-selection">
-                                        <img :src="food.thumb ? food.thumb : '/imgs/placeholder-600x400.png'" />
-                                        <label><input type="checkbox" :value="food.id" v-model="selectedFood"/>{{food.name}} <br></label>
+                                        <img :src="'/imgs/food/'+currentCity+'/'+food.id+'.jpg'" />
+                                        <label><input type="checkbox" :value="food.id" v-model="selectedFood"/>{{food.name}} </label><br>
                                         Giá: ${{food.price}}
-                                        </div>
+                                      </div>
                                 </div>
                                 <div class="col-12 col-md-4">
-                                    <div class="add-option text-center">
+                                    <div class="add-option text-center food-selection">
                                         <div class="new-name">Món ăn khác</div>
                                         <input type="text" class="form-control" v-model="newfood.name" placeholder="Tên món ăn">
                                         <input type="text" class="form-control" v-model="newfood.price" placeholder="Giá ($)">
@@ -345,11 +345,11 @@ export default {
                     },
                     activities: {
                         1: { id: 1, name: 'Thăm quan nhà cổ Gongbuglu', address:'165 Geumseong-dong, Gongju', time:'Luôn mở cửa', price: '0', thumb: ''},
-                        2: { id: 2, name: 'Vui chơi tại công viên Naejangsan National Park', address:'936 Naejangsan-ro, Naejang-dong, Jeongeup', time:'7AM - 6PM', price: '26', thumb: ''},
-                        3: { id: 3, name: 'Leo núi Naejangsan', address:'Biên giới Jeolla Bắc - Nam', time:'Luôn mở cửa', price: '0', thumb: ''},
-                        4: { id: 4, name: 'Thăm quan làng cổ Jeonju', address:'99 Girin-daero, Pungnamdong 3(sam)-ga, Wansan-gu, Jeonju', time:'Luôn mở cửa', price: '0', thumb: ''},
-                        5: { id: 5, name: 'Thăm quan đền Gyeonggijeon', address:'44 Taejo-ro, Pungnam-dong, Wansan-gu, Jeonju', time:'Luôn mở cửa', price: '0', thumb: ''},
-                        6: { id: 6, name: 'Đi chợ Nambu Market', address:'19-3 Pungnammun 1-gil, Jeonong 3(sam)-ga, Wansan-gu, Jeonju', time:'8AM - 6PM', price: '0', thumb: ''}
+               
+                        2: { id: 2, name: 'Leo núi Naejangsan', address:'Biên giới Jeolla Bắc - Nam', time:'Luôn mở cửa', price: '0', thumb: ''},
+                        3: { id: 3, name: 'Thăm quan làng cổ Jeonju', address:'99 Girin-daero, Pungnamdong 3(sam)-ga, Wansan-gu, Jeonju', time:'Luôn mở cửa', price: '0', thumb: ''},
+                        4: { id: 4, name: 'Thăm quan đền Gyeonggijeon', address:'44 Taejo-ro, Pungnam-dong, Wansan-gu, Jeonju', time:'Luôn mở cửa', price: '0', thumb: ''},
+                        5: { id: 5, name: 'Đi chợ Nambu Market', address:'19-3 Pungnammun 1-gil, Jeonong 3(sam)-ga, Wansan-gu, Jeonju', time:'8AM - 6PM', price: '0', thumb: ''}
                     }
                 }, 
                 2: { id: 2, name: 'Busan',
@@ -1535,6 +1535,18 @@ iframe {
 .btn-next-day {
     background: #3888f5;
     
+}
+.food .row > div, .activities .row > div, .transporter .row > div {
+  margin-bottom: 20px;
+  label {
+    margin-top: 10px;
+  }
+}
+.food-selection, .trans-selection, .activity-selection {
+    height: 100%;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
 }
 </style>
 
