@@ -89,8 +89,8 @@ export default {
             let res = []
             let rows = []
             let total = []
-            for (var key in this.tour.newplans) {
-                var days = this.tour.newplans[key]
+            for (var key in this.tour.progress) {
+                var days = this.tour.progress[key]
                 let maxRow =0
                 let totalact = 0
                 let totaltrans =0 

@@ -1,15 +1,21 @@
 <template>
     <div>
-        <div class="home-banner">
+        <div class="home-banner d-none d-sm-block" id="introduce">
             <div class="header-content">
                 <p>Ban ước mơ một ngày được khám phá xứ sở Kim Chi nhưng điều kiên chưa cho phép</p>
-                <a href="#introduce4" class="text-uppercase btn btn-join btn-warning">Tham gia cuôc thi</a>
+                <a href="#" v-scroll-to="'#introduce4'" class="text-uppercase btn btn-join btn-warning">Tham gia cuôc thi</a>
                 <p class="normal">
                     Do tổng cục Du Lịch Hàn Quốc (KTO) tổ chức <br>
                     để nhận ngay tấm vé tới xử sở Kim Chi <br>
                     <b>Hoàn toàn miễn phí</b>
                 </p>
             </div>
+        </div>
+
+        <div class="home-banner-m d-block d-sm-none">
+            <a href="#" v-scroll-to="'#introduce4'">
+            <img src="/imgs/Mobile_Home.png" alt="">
+            </a>
         </div>
 
         
@@ -303,6 +309,9 @@ export default {
     @media screen and (max-width: 767px) {
         background: none;
     }
+}
+.home-banner-m {
+    padding-top: 75px;
 }
 </style>
 
