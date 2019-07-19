@@ -312,6 +312,9 @@ export default {
 }
 .home-banner-m {
     padding-top: 75px;
+    img {
+        width: 100%;
+    }
 }
 </style>
 
