@@ -107,7 +107,7 @@
                         <div class="activities" v-if="currentTab == 1">
                             <div class="row" v-if="currentCity">
                                 <div class="col-12 col-md-4" v-for="activity in cities[currentCity].activities" :key="activity.id">
-                                    <div class="activity-selection">
+                                    <div class="activity-selection  text-center">
                                         <img :src="'/imgs/act/'+currentCity+'/'+activity.id+'.jpg'" />
                                         <label><input type="radio" :value="activity.id" v-model="selectedActivities"/> {{activity.name}} <br></label>
                                             Giá: {{activity.price > 0 ? '$'+activity.price : 'Miễn phí'}}
@@ -136,8 +136,8 @@
                         <div class="transporter" v-if="currentTab == 2">
                             <div class="row" v-if="currentCity">
                                 <div class="col-12 col-md-4" v-for="transport in cities[currentCity].transport" :key="transport.id">
-                                    <div class="trans-selection">
-                                        <img :src="transport.thumb ? transport.thumb : '/imgs/placeholder-600x400.png'" />
+                                    <div class="trans-selection text-center">
+                                        <img :src="tranThumb(transport.id)" /> <br>
                                         <label><input type="checkbox" :value="transport.id" v-model="selectedTransport"/>{{transport.name}} </label><br>
                                         Giá: ${{transport.price}}
                                     </div>
@@ -160,7 +160,7 @@
                         <div class="food" v-if="currentTab == 3">
                             <div class="row" v-if="currentCity">
                                 <div class="col-12 col-md-4" v-for="food in cities[currentCity].food" :key="food.id">
-                                    <div class="food-selection">
+                                    <div class="food-selection  text-center">
                                         <img :src="'/imgs/food/'+currentCity+'/'+food.id+'.jpg'" />
                                         <label><input type="checkbox" :value="food.id" v-model="selectedFood"/>{{food.name}} </label><br>
                                         Giá: ${{food.price}}
@@ -1261,6 +1261,27 @@ export default {
                     break
                 default:
                     return '/imgs/resort.png'
+            }
+        },
+        tranThumb(id) {
+            switch(id) {
+                case 1:
+                    return '/imgs/bus.png'
+                    break
+                case 2:
+                    return '/imgs/subway.png'
+                    break
+                case 3:
+                    return '/imgs/metro.png'
+                    break
+                case 4:
+                    return '/imgs/taxi.png'
+                    break
+                case 5:
+                    return '/imgs/train.png'
+                    break
+                default:
+                    return '/imgs/bus.png'
             }
         },
         openVideo () {
