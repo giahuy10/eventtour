@@ -29,7 +29,8 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '~/plugins/vue-uid.js'
+    '~/plugins/vue-uid.js',
+    '~/plugins/vue-moment.js'
   ],
   /*
   ** Nuxt.js modules

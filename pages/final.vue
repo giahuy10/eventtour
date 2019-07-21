@@ -39,11 +39,15 @@ export default {
         phone: ''
       },
       err: [],
-      loading: false
+      loading: false,
+      tour:{}
     }
   },
   mounted () {
-    console.log(JSON.parse(localStorage.getItem('tour')))
+    if (localStorage.getItem('tour')) {
+      this.tour = JSON.parse(localStorage.getItem('tour'))
+    }
+
   },
   methods: {
     checkGiftCode () {
@@ -59,8 +63,32 @@ export default {
       }
       if (check) {
         this.loading = true
+        let tourId = this.tour.id ? this.tour.id: '0'
+        this.$axios.get('http://localhost:5000/check_code?code='+this.giftcode.code+'&phone='+this.giftcode.phone)
+          .then(res => {
+            console.log(res)
+            if (res.data.status == 1) {
+              this.toast(res.data.data, 'success')
+            } else {
+              this.toast(res.data.data, 'warning')
+            }
+            this.loading = false
+            this.giftcode = {
+              code: '',
+              phone: ''
+            }
+          })
+          .catch(err => console.log(err))
       }
-    }
+    },
+    toast(msg, type) {
+
+        this.$bvToast.toast(msg, {
+            title: 'Thông báo',
+            variant: type,
+            solid: true
+            })
+    },
   }
 }
 </script>

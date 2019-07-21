@@ -228,7 +228,7 @@ export default {
                 if (type == 1) {
                     this.$router.push('/upload-tour');
                 } else {
-                    this.$router.push('/editplaning');
+                    this.$router.push('/editplaning-m2');
                 }
                 
             }

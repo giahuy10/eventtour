@@ -54,7 +54,11 @@ export default {
   mounted () {
     if (localStorage.getItem('tour-upload')) {
       this.tour = JSON.parse(localStorage.getItem('tour-upload'))
+      this.tour.person = JSON.parse(localStorage.getItem('person'))
+      this.tour.persons = JSON.parse(localStorage.getItem('persons'))
+      this.tour.type = 1
     } else {
+      
       this.$router.push('/upload-tour')
     }
   },
@@ -73,8 +77,17 @@ export default {
       if (check) {
         this.loading = true
         this.tour.question = this.question
-        localStorage.setItem('tour', JSON.stringify(this.tour))
-        this.$router.push('/final')
+        
+        console.log('tour', this.tour)
+        this.$axios.post('http://localhost:5000/add_result', this.tour)
+          .then(res => {
+            console.log(res)
+            this.tour.id = res.data.result
+            localStorage.setItem('tour', JSON.stringify(this.tour))
+            this.$router.push('/final')
+          })
+          .catch(err => console.log(err))
+        
       }
     }
   }

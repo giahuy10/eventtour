@@ -61,13 +61,16 @@ export default {
             tour: {},
             rows: [],
             question: '',
-            err: []
+            err: [],
+            loading: false
         }
     },
     mounted() {
         if (localStorage.getItem('tour')) {
             this.tour = JSON.parse(localStorage.getItem('tour'))
-            
+            this.tour.person = JSON.parse(localStorage.getItem('person'))
+            this.tour.persons = JSON.parse(localStorage.getItem('persons'))
+            this.tour.type = 2
             this.genTable()
         }
         
@@ -81,7 +84,18 @@ export default {
                 this.err.push('Vui lòng trả lời câu hỏi truyền cảm hứng')
             }
             if (check) {
-                this.$router.push('/final')
+                this.loading = true
+         
+                this.$axios.post('http://localhost:5000/add_result', this.tour)
+                .then(res => {
+                    console.log(res)
+                    this.tour.id = res.data.result
+                    this.loading = false
+                    localStorage.setItem('tour', JSON.stringify(this.tour))
+                    this.$router.push('/final')
+                })
+                .catch(err => console.log(err))
+                
             }
             
         },
