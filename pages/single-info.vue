@@ -27,7 +27,7 @@
                                     <div class="col-sm-9">
                                         <div class="row"> 
                                             <div class="col-sm-4">
-                                                <input v-model="person.age" type="text" placeholder="" class="form-control age-mobile">
+                                                <input v-model="person.age" type="number" placeholder="" class="form-control age-mobile">
                                             </div>
                                             <div class="col-12 col-md-8">
                                                 <label for="" class="custom-lable"> <b>Giới tính</b></label>
@@ -84,7 +84,7 @@
                                         <div class="col-sm-9">
                                             <div class="row"> 
                                                 <div class="col-sm-4">
-                                                    <input v-model="persons[0].age" type="text" placeholder="" class="form-control age-mobile">
+                                                    <input v-model="persons[0].age" type="number" placeholder="" class="form-control age-mobile">
                                                 </div>
                                                 <div class="col-12 col-md-8">
                                                     <label for="" class="custom-lable"> <b>Giới tính</b></label>
@@ -97,14 +97,14 @@
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label"><b>Số điện thoại:</b></label>
                                         <div class="col-sm-9">
-                                        <input type="text" v-model="persons[0].phoneNumber" placeholder="Số điện thoại của bạn" class="form-control"/>
+                                        <input type="text" v-model="persons[0].phoneNumber" placeholder="Số điện thoại" class="form-control"/>
                                         </div>
                                       
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label"><b>Email:</b></label>
                                         <div class="col-sm-9">
-                                        <input type="email" v-model="persons[0].email" placeholder="Email của bạn" class="form-control">
+                                        <input type="email" v-model="persons[0].email" placeholder="Email" class="form-control">
                                         </div>
                                      
                                     </div>
@@ -122,7 +122,7 @@
                                         <div class="col-sm-9">
                                             <div class="row"> 
                                                 <div class="col-sm-4">
-                                                    <input v-model="persons[1].age" type="text" placeholder="" class="form-control age-mobile">
+                                                    <input v-model="persons[1].age" type="number" placeholder="" class="form-control age-mobile">
                                                 </div>
                                                 <div class="col-12 col-md-8">
                                                     <label for="" class="custom-lable"> <b>Giới tính</b></label>
@@ -135,14 +135,14 @@
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label"><b>Số điện thoại:</b></label>
                                         <div class="col-sm-9">
-                                        <input type="text" v-model="persons[1].phoneNumber" placeholder="Số điện thoại của bạn" class="form-control"/>
+                                        <input type="text" v-model="persons[1].phoneNumber" placeholder="Số điện thoại" class="form-control"/>
                                         </div>
                                        
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label"><b>Email:</b></label>
                                         <div class="col-sm-9">
-                                        <input type="email" v-model="persons[1].email" placeholder="Email của bạn" class="form-control">
+                                        <input type="email" v-model="persons[1].email" placeholder="Email " class="form-control">
                                         </div>
                                        
                                     </div>
@@ -196,35 +196,120 @@ export default {
     },
 
     methods: {
+        toast(msg, type) {
+
+            this.$bvToast.toast(msg, {
+                title: 'Thông báo',
+                variant: type,
+                solid: true
+                })
+        },
         storeData: function (type) {
             
 
-            this.errors = [];
+            let check = true
             if (!this.person.fullName) {
-                this.errors[0] = 'Bạn chưa nhập tên.';
+                check = false
+                this.toast('Vui lòng nhập họ tên của bạn', 'warning')
+                this.toast('', 'warning')
             }
             if (!this.person.age) {
-                this.errors[1] = 'Bạn chưa nhập tuổi.';
-            } else {
-                if (isNaN(this.person.age)) {
-                     this.errors[1] = 'Bạn nhập sai tuổi.';
-                }
-            }
-            if (!this.person.sex) {
-                this.errors[2] = 'Bạn chưa chọn giới tính.';
-            }
+                check = false
+                this.toast('Vui lòng nhập tuổi của bạn', 'warning')
+            } else if (isNaN(this.person.age)) {
+                check = false
+                this.toast('', 'warning')
+            } else if (this.person.age < 10) {
+                check = false
+                this.toast('Bạn chưa đủ tuổi tham gia cuộc thi này', 'warning')
+            } else if (this.person.age > 100) {
+                check = false
+                this.toast('Bạn đã quá tuổi tham gia cuộc thi này', 'warning')
+            } 
             if (!this.person.phoneNumber) {
-                this.errors[3]='Bạn chưa nhập số điện thoại.';
+                check = false
+                this.toast('Vui lòng nhập số điện thoại của bạn', 'warning')
             }
             if (!this.person.email) {
-                this.errors[4] = 'Bạn chưa nhập Email.';
+                check = false
+                this.toast('Vui lòng nhập email', 'warning')
             } else {
-                if (!this.validateEmail(this.person.email))
-                    this.errors[4] = 'Email chưa đúng!';
+                if (!this.validateEmail(this.person.email)) {
+                    check = false
+                    this.toast('Định dạng email không chính xác', 'warning')
+                }
+                
             }
-            if (this.errors.length === 0) {
+
+            if (this.showMore) {
+                if (!this.persons[0].fullName) {
+                check = false
+                this.toast('Vui lòng nhập họ tên người chơi thứ nhất', 'warning')
+                this.toast('', 'warning')
+                }
+                if (!this.persons[0].age) {
+                    check = false
+                    this.toast('Vui lòng nhập tuổi của người chơi thứ nhất', 'warning')
+                } else if (isNaN(this.persons[0].age)) {
+                    check = false
+                    this.toast('', 'warning')
+                } else if (this.persons[0].age < 10) {
+                    check = false
+                    this.toast('Người chơi thứ nhất chưa đủ tuổi tham gia cuộc thi này', 'warning')
+                } else if (this.persons[0].age > 100) {
+                    check = false
+                    this.toast('Người chơi thứ nhất đã quá tuổi tham gia cuộc thi này', 'warning')
+                } 
+                if (!this.persons[0].phoneNumber) {
+                    check = false
+                    this.toast('Vui lòng nhập số điện thoại của người chơi thứ nhất', 'warning')
+                }
+                if (!this.persons[0].email) {
+                    check = false
+                    this.toast('Vui lòng nhập email của người chơi thứ nhất', 'warning')
+                } else {
+                    if (!this.validateEmail(this.persons[0].email)) {
+                        check = false
+                        this.toast('Định dạng email của người chơi thứ nhất không chính xác', 'warning')
+                    }
+                    
+                }
+                if (this.persons[1].fullName) {
+                    if (!this.persons[1].age) {
+                        check = false
+                        this.toast('Vui lòng nhập tuổi của người chơi thứ hai', 'warning')
+                    } else if (isNaN(this.persons[1].age)) {
+                        check = false
+                        this.toast('', 'warning')
+                    } else if (this.persons[1].age < 10) {
+                        check = false
+                        this.toast('Người chơi thứ hai chưa đủ tuổi tham gia cuộc thi này', 'warning')
+                    } else if (this.persons[1].age > 100) {
+                        check = false
+                        this.toast('Người chơi thứ hai đã quá tuổi tham gia cuộc thi này', 'warning')
+                    } 
+                    if (!this.persons[1].phoneNumber) {
+                        check = false
+                        this.toast('Vui lòng nhập số điện thoại của người chơi thứ hai', 'warning')
+                    }
+                    if (!this.persons[1].email) {
+                        check = false
+                        this.toast('Vui lòng nhập email của người chơi thứ hai', 'warning')
+                    } else {
+                        if (!this.validateEmail(this.persons[1].email)) {
+                            check = false
+                            this.toast('Định dạng email của người chơi thứ hai không chính xác', 'warning')
+                        }
+                        
+                    }
+                }
+            }
+            if (check) {
                 localStorage.setItem('person', JSON.stringify(this.person));
-                localStorage.setItem('persons', JSON.stringify(this.persons));
+                if (this.showMore) {
+                    localStorage.setItem('persons', JSON.stringify(this.persons));
+                }
+                
                 if (type == 1) {
                     this.$router.push('/upload-tour');
                 } else {
@@ -234,8 +319,8 @@ export default {
             }
         }, 
         validateEmail: function (email) {
-                var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                return re.test(String(email).toLowerCase());
+            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
         }
     }
      
