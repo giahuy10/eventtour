@@ -33,7 +33,7 @@
           <b-button variant="primary" v-if="loading" disabled>
               <b-spinner variant="success" type="grow" label="Spinning"></b-spinner>Vui lòng chờ...
           </b-button>
-          <button v-else type="submit" class="btn btn-save" @click="save">Tiếp theo</button>
+          <button v-else type="submit" class="btn btn-save" @click="save">Nộp bài</button>
         </div>
       </div>
     </div>
@@ -79,7 +79,7 @@ export default {
         this.tour.question = this.question
         
         console.log('tour', this.tour)
-        this.$axios.post('http://localhost:5000/add_result', this.tour)
+        this.$axios.post('https://ktoevents.mokara.com.vn/add_result', this.tour)
           .then(res => {
             console.log(res)
             this.tour.id = res.data.result
@@ -129,6 +129,7 @@ export default {
       background-image: url('/imgs/pencil.png');
       background-repeat: no-repeat;
       background-position: right center;
+          padding-right: 50px;
     }
   }
   .underline {

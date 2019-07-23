@@ -2,8 +2,8 @@
     <div>
         <div class="home-banner d-none d-sm-block" id="introduce">
             <div class="header-content">
-                <p>Ban ước mơ một ngày được khám phá xứ sở Kim Chi nhưng điều kiên chưa cho phép</p>
-                <a href="#" v-scroll-to="'#introduce4'" class="text-uppercase btn btn-join btn-warning">Tham gia cuôc thi</a>
+                <p>Bạn ước mơ một ngày được khám phá xứ sở Kim Chi nhưng điều kiện chưa cho phép</p>
+                <a href="#" v-scroll-to="'#introduce4'" class="text-uppercase btn btn-join btn-warning">Tham gia cuộc thi</a>
                 <p class="normal">
                     Do tổng cục Du Lịch Hàn Quốc (KTO) tổ chức <br>
                     để nhận ngay tấm vé tới xử sở Kim Chi <br>
@@ -19,7 +19,7 @@
         </div>
 
         
-
+        <div class="cloud-bg">
         <section class="introduce2" id="introduce2">
             <div class="container">
                 <div class="row">
@@ -39,7 +39,7 @@
                             </div>
                             <div class="img-content">
                                 <b>1 Giải nhì</b>
-                                <p><b class="fee">14.000.000/người</b></p>
+                                <p><b class="fee">14.000.000VND/người</b></p>
                                 <p>Tài trợ 75% chi phí chuyến du lịch <br> Hàn Quốc cho đội thắng cuộc</p>
                             </div>
                         </div>
@@ -51,7 +51,7 @@
                             </div>
                             <div class="img-content">
                                 <b>01 Giải Nhất</b>
-                                <p><b class="fee">16.000.000/người</b></p>
+                                <p><b class="fee">16.000.000VND/người</b></p>
                                 <p><b>Tài trợ 100% chi phí</b><br>
                                     Chuyến du lịch Hàn Quốc cho đội thắng cuộc
                                 </p>
@@ -65,14 +65,14 @@
                             </div>
                             <div class="img-content">
                                 <b>01 Giải Ba</b>
-                                <p><b class="fee">12.000.000/người</b></p>
-                                <p>Tài trợ 75% chi phí chuyến du lịch<br> Hàn Quốc cho đội thắng cuộc
+                                <p><b class="fee">12.000.000VND/người</b></p>
+                                <p>Tài trợ 50% chi phí chuyến du lịch<br> Hàn Quốc cho đội thắng cuộc
                                 </p>
                             </div>
                          </div>
                     </div>
                 </div>
-                <h5 style="color:#083e7c;margin-top:30px" class="text-uppercase title text-center">và hàng trăm giải thương hấp dẫn khác</h5>
+                <h5 style="color:#083e7c;margin-top:30px; font-weight: bold;" class="text-uppercase title text-center">và hàng trăm giải thưởng hấp dẫn khác</h5>
             </div>
             <!-- <div>
                 <img src="/imgs/footer-img.png" alt="">
@@ -100,8 +100,7 @@
                                     <b>Vòng 1</b>
                                </div>
                                <p>
-                                   Các cá nhân và đội nhóm sẽ tham gia xây dựng lịch trình du lịch tự túc tại Hàn Quốc thông qua trang web của KTO. BTC sẽ lựa chọn 12 lịch trình xuất sắc nhất để tham gia vào vòng thi thứ 2,
-                                   ngoài ra sẽ có 100 phần quà kỷ niệm dành cho các đội chơi may mắn khác.
+                                   Các cá nhân và đội nhóm sẽ tham gia xây dựng lịch trình du lịch tự túc tại Hàn Quốc hoặc đăng tải lịch trình đã được chuẩn bị sẵn lên trang web của KTO. BTC sẽ lựa chọn 12 lịch trình xuất sắc nhất để tham gia vào vòng thi thứ 2, ngoài ra sẽ có 100 phần quà kỷ niệm dành cho các đội chơi may mắn khác.
                                </p>
                            </div>
                        </div>
@@ -116,8 +115,7 @@
                                     <b>Vòng 2</b>
                                </div>
                                <p>
-                                   12 cá nhân và/hoặc đội nhóm có lịch trình xuất sắc được lựa chọn từ vòng 1 sẽ thực hiện quay video trình bày ý tưởng về lịch trình đã xây dựng. BTC sẽ lựa chọn 2 lịch trình xuất sắc nhất và 2 lịch trình được yêu thích nhất để tham gia vòng 3,
-                                   6 lịch trình còn lại sẽ nhận quả tặng từ Ban tổ chức
+                                   12 cá nhân và/hoặc đội nhóm có lịch trình xuất sắc được lựa chọn từ vòng 1 sẽ thực hiện quay video trình bày ý tưởng về lịch trình đã xây dựng. BTC sẽ lựa chọn 3 lịch trình xuất sắc nhất và 3 lịch trình được yêu thích nhất để tham gia vòng 3, 6 lịch trình còn lại sẽ nhận quà tặng từ Ban tổ chức
                                </p>
                            </div>
                        </div>
@@ -145,6 +143,7 @@
                </div>
             </div>
         </section>
+        </div>
         <section class="introduce4" id="introduce4">
             <div class="container">
                 <div class="row">
@@ -183,7 +182,7 @@
                                 </div>
                                 <div class="content">
                                     <p>
-                                        Bắt đầu phần thi vòng 1 - Hãy xây dựng một lịch trình du lịch tự túc tại Hàn Quốc thật hợp lý và sáng tạo theo khung lịch trình mà KTO cung cấp, bạn nhé!
+                                        Bắt đầu phần thi vòng 1 - Hãy xây dựng một lịch trình du lịch tự túc tại Hàn Quốc thật hợp lý và sáng tạo theo khung lịch trình mà KTO cung cấp hoặc đăng tải lịch trình mà bạn đã chuẩn bị sẵn, bạn nhé!
                                     </p>
                                 </div>
                             </div>
@@ -191,8 +190,7 @@
                     </div>
                 </div>
             </div>
-        </section>
-        <section class="register" id="register">
+             <section class="register" id="register">
             <div class="container">
                 <div class="row">
                     <div class="text-center col-md-12" v-if="!checkedUser.email">
@@ -201,7 +199,7 @@
                     </div>
                     <div class="text-center col-md-12" v-else>
                         <nuxt-link class="btn-login btn btn-warning" to="/single-info" no-prefetch>Tham gia</nuxt-link>
-                        <button class="btn btn-success" @click="logout">Logout</button>
+                        <button class="btn btn-success" @click="logout">Đăng xuất</button>
                     </div>
                 </div>
                 <div class="row">
@@ -211,12 +209,14 @@
                 </div>
             </div>
         </section>
+        </section>
+       
         <section class="introduce6" id="introduce6">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
                         <div>
-                            <h4 class="text-uppercase title">Lưu ý chung</h4>
+                            <h4 class="text-uppercase title">Lưu ý cho thí sinh</h4>
                             <p>
                                 - Bằng cách tham gia chương trình, người tham gia xem như đồng ý với tất cả thể lệ chương trình <br>
                                 - Nghiêm cấm các hình thức gian lận trong cuộc thi. BTC có quyền loại người tham gia nếu phát hiện gian lận <br>
@@ -302,12 +302,27 @@ export default {
 }
 .introduce4 {
     @media screen and (max-width: 767px) {
-        background-position: center bottom;
+       background: none;
     } 
+    @media screen and (min-width: 1200px) and (max-width: 1600px) {
+        background-position: -130px 80px;
+    }
+}
+.introduce6 {
+    padding-top: 10px;
+    @media screen and (min-width: 1200px) and (max-width: 1600px) {
+        padding-top: 0;
+    }
 }
 .introduce3 {
     @media screen and (max-width: 767px) {
         background: none;
+        padding-top: 0;
+    }
+}
+.introduce2 {
+    @media screen and (max-width: 767px) {
+        padding-bottom: 0;
     }
 }
 .home-banner-m {
@@ -315,6 +330,27 @@ export default {
     img {
         width: 100%;
     }
+}
+.introduce6 {
+    h4 {
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+}
+#register {
+    button.btn.btn-resg.btn-info {
+        background: #3fb5f2 !important;
+        border-color:  #3fb5f2 !important;
+    }
+    .container {
+        @media screen and (max-width: 767px) {
+            padding-top: 10px;
+        }
+    }
+}
+.cloud-bg {
+    background: url(/imgs/cloud-bg.png) no-repeat;
+    background-size: 100% auto;
 }
 </style>
 

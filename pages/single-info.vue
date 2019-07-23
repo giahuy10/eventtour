@@ -41,7 +41,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label"><b>Số điện thoại:</b></label>
                                     <div class="col-sm-9">
-                                    <input type="text" v-model="person.phoneNumber" placeholder="Số điện thoại của bạn" class="form-control"/>
+                                    <input type="number" v-model="person.phoneNumber" placeholder="Số điện thoại của bạn" class="form-control"/>
                                     </div>
                                     <div class="col-12">
                                         <i v-if="errors[3]" class="mes-err">{{ errors[3] }}</i>
@@ -97,7 +97,7 @@
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label"><b>Số điện thoại:</b></label>
                                         <div class="col-sm-9">
-                                        <input type="text" v-model="persons[0].phoneNumber" placeholder="Số điện thoại" class="form-control"/>
+                                        <input type="number" v-model="persons[0].phoneNumber" placeholder="Số điện thoại" class="form-control"/>
                                         </div>
                                       
                                     </div>
@@ -135,7 +135,7 @@
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label"><b>Số điện thoại:</b></label>
                                         <div class="col-sm-9">
-                                        <input type="text" v-model="persons[1].phoneNumber" placeholder="Số điện thoại" class="form-control"/>
+                                        <input type="number" v-model="persons[1].phoneNumber" placeholder="Số điện thoại" class="form-control"/>
                                         </div>
                                        
                                     </div>

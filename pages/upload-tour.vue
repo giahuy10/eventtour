@@ -31,7 +31,7 @@
           </ul>
         </div>
         <div class="text-center">
-            <button type="submit" class="btn btn-submit" @click="save">Nộp bài</button>
+            <button type="submit" class="btn btn-submit" @click="save">Tiếp theo</button>
         </div>
     </div>
     <img src="/imgs/footter.png" alt="">
@@ -47,6 +47,11 @@ export default {
         link: ''
       },
       err: []
+    }
+  },
+  mounted () {
+    if (!localStorage.getItem('person')) {
+      this.$router.push('/single-info')
     }
   },
   methods: {
@@ -73,6 +78,7 @@ export default {
 </script>
 
 <style lang="scss">
+
 .upload-tour-inner {
   width: 910px;
   @media screen and (min-width: 768px) {
@@ -98,6 +104,9 @@ export default {
   font-size: 18px;
   p {
     color: #4e4e4e;
+    &.text-blue {
+      color: #2d4197;
+    }
   }
   ul {
     padding-left: 80px;

@@ -72,6 +72,8 @@ export default {
             this.tour.persons = JSON.parse(localStorage.getItem('persons'))
             this.tour.type = 2
             this.genTable()
+        } else {
+            this.$router.push('/editplaning-m2')
         }
         
     },
@@ -86,7 +88,7 @@ export default {
             if (check) {
                 this.loading = true
          
-                this.$axios.post('http://localhost:5000/add_result', this.tour)
+                this.$axios.post('https://ktoevents.mokara.com.vn/add_result', this.tour)
                 .then(res => {
                     console.log(res)
                     this.tour.id = res.data.result

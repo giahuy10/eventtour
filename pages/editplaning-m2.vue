@@ -1,14 +1,14 @@
 <template>
-    <div class="planing inner-page">
+    <div class="planing inner-page" id="tour-title">
         <div class="planing-inner inner-box">
             <div class="overview">
-                <h3 class="text-uppercase text-center gr-title text-blue">Thông tin chung</h3>
+                <h3 class="text-uppercase text-center gr-title text-blue" >Thông tin chung</h3>
                 <input type="text" class="form-control text-center tour-name-input" v-model="tour.name" placeholder="Hãy đặt tên cho tour du lịch của bạn nhé!">
                 <br><br><br>
                 <h3 class="text-uppercase text-center gr-title text-blue">Thời gian dự kiến</h3>
                
                 <div class="select-days d-none d-sm-block">
-                    <vue-slider @error="error" v-model="tour.day" :min="min" :tooltip="'always'" :data="days" :marks="true" @change="changeDays">
+                    <vue-slider :key="componentKey" ref="slider" @error="error" v-model="tour.day" :min="min" :tooltip="'always'" :data="days" :marks="true" @change="changeDays">
                         <template v-slot:tooltip="{ value }">
                             <div class="custom-tooltip">{{ parseInt(value) * 200}}$</div>
                         </template>
@@ -60,7 +60,9 @@
                     </tbody>
                 </table>
                 </div>
-                
+                <div class="text-center pt-4 mb-4">
+                    <button class="btn btn-next-day" @click="submit" v-if="readySubmit"> <i class="fa fa-check"></i> Nộp bài</button>
+                </div>
                 <div class="underline text-center"><span></span></div>
             </div>
             <div class="progress-list">
@@ -108,6 +110,28 @@
                                 <button class="btn btn-add-time" @click="saveTime">Lưu</button>
                             </div>
                         </div>
+                        
+                        <div class="mobile-slider">
+                            <span class="cursor" @click="mobileSliderAct =  mobileSliderAct > 1 ? mobileSliderAct -1 : 1"><i class="fa fa-angle-left" aria-hidden="true"></i></span>
+                            <div v-for="activity in cities[currentCity].activities" :key="activity.id">
+                                <div class="activity-selection  text-center" v-if="activity.id == mobileSliderAct">
+                                    <div class="row" >
+                                        <div class="col-6">
+                                            <img :src="'/imgs/act/'+currentCity+'/'+activity.id+'.jpg'" />
+                                        </div>
+                                        <div class="col-6">
+                                            <label><input type="radio" :value="activity.id" v-model="selectedActivities"/> <br> {{activity.name}}</label> <br>
+                                        Giá: {{activity.price > 0 ? '$'+activity.price : 'Miễn phí'}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="cursor" @click="mobileSliderAct =  mobileSliderAct < cities[currentCity].activities.length ? mobileSliderAct +1 : mobileSliderAct"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+                        </div>
+                            
+                            
+                        
+
                     </div>
                     <h3 class="headline">Lựa chọn phương tiện</h3>
                     <div class="trans-block block-m">
@@ -158,14 +182,13 @@
                         </div>
                     </div>
                         <div class="text-center pt-5">
-                            <button class="btn btn-add-time" v-if="!readySubmit" @click="nextCity"><i class="fa fa-building-o" aria-hidden="true"></i> Lưu thành phố</button> <br><br>
+                            <button class="btn btn-add-time" v-if="!readySubmit" @click="nextCity"><i class="fa fa-building-o" aria-hidden="true"></i> Thành phố tiếp theo</button> <br><br>
                             <!-- <button class="btn btn-add-time" v-if="!readySubmit" @click="editCity"><i class="fa fa-pencil" aria-hidden="true"></i> Sửa lại thành phố</button> -->
                             <button class="btn btn-next-day" @click="nextDay" v-if="currentDay < tour.day">
                                 <i class="fa fa-sun-o" aria-hidden="true"></i> Ngày tiếp theo
                             </button>
-                            <button class="btn btn-success" v-else @click="nextDay, readySubmit = true, $scrollTo('#pros-table')"><i class="fa fa-history" aria-hidden="true"></i> Xem lại lịch trình</button>
+                            <button class="btn btn-success" v-else @click="nextDay(1)"><i class="fa fa-history" aria-hidden="true"></i> Xem lại lịch trình</button>
 
-                            <button class="btn btn-next-day" @click="submit" v-if="readySubmit"> <i class="fa fa-check"></i> Nộp bài</button>
                         </div>
                 </div>
                 <div v-if="currentCity" class="wrap-progress d-none d-sm-block">
@@ -204,7 +227,7 @@
                                     <div class="col-12 col-md-4" v-for="activity in cities[currentCity].activities" :key="activity.id">
                                         <div class="activity-selection  text-center">
                                             <img :src="'/imgs/act/'+currentCity+'/'+activity.id+'.jpg'" />
-                                            <label><input type="radio" :value="activity.id" v-model="selectedActivities"/> {{activity.name}} <br></label>
+                                            <label><input type="radio" :value="activity.id" v-model="selectedActivities"/> {{activity.name}}</label> <br>
                                                 Giá: {{activity.price > 0 ? '$'+activity.price : 'Miễn phí'}}
                                         </div>
                                     </div>
@@ -218,10 +241,10 @@
                                     </div>
                                     <div class="col-12">
                                     <div class="text-center pt-5">
-                                        <button class="btn btn-add-time" @click="saveTime"><i class="fa fa-clock-o" aria-hidden="true"></i> Khung thời gian tiếp theo</button>
+                                        <button class="btn btn-add-time" @click="saveTime"><i class="fa fa-clock-o" aria-hidden="true"></i> Lưu hoạt động</button>
 
                                         <button class="btn btn-add-time" @click="overrideAct" v-if="tour.progress[currentDay][currentCity].activities.length > 0">
-                                            <i class="fa fa-pencil"></i> Ghi đè lên khung thời gian hiện tại
+                                            <i class="fa fa-pencil"></i> Đổi hoạt động
                                         </button>
                                     </div>
                                     </div>
@@ -270,7 +293,8 @@
                                         </div>
                                     </div>
                                     <div class="col-12">
-                                    <div class="text-center pt-5">
+                                        <p class="text-center"><i>* Có thể bỏ qua nếu bạn không lựa chọn ẩm thực ở đây</i></p>
+                                    <div class="text-center pt-1">
                                         <button class="btn btn-add-time" @click="saveFood"><i class="fa fa-transgender-alt" aria-hidden="true"></i> Lưu món ăn</button>
                                     </div>
                                     </div>
@@ -302,13 +326,13 @@
                         <div class="underline text-center"><span></span></div>
                         <div class="text-center pt-5">
                             <button class="btn btn-add-time" v-if="!readySubmit" @click="nextCity"><i class="fa fa-building-o" aria-hidden="true"></i> Thành phố tiếp theo</button>
-                            <button class="btn btn-add-time" v-if="!readySubmit" @click="editCity"><i class="fa fa-pencil" aria-hidden="true"></i> Sửa lại thành phố</button>
+                            <!-- <button class="btn btn-add-time" v-if="!readySubmit" @click="editCity"><i class="fa fa-pencil" aria-hidden="true"></i> Sửa lại thành phố</button> -->
                             <button class="btn btn-next-day" @click="nextDay" v-if="currentDay < tour.day">
                                 <i class="fa fa-sun-o" aria-hidden="true"></i> Ngày tiếp theo
                             </button>
-                            <button class="btn btn-success" v-else @click="nextDay, readySubmit = true, $scrollTo('#pros-table')"><i class="fa fa-history" aria-hidden="true"></i> Xem lại lịch trình</button>
+                            <button class="btn btn-success" v-else @click="nextDay(1)"><i class="fa fa-history" aria-hidden="true"></i> Xem lại lịch trình</button>
 
-                            <button class="btn btn-next-day" @click="submit" v-if="readySubmit"> <i class="fa fa-check"></i> Nộp bài</button>
+                           
                         </div>
                     
                     </div>
@@ -317,6 +341,18 @@
     <b-modal id="modal-1" ref="my-modal"  size="lg" title="Hướng dẫn tạo lịch trình">
         <div class="text-center">
         <iframe width="560" height="315" src="https://www.youtube.com/embed/Lky60WNXOro" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </b-modal>
+
+    <b-modal id="modal-2" ref="my-modal-2" :title="addNewModal.title">
+        <div class="form-group">
+            <input type="text" class="form-control" v-modal="addNewModal.name" placeholder="Tên">
+        </div>
+        <div class="form-group">
+            <input type="number" class="form-control" v-modal="addNewModal.price" placeholder="Giá ($)">
+        </div>
+        <div class="form-group">
+            <button class="btn btn-success" @click="addNewModalSubmit(addNewModal.type)">Thêm</button>
         </div>
     </b-modal>
      <img src="/imgs/footter.png" alt="">
@@ -329,26 +365,36 @@ import Multiselect from 'vue-multiselect'
 import VueTimepicker from 'vue2-timepicker'
 import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/default.css'
+const ERROR_TYPE = {
+    VALUE: 1,
+    INTERVAL: 2,
+    MIN: 3,
+    MAX: 4,
+}
 export default {
     components: {
         VueSlider, Multiselect, VueTimepicker
     },
     mounted () {
-        this.testData = JSON.parse(localStorage.getItem('tour'))
-        this.genNewTable()
-        let obj = {
-          1: {
-            a: 'name'
-          },
-          2: {
-            a: 'ff',
-            b: 'd'
-          }
+        if (!localStorage.getItem('person')) {
+            this.$router.push('/single-info')
         }
-        console.log('count',Object.keys(obj).length)
+        // this.genNewTable()
+        
     },
     data () {
         return {
+            mobileSliderAct: 1,
+            slide: 0,
+            sliding: null,
+            addNewModal: {
+                type: '',
+                title: '',
+                name: '',
+                price: '',
+                thumb: ''
+            },
+            modalTitle: '',
             newact: {
                 name: '',
                 price: 0,
@@ -382,7 +428,7 @@ export default {
             selectedTransport: [],
             selectedFood: [],
             selectedAccommodation: 0,
-            testData: {},
+      
             selectedTime: {
                 start: {
                     HH: '07',
@@ -978,10 +1024,18 @@ export default {
             },
             currentCity: 0,
             currentCityObject: {},
-            selectedCity: []
+            selectedCity: [],
+            renderComponent: true,
+            componentKey: 0
         }
     },
     methods: {
+        onSlideStart(slide) {
+            this.sliding = true
+        },
+        onSlideEnd(slide) {
+            this.sliding = false
+        },
         genNewTable () {
             let res = []
             let rows = []
@@ -1098,6 +1152,10 @@ export default {
             this.rows = rows
             this.$scrollTo('#pros-table')
         },
+        forceRerender() {
+            this.$forceUpdate()
+        },
+        
     
         nextCity () {
 
@@ -1122,7 +1180,8 @@ export default {
           }
 
         },
-        nextDay () {
+        nextDay (type = 0) {
+            
             let check = true
             if (!this.validDay.acc) {
                 check = false
@@ -1143,6 +1202,9 @@ export default {
                 acc: false,
                 food: false
               }
+              if (type == 1) {
+                this.readySubmit = true
+                }
               this.resetTime()
               this.genNewTable()
                 
@@ -1160,7 +1222,8 @@ export default {
         },
         submit () {
             if (!this.tour.name) {
-                alert('Vui lòng nhập tên của chuyến đi')
+                this.toast('Vui lòng nhập tên chuyến đi', 'warning')
+                this.$scrollTo('#tour-title')
             } else {
                 localStorage.setItem('tour', JSON.stringify(this.tour))
                 this.$router.push('/review-planing')
@@ -1184,6 +1247,7 @@ export default {
                 this.selectedActivities = 0
                 this.nextTime()
                 this.genNewTable()
+                this.currentTab = 2
                 this.toast('Thêm hoạt động thành công', 'success')
             } else{
                 this.toast('Vui lòng chọn hoạt động trước', 'warning')
@@ -1246,6 +1310,7 @@ export default {
                     this.tour.progress[this.currentDay][this.currentCity].transport.push(this.cities[this.currentCity].transport[item])
                 }
             })
+            this.currentTab = 3
             this.genNewTable()
             this.toast('Thêm phương tiện thành công', 'success')
           }
@@ -1266,6 +1331,7 @@ export default {
 
                 }
             })
+            this.currentTab = 1
             this.toast('Thêm món ăn thành công', 'success')
             this.genNewTable()
           }
@@ -1341,16 +1407,23 @@ export default {
             }
         },
         changeDays (data) {
-            console.log(data)
+           // console.log('pre index', this.$refs.slider.getIndex())
             if (data < 3) {
-                alert('Số ngày tối thiểu là 3')
+                console.log('be qua roi', data)
                 this.tour.day = 3
+                alert('Thời gian tối thiểu là 3 ngày')
                 location.reload()
+                
             }
             
             
         },
+        dragend (val) {
+            console.log('dragend', val)
+        },
         error(type, msg) {
+            console('err type', type)
+            console('err msg', msg)
             switch (type) {
             case ERROR_TYPE.MIN:
                 break
@@ -1458,12 +1531,7 @@ export default {
             }
             
         },
-        selectedFood(val) {
-            console.log('food', val)
-            if (val.length > 0) {
-                this.validDay.food = true
-            }
-        },
+    
         tour(val) {
             console.log('day change', val.day)
         },

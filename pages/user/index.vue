@@ -45,6 +45,12 @@
                         <td v-text="tour.name"></td>
                     </tr>
                     <tr>
+                        <td><b>Link bài thi</b></td>
+                        <td >
+                            <a :href="tour.link" target="_blank" v-text="tour.link"></a>
+                        </td>
+                    </tr>
+                    <tr>
                         <td><b>Câu hỏi truyền cảm hứng</b></td>
                         <td v-text="tour.question"></td>
                     </tr>
@@ -90,7 +96,7 @@ export default {
     },
 
     mounted () {
-        let tourId = this.$route.params.id;
+        let tourId = this.$route.query.id;
         let url = 'https://ktoevents.mokara.com.vn/get_result?id=' + tourId;
         this.$axios.get(url).then( res => {
             console.log(res)

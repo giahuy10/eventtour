@@ -10,6 +10,7 @@
                         <th>Tên người chơi</th>
                         <th>Email</th>
                         <th>Sđt</th>
+                        <td>GIFTCODE</td>
                         <th>Thời gian</th>
                         <th>Chi tiết</th>
                     </tr>
@@ -21,9 +22,10 @@
                         <td v-text="item.person.fullName"></td>
                         <td v-text="item.person.email"></td>
                         <td v-text="item.person.phoneNumber"></td>
-                        <td>{{item.date ? item.date.$date : '' | moment("dddd, MMMM Do YYYY, h:mm:ss a")}}</td>
+                        <td v-text="item.code"></td>
+                        <td>{{item.date ? item.date.$date : '' | moment('timezone', 'Etc/UTC','dddd, MMMM Do YYYY, h:mm:ss a')}}</td>
                         <td>
-                            <a :href="'/user/'+item._id.$oid" class="btn btn-success" target="_blank" >Xem</a>
+                            <a :href="'/user?id='+item._id.$oid" class="btn btn-success" target="_blank" >Xem</a>
                         </td>
                     </tr>
                 </tbody>
@@ -44,7 +46,7 @@ export default {
         }
     },
     mounted (){
-        this.$axios.get('http://localhost:5000/get_results?type='+this.type)
+        this.$axios.get('https://ktoevents.mokara.com.vn/get_results?type='+this.type)
             .then(res => {
                 this.results = res.data
                 console.log(res)

@@ -1,10 +1,4 @@
 /**
-  * vue-class-component v7.0.1
-  * (c) 2015-present Evan You
-  * @license MIT
-  */
-
-/**
  * @license
  * Copyright 2018 Google Inc.
  *
@@ -115,12 +109,6 @@ and limitations under the License.
  * Released under the MIT license
  */
 
-/*!
- * vue-no-ssr v1.1.1
- * (c) 2018-present egoist <0x142857@gmail.com>
- * Released under the MIT License.
- */
-
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
  * @version 1.15.0
@@ -160,6 +148,42 @@ and limitations under the License.
 /*!
   * vue-scrollto v2.15.0
   * (c) 2019 Randjelovic Igor
+  * @license MIT
+  */
+
+/*!
+ * vue-no-ssr v1.1.1
+ * (c) 2018-present egoist <0x142857@gmail.com>
+ * Released under the MIT License.
+ */
+
+//! moment.js
+
+//! version : 2.19.1
+
+//! authors : Tim Wood, Iskren Chernev, Moment.js contributors
+
+//! license : MIT
+
+//! momentjs.com
+
+//! moment-timezone.js
+
+//! version : 0.5.26
+
+//! Copyright (c) JS Foundation and other contributors
+
+//! github.com/moment/moment-timezone
+
+/*!
+ * vue-social-sharing v2.4.5 
+ * (c) 2019 nicolasbeauvais
+ * Released under the MIT License.
+ */
+
+/**
+  * vue-class-component v7.0.1
+  * (c) 2015-present Evan You
   * @license MIT
   */
 

@@ -4,12 +4,26 @@
       <h3 class="text-center">Share link sự kiện trên Facebook</h3>
       <div class="text-center cursor">
         <input type="text" readonly v-model="linkFacebook" class="form-control share-post">
-        <img style="width: 200px;" src="https://i.pinimg.com/originals/23/b7/d0/23b7d045f7cdf8fc7271a588afd6565e.png" alt="">
+        <social-sharing url="https://kto-landing.firebaseapp.com"
+                      title="Tạo tour tự túc - Hạnh phúc đi Hàn"
+                      description="Bạn ước mơ một ngày được khám phá xứ sở Kim Chi nhưng điều kiện chưa cho phép? Tham gia ngay cuộc thi do tổng cục Du Lịch Hàn Quốc (KTO) tổ chức để nhận ngay tấm vé tới xử sở Kim Chi - Hoàn toàn miễn phí"
+                      quote="Tham gia ngay để nhận chuyến du lịch Hàn Quốc miễn phí nhé!"
+                      hashtags="KTO,VisitKorea"
+                     
+                      inline-template>
+          <div class="btn btn-fb">
+          
+              <network network="facebook">
+                <i class="fa fa-facebook"></i> Chia sẻ lên Facebook
+              </network>
+          
+          </div>
+          </social-sharing>
       </div>
       <div class="gift-code">
-        <p><b>* Phần dành cho khách hàng có mã Gift code</b></p>
+        <p><b>* Phần dành cho khách hàng có mã GIFTCODE</b></p>
         <div class="form-group row">
-          <label for="" class="col-sm-6">Điền thông tin Giftcode</label>
+          <label for="" class="col-sm-6">Điền thông tin GIFTCODE</label>
           <div class="col-sm-6">
             <input type="text" class="form-control" v-model="giftcode.code">
           </div>
@@ -33,7 +47,7 @@
 export default {
   data () {
     return {
-      linkFacebook: 'https://facebook.com',
+      linkFacebook: 'http://visitkorea.org.vn/tao-tour-tu-tuc-hanh-phuc-di-han',
       giftcode: {
         code: '',
         phone: ''
@@ -46,6 +60,9 @@ export default {
   mounted () {
     if (localStorage.getItem('tour')) {
       this.tour = JSON.parse(localStorage.getItem('tour'))
+      console.log(this.tour)
+    } else {
+      this.$router.push('/single-info')
     }
 
   },
@@ -55,7 +72,7 @@ export default {
       let check = true
       if (!this.giftcode.code) {
         check = false
-        this.err.push('Vui lòng nhập gift code')
+        this.err.push('Vui lòng nhập GIFTCODE')
       }
       if (!this.giftcode.phone) {
         check = false
@@ -63,8 +80,8 @@ export default {
       }
       if (check) {
         this.loading = true
-        let tourId = this.tour.id ? this.tour.id: '0'
-        this.$axios.get('http://localhost:5000/check_code?code='+this.giftcode.code+'&phone='+this.giftcode.phone)
+        let tourId = this.tour.id ? this.tour.id.$oid: '0'
+        this.$axios.get('https://ktoevents.mokara.com.vn/check_code?code='+this.giftcode.code+'&phone='+this.giftcode.phone+'&tourid='+tourId)
           .then(res => {
             console.log(res)
             if (res.data.status == 1) {
@@ -95,6 +112,10 @@ export default {
 
 <style lang="scss">
 .final-inner {
+  .btn.btn-fb {
+    background: #3b64bd;
+    color: #fff;
+}
   width: 700px;
   padding-top: 60px;
   .gift-code {
