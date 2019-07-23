@@ -78,7 +78,13 @@
 
                 <!-- MOBILE VERSION -->
                 <div v-if="currentCity" class="wrap-progress mobile-progress d-block d-sm-none">
-                    <h3 class="headline">Lựa chọn thời gian</h3>
+           
+                    
+                    
+                    <h3 class="headline">Lựa chọn hoạt động 
+                        <i class="fa fa-plus " @click="$refs['my-modal-2'].show(), addNewModal.title='Thêm mới hoạt động', addNewModal.type=1"></i>
+                    </h3>
+                    <div class="clearfix"></div>
                     <div class="time-block block-m">
                         <div class="row text-center">
                             <div class="col-6">
@@ -95,49 +101,61 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <h3 class="headline">Lựa chọn hoạt động</h3>
                     <div class="act-block block-m">
-                        <div class="row">
-                            <div class="col-8">
-                                <select v-model="selectedActivities" class="form-control" name="" id="">
-                                    <option value="0"> -- Chọn một hoạt động --</option>
-                                    <option  v-for="activity in cities[currentCity].activities" :value="activity.id" :key="activity.id">{{activity.name}} (${{activity.price}})</option>
-
-                                </select>
-                            </div>
-                            <div class="col-4">
-                                <button class="btn btn-add-time" @click="saveTime">Lưu</button>
-                            </div>
-                        </div>
                         
                         <div class="mobile-slider">
-                            <span class="cursor" @click="mobileSliderAct =  mobileSliderAct > 1 ? mobileSliderAct -1 : 1"><i class="fa fa-angle-left" aria-hidden="true"></i></span>
+                            <span class="cursor move-slider-button left" @click="moveAct(1)"><i class="fa fa-angle-left" aria-hidden="true"></i></span>
                             <div v-for="activity in cities[currentCity].activities" :key="activity.id">
                                 <div class="activity-selection  text-center" v-if="activity.id == mobileSliderAct">
                                     <div class="row" >
                                         <div class="col-6">
                                             <img :src="'/imgs/act/'+currentCity+'/'+activity.id+'.jpg'" />
                                         </div>
-                                        <div class="col-6">
-                                            <label><input type="radio" :value="activity.id" v-model="selectedActivities"/> <br> {{activity.name}}</label> <br>
-                                        Giá: {{activity.price > 0 ? '$'+activity.price : 'Miễn phí'}}
+                                        <div class="col-6 v-center">
+                                            <div>
+                                                <label> {{activity.name}}</label> <br>
+                                                Giá: {{activity.price > 0 ? '$'+activity.price : 'Miễn phí'}} <br>
+                                                <button class="btn btn-add-time" @click="selectedActivities = activity.id, saveTime()">Chọn</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <span class="cursor" @click="mobileSliderAct =  mobileSliderAct < cities[currentCity].activities.length ? mobileSliderAct +1 : mobileSliderAct"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+                            <span class="cursor move-slider-button right" @click="moveAct(2)"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
                         </div>
-                            
-                            
-                        
-
                     </div>
-                    <h3 class="headline">Lựa chọn phương tiện</h3>
+                    <h3 class="headline">Lựa chọn món ăn <i class="fa fa-plus" @click="$refs['my-modal-2'].show(), addNewModal.title='Thêm mới món ăn', addNewModal.type=3"></i>
+                    </h3>
+                    <div class="clearfix"></div>
+                    <div class="food-block block-m">
+                        <div class="mobile-slider">
+                            <span class="cursor move-slider-button left" @click="moveFood(1)"><i class="fa fa-angle-left" aria-hidden="true"></i></span>
+                            <div v-for="food in cities[currentCity].food" :key="food.id">
+                                <div class="activity-selection  text-center" v-if="food.id == mobileSliderFood">
+                                    <div class="row" >
+                                        <div class="col-6">
+                                            <img :src="'/imgs/food/'+currentCity+'/'+food.id+'.jpg'" />
+                                        </div>
+                                        <div class="col-6 v-center">
+                                            <div>
+                                                <label> {{food.name}}</label> <br>
+                                                Giá: {{food.price > 0 ? '$'+food.price : 'Miễn phí'}} <br>
+                                                <button class="btn btn-add-time" @click="saveFoodMobile(food.id)">Chọn</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="cursor move-slider-button right" @click="moveFood(2)"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+                        </div>
+                    </div>
+                    <h3 class="headline">Lựa chọn phương tiện <i class="fa fa-plus" @click="$refs['my-modal-2'].show(), addNewModal.title='Thêm mới phương tiện', addNewModal.type=2"></i>
+                    </h3>
+                    <div class="clearfix"></div>
                     <div class="trans-block block-m">
                         <div class="row">
                             <div class="col-8">
-                                <multiselect v-model="selectedTransport" :options="objtoarr(cities[currentCity].transport)" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Lựa chọn phương tiện" label="name" track-by="name">
+                                <multiselect v-model="selectedTransport" :options="objtoarr(cities[currentCity].transport)" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="false" placeholder="Lựa chọn phương tiện" label="name" track-by="name">
                                     <template slot="selection" slot-scope="{ values, search, isOpen }">
                                         <span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} đã chọn</span>
                                     </template>
@@ -150,23 +168,9 @@
                         </div>
                     </div>
 
-                    <h3 class="headline">Lựa chọn món ăn</h3>
-                    <div class="trans-block block-m">
-                        <div class="row">
-                            <div class="col-8">
-                                <multiselect v-model="selectedFood" :options="objtoarr(cities[currentCity].food)" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Lựa chọn món ăn" label="name" track-by="name">
-                                    <template slot="selection" slot-scope="{ values, search, isOpen }">
-                                        <span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} đã chọn</span>
-                                    </template>
-                                </multiselect>
-                                
-                            </div>
-                            <div class="col-4">
-                                <button class="btn btn-add-time" @click="saveFood(1)">Lưu</button>
-                            </div>
-                        </div>
-                    </div>
-                    <h3 class="headline">Lựa chọn chỗ ở</h3>
+                    <h3 class="headline">Lựa chọn chỗ ở <i class="fa fa-plus " @click="$refs['my-modal-2'].show(), addNewModal.title='Thêm mới chỗ ở', addNewModal.type=4"></i>
+                    </h3>
+                    <div class="clearfix"></div>
                     <div class="act-block block-m">
                         <div class="row">
                             <div class="col-8">
@@ -208,7 +212,7 @@
                     </div>
                     <div class="row select-progress">
                         <div class="col-12 col-md-3">
-                            <div class="time-block text-center">
+                            <div class="time-block text-center" v-if="currentTab == 1">
                                 <div class="time-start">
                                     Thời gian bắt đầu <br>
                                         <vue-timepicker :yourFormat="yourFormat" :minute-interval="15" v-model="selectedTime.start"></vue-timepicker> <br>
@@ -338,18 +342,19 @@
                     </div>
             </div>
         </div>
-    <b-modal id="modal-1" ref="my-modal"  size="lg" title="Hướng dẫn tạo lịch trình">
+    <b-modal id="modal-1" ref="my-modal"  size="lg" title="Hướng dẫn tạo lịch trình" hide-footer>
         <div class="text-center">
         <iframe width="560" height="315" src="https://www.youtube.com/embed/Lky60WNXOro" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
     </b-modal>
 
-    <b-modal id="modal-2" ref="my-modal-2" :title="addNewModal.title">
+    <b-modal id="modal-2" ref="my-modal-2" :title="addNewModal.title" hide-footer>
+       
         <div class="form-group">
-            <input type="text" class="form-control" v-modal="addNewModal.name" placeholder="Tên">
+            <input type="text" class="form-control" v-model="addNewModal.name" placeholder="Tên">
         </div>
         <div class="form-group">
-            <input type="number" class="form-control" v-modal="addNewModal.price" placeholder="Giá ($)">
+            <input type="number" class="form-control" v-model="addNewModal.price" placeholder="Giá ($)">
         </div>
         <div class="form-group">
             <button class="btn btn-success" @click="addNewModalSubmit(addNewModal.type)">Thêm</button>
@@ -385,6 +390,7 @@ export default {
     data () {
         return {
             mobileSliderAct: 1,
+            mobileSliderFood: 1,
             slide: 0,
             sliding: null,
             addNewModal: {
@@ -1030,11 +1036,27 @@ export default {
         }
     },
     methods: {
-        onSlideStart(slide) {
-            this.sliding = true
+        moveAct(type = 1) {
+            if (type == 1) {
+                if (this.mobileSliderAct > 1) {
+                    this.mobileSliderAct = this.mobileSliderAct - 1
+                }
+            } else {
+                if ( this.mobileSliderAct < Object.keys(this.cities[this.currentCity].activities).length) {
+                    this.mobileSliderAct = this.mobileSliderAct + 1
+                } 
+            }
         },
-        onSlideEnd(slide) {
-            this.sliding = false
+        moveFood(type = 1) {
+            if (type == 1) {
+                if (this.mobileSliderFood > 1) {
+                    this.mobileSliderFood = this.mobileSliderFood - 1
+                }
+            } else {
+                if ( this.mobileSliderFood < Object.keys(this.cities[this.currentCity].food).length) {
+                    this.mobileSliderFood = this.mobileSliderFood + 1
+                } 
+            }
         },
         genNewTable () {
             let res = []
@@ -1258,6 +1280,44 @@ export default {
           this.tour.progress[this.currentDay][this.currentCity].activities.pop()
           this.saveTime ()
         },
+        addNewModalSubmit(type) {
+            switch(type) {
+                case 1:
+                    // act
+                    this.newact = this.addNewModal
+                    this.addNewAct()
+                    this.$refs['my-modal-2'].hide()
+                    this.resetModal()
+                    break;
+                case 2:
+                    // trans
+                    this.newtrans = this.addNewModal
+                    this.addNewTrans()
+                    this.$refs['my-modal-2'].hide()
+                    this.resetModal()
+                    break;
+                case 3:
+                    // food
+                    this.newfood = this.addNewModal
+                    this.addNewFood()
+                    this.$refs['my-modal-2'].hide()
+                    this.resetModal()
+                    break;
+                case 4:
+                    // acc
+                    this.newacc = this.addNewModal
+                    this.addNewAcc()
+                    this.$refs['my-modal-2'].hide()
+                    this.resetModal()
+                    break;
+                default:
+                    this.newact = this.addNewModal
+                    this.addNewAct()
+                    this.$refs['my-modal-2'].hide()
+                    this.resetModal()
+
+            }
+        },
         addNewAct () {
             let check = true
             if (!this.newact.name) {
@@ -1266,16 +1326,28 @@ export default {
             }
             if (check) {
                 this.newact.id = Object.keys(this.cities[this.currentCity].activities).length + 1
+                
                 this.cities[this.currentCity].activities[this.newact.id] = this.newact
+                this.mobileSliderAct = this.newact.id
                 this.newact = {
                     name: '',
                     price: 0,
                     thumb: ''
                 }
                 
+                
                 this.toast('Thêm hoạt động thành công', 'success')
             }
             
+        },
+        resetModal() {
+            this.addNewModal = {
+                type: '',
+                title: '',
+                name: '',
+                price: '',
+                thumb: ''
+            }
         },
         addNewAcc() {
             let check = true
@@ -1315,6 +1387,11 @@ export default {
             this.toast('Thêm phương tiện thành công', 'success')
           }
           
+        },
+        saveFoodMobile(id) {
+            this.tour.progress[this.currentDay][this.currentCity].food.push(this.cities[this.currentCity].food[id])
+            this.toast('Thêm món ăn thành công', 'success')
+            this.genNewTable()
         },
         saveFood (type = 0) {
           if (this.selectedFood.length == 0) {
@@ -1364,6 +1441,7 @@ export default {
             if (check) {
               this.newfood.id = Object.keys(this.cities[this.currentCity].food).length + 1
               this.cities[this.currentCity].food[this.newfood.id] = this.newfood
+              this.mobileSliderFood = this.newfood.id
                 this.newfood = {
                     name: '',
                     price: 0,
@@ -1771,6 +1849,35 @@ iframe {
     .block-m {
         margin-bottom: 15px;
     }
+    .time-block .time-start{
+        margin-bottom: 0;
+    }
+    .mobile-slider {
+        position: relative;
+        .move-slider-button {
+            position: absolute;
+            top: 42%;
+            border: 1px solid #ccc;
+            padding: 5px 15px;
+            background: #ebebeb;
+            z-index: 99;
+            &.right {
+                right: -15px;
+            }
+            &.left {
+                left: -15px;
+            }
+        }
+        button.btn.btn-add-time {
+            margin-top: 10px;
+        }
+    }
+    .v-center {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+    }
 }
+
 </style>
 
