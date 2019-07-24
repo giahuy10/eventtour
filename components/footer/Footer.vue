@@ -24,7 +24,7 @@
                    </div>
                 </div>
                 <div class="col-md-12">
-                    <p class="text-center copyright">Copyright &copy;KOREA TOURISM OGANIZAION KTO IN VIETNAM. ALL RIGHTS RESERVED</p>
+                    <p class="text-center copyright">Copyright &copy;KOREA TOURISM ORGANIZAION KTO IN VIETNAM. ALL RIGHTS RESERVED</p>
                 </div>
             </div>
         </div>

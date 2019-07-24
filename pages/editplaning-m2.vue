@@ -41,7 +41,7 @@
                         <tr>
                             <td>Ngày</td>
                             <td>Thành phố</td>
-                            <td>Thời gian</td>
+                            <td style="width: 100px;">Thời gian</td>
                             <td>Hoạt động</td>
                             <td>Chi phí hoạt động</td>
                             <td>Phương tiện di chuyển</td>
@@ -54,8 +54,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(cols, index) in rows" :key="index">
-                            <td :class="col.class" :rowspan="col.rowspan" v-for="(col, index) in cols" :key="index">{{col.val}}</td>
+                        <tr v-for="(cols, rowindex) in rows" :key="rowindex">
+                            <td :class="col.class" :rowspan="col.rowspan" v-for="(col, index) in cols" :key="index">
+                                {{col.val}}
+                                <br>
+                                <template v-if="col.val">
+                                    <template v-if="col.type == 'time'">
+                                        <i @click="removeAct(col.key)" class="cursor fa fa-trash"></i>   
+                                        <!-- <i @click="updateAct(col.key, col.city, col.day, col.start, col.end, col.id)" class="cursor fa fa-pencil"></i> -->
+                                    </template>
+                                    <!-- <template v-if="col.type == 'trans'">
+                                        <i @click="removeTrans(col.key)" class="cursor fa fa-trash"></i>   
+                                        <i @click="updateTrans(col.key, col.city, col.day)" title="Thay đổi phương tiện" class="cursor fa fa-pencil"></i>
+                                    </template>
+                                    <template v-if="col.type == 'food'">
+                                        <i @click="removeFood(col.key)" class="cursor fa fa-trash"></i>   
+                                        <i @click="updateFood(col.key, col.city, col.day)" title="Thay đổi món ăn" class="cursor fa fa-pencil"></i>
+                                    </template> -->
+
+                                </template>
+                               
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -65,10 +84,11 @@
                 </div>
                 <div class="underline text-center"><span></span></div>
             </div>
-            <div class="progress-list">
-                <h3 class="text-uppercase text-center gr-title text-blue">Lịch trình <i @click="openVideo" class="cursor fa fa-question-circle" aria-hidden="true"></i></h3>
+            <div class="progress-list" v-if="!readySubmit">
+                <h3 class="text-uppercase text-center gr-title text-blue">Lịch trình </h3>
+                <p @click="openVideo" class="cursor text-center"><i  class=" fa fa-question-circle" aria-hidden="true"></i> Hướng dẫn tạo lịch trình</p>
                 <div class="days-button text-center">
-                    <button class="btn btn-day" v-for="(day, index) in numberDays" :key="index" :class="currentDay == day ? 'active' : ''" @click="currentDay = day">Ngày {{day}}</button>
+                    <button class="btn btn-day" v-for="(day, index) in numberDays" :key="index" :class="currentDay == day ? 'active' : ''">Ngày {{day}}</button>
                 </div>
                
                 <select name="" id="" class="form-control select-city" v-model="currentCity" >
@@ -124,7 +144,7 @@
                             <span class="cursor move-slider-button right" @click="moveAct(2)"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
                         </div>
                     </div>
-                    <h3 class="headline">Lựa chọn món ăn <i class="fa fa-plus" @click="$refs['my-modal-2'].show(), addNewModal.title='Thêm mới món ăn', addNewModal.type=3"></i>
+                    <h3 class="headline">Lựa chọn ẩm thực <i class="fa fa-plus" @click="$refs['my-modal-2'].show(), addNewModal.title='Thêm mới món ăn', addNewModal.type=3"></i>
                     </h3>
                     <div class="clearfix"></div>
                     <div class="food-block block-m">
@@ -155,10 +175,11 @@
                     <div class="trans-block block-m">
                         <div class="row">
                             <div class="col-8">
-                                <multiselect v-model="selectedTransport" :options="objtoarr(cities[currentCity].transport)" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="false" placeholder="Lựa chọn phương tiện" label="name" track-by="name">
+                                <multiselect v-model="selectedTransport" selectedLabel="Đã chọn" :searchable="false" :options="objtoarr(cities[currentCity].transport)" :multiple="true" :close-on-select="false" deselectLabel="Nhấp lại để xóa " selectLabel="Nhấp để chọn" :clear-on-select="false" :preserve-search="false" placeholder="Lựa chọn phương tiện" label="name" track-by="name">
                                     <template slot="selection" slot-scope="{ values, search, isOpen }">
-                                        <span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} đã chọn</span>
+                                        <span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">đã chọn {{ values.length }} phương tiện</span>
                                     </template>
+                                    
                                 </multiselect>
                                 
                             </div>
@@ -226,7 +247,7 @@
                             
                         </div>
                         <div class="col-12 col-md-9 progress-content">
-                            <div class="activities" v-if="currentTab == 1">
+                            <div class="activities" id="act-tab" v-if="currentTab == 1">
                                 <div class="row" v-if="currentCity">
                                     <div class="col-12 col-md-4" v-for="activity in cities[currentCity].activities" :key="activity.id">
                                         <div class="activity-selection  text-center">
@@ -239,23 +260,25 @@
                                         <div class="add-option text-center activity-selection">
                                             <div class="new-name">Hoạt động khác</div>
                                             <input type="text" class="form-control" v-model="newact.name" placeholder="Tên hoạt động">
-                                            <input type="text" class="form-control" v-model="newact.price" placeholder="Giá ($)">
+                                            <input type="text" class="form-control" v-model="newact.price" placeholder="Giá vé hoạt động">
                                             <button class="btn btn-add" @click="addNewAct">Thêm hoạt động</button>
                                         </div>
                                     </div>
                                     <div class="col-12">
                                     <div class="text-center pt-5">
-                                        <button class="btn btn-add-time" @click="saveTime"><i class="fa fa-clock-o" aria-hidden="true"></i> Lưu hoạt động</button>
-
-                                        <button class="btn btn-add-time" @click="overrideAct" v-if="tour.progress[currentDay][currentCity].activities.length > 0">
-                                            <i class="fa fa-pencil"></i> Đổi hoạt động
-                                        </button>
+                                        <button v-if="!updatingAct" class="btn btn-add-time" @click="saveTime"><i class="fa fa-clock-o" aria-hidden="true"></i> Lưu hoạt động</button>
+                                        <div v-else>
+                                            <button class="btn btn-add-time" @click="overrideAct">
+                                                <i class="fa fa-pencil"></i> Đổi hoạt động
+                                            </button>
+                                        </div>
+                                        
                                     </div>
                                     </div>
                                     
                                 </div>
                             </div>
-                            <div class="transporter" v-if="currentTab == 2">
+                            <div class="transporter" id="trans-tab" v-if="currentTab == 2">
                                 <div class="row" v-if="currentCity">
                                     <div class="col-12 col-md-4" v-for="transport in cities[currentCity].transport" :key="transport.id">
                                         <div class="trans-selection text-center">
@@ -279,7 +302,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="food" v-if="currentTab == 3">
+                            <div class="food" id="food-tab" v-if="currentTab == 3">
                                 <div class="row" v-if="currentCity">
                                     <div class="col-12 col-md-4" v-for="food in cities[currentCity].food" :key="food.id">
                                         <div class="food-selection  text-center">
@@ -384,11 +407,20 @@ export default {
         if (!localStorage.getItem('person')) {
             this.$router.push('/single-info')
         }
-        // this.genNewTable()
+        window.addEventListener('beforeunload', (event) => {
+            event.returnValue = `Are you sure you want to leave?`;
+        });
         
     },
+ 
     data () {
         return {
+            updatingAct: false,
+            updatingTrans: false,
+            updatingFoods: false,
+            currentUpdatingAct: 0,
+            currentUpdatingTrans: 0,
+            currentUpdatingFood: 0,
             mobileSliderAct: 1,
             mobileSliderFood: 1,
             slide: 0,
@@ -403,23 +435,23 @@ export default {
             modalTitle: '',
             newact: {
                 name: '',
-                price: 0,
+                price: '',
                 thumb: ''
             },
             newacc: {
                 name: '',
-                price: 0,
+                price: '',
                 thumb: ''
             },
             newfoodarr: [],
             newfood: {
                 name: '',
-                price: 0,
+                price: '',
                 thumb: ''
             },
             newtrans: {
                 name: '',
-                price: 0,
+                price: '',
                 thumb: ''
             },
             newtransarr: [],
@@ -491,12 +523,12 @@ export default {
                         5: { id: 5, name: 'Nhà nghỉ', price: '20', thumb: ''}
                     },
                     activities: {
-                        1: { id: 1, name: 'Thăm quan nhà cổ Gongbuglu', address:'165 Geumseong-dong, Gongju', time:'Luôn mở cửa', price: '0', thumb: ''},
+                        1: { id: 1, name: 'Thăm quan cung điện Gyeongbok', address:'161 Sajik-ro, Sejongno, Jongno-gu, Seoul', time:'Luôn mở cửa', price: '2.56', thumb: ''},
                
-                        2: { id: 2, name: 'Leo núi Naejangsan', address:'Biên giới Jeolla Bắc - Nam', time:'Luôn mở cửa', price: '0', thumb: ''},
-                        3: { id: 3, name: 'Thăm quan làng cổ Jeonju', address:'99 Girin-daero, Pungnamdong 3(sam)-ga, Wansan-gu, Jeonju', time:'Luôn mở cửa', price: '0', thumb: ''},
-                        4: { id: 4, name: 'Thăm quan đền Gyeonggijeon', address:'44 Taejo-ro, Pungnam-dong, Wansan-gu, Jeonju', time:'Luôn mở cửa', price: '0', thumb: ''},
-                        5: { id: 5, name: 'Đi chợ Nambu Market', address:'19-3 Pungnammun 1-gil, Jeonong 3(sam)-ga, Wansan-gu, Jeonju', time:'8AM - 6PM', price: '0', thumb: ''}
+                        2: { id: 2, name: 'Leo núi, thăm quan tháp Namsan', address:'105, Namsangongwon-gil, Yongsan-gu, Seoul', time:'Luôn mở cửa', price: '8.54', thumb: ''},
+                        3: { id: 3, name: 'Thăm quan làng Bukchon Hanok', address:'37, Gyedong-gil, Jongno-gu, Seoul', time:'Luôn mở cửa', price: '0', thumb: ''},
+                        4: { id: 4, name: 'Vui chơi, chụp ảnh, thăm quan Lotte World', address:'240 Olympic-ro, Jamsil-dong, Songpa-gu, Seoul', time:'Luôn mở cửa', price: '48.70', thumb: ''},
+                        5: { id: 5, name: 'Chụp ảnh và thăm quan Dongdaemun Design Plaza', address:'281 Eulji-ro, Euljiro 7(chil)-ga, Jung-gu, Seoul', time:'8AM - 6PM', price: '6.84', thumb: ''}
                     }
                 }, 
                 2: { id: 2, name: 'Busan',
@@ -1036,6 +1068,7 @@ export default {
         }
     },
     methods: {
+   
         moveAct(type = 1) {
             if (type == 1) {
                 if (this.mobileSliderAct > 1) {
@@ -1058,13 +1091,14 @@ export default {
                 } 
             }
         },
+      
         genNewTable () {
             let res = []
             let rows = []
             let total = []
           
-            for (var key in this.tour.progress) {
-                var days = this.tour.progress[key]
+            for (var keyt in this.tour.progress) {
+                var days = this.tour.progress[keyt]
                 let maxRow =0
                 let totalact = 0
                 let totaltrans =0 
@@ -1076,6 +1110,8 @@ export default {
            
                     let max = Math.max(act.activities.length, act.food.length, act.transport.length)
                     maxRow+= max
+                    act.activities.sort((a,b) => (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0)); 
+
                     totalacc+=act.accommodation.price ? parseFloat(act.accommodation.price) : 0
                     for(let i = 0; i < max; i++) {
                         totalact+= act.activities[i] ? parseFloat(act.activities[i].activities.price) : 0
@@ -1085,22 +1121,39 @@ export default {
                         let cols = [
                          
                             {
-                                val: act.activities[i] ? act.activities[i].start +' - '+act.activities[i].end : ''
+                                val: act.activities[i] ? act.activities[i].start +' - '+act.activities[i].end : '',
+                                type: 'time'
                             },
                             {
-                                val: act.activities[i] ? act.activities[i].activities.name: ''
+                                val: act.activities[i] ? act.activities[i].activities.name: '',
+                                type: 'act',
+                                key: i,
+                                day: keyt,
+                                city: act.city.id, 
+                                id: act.activities[i] ? act.activities[i].activities.id : 0,
+                                start: act.activities[i] ? act.activities[i].start : '',
+                                end: act.activities[i] ? act.activities[i].end: ''
+
                             },
                             {
                                 val: act.activities[i] ? act.activities[i].activities.price : ''
                             },
                             {
-                                val: act.transport[i] ? act.transport[i].name : ''
+                                val: act.transport[i] ? act.transport[i].name : '',
+                                type: 'trans',
+                                key: i,
+                                day: keyt,
+                                city: act.city.id,
                             },
                             {
                                 val: act.transport[i] ? act.transport[i].price : ''
                             },
                             {
-                                val: act.food[i] ? act.food[i].name : ''
+                                val: act.food[i] ? act.food[i].name : '',
+                                type: 'food',
+                                key: i,
+                                day: keyt,
+                                city: act.city.id,
                             },
                             {
                                 val: act.food[i] ? act.food[i].price : ''
@@ -1263,7 +1316,7 @@ export default {
                         end: this.convertTime(this.selectedTime).end,
                         activities: this.cities[this.currentCity].activities[this.selectedActivities],
                         price: this.cities[this.currentCity].activities[this.selectedActivities].price,
-                        uid: uuid.v1()
+                    
                     }
                 this.tour.progress[this.currentDay][this.currentCity].activities.push(act)
                 this.selectedActivities = 0
@@ -1276,9 +1329,103 @@ export default {
             }
             
         },
+        removeAct (key) {
+            console.log(key)
+            if (confirm('Bạn chắc chắn muốn xóa hoạt dộng này?')) {
+                this.tour.progress[this.currentDay][this.currentCity].activities.splice(key, 1)
+                this.genNewTable()
+            }
+            
+        },
+        removeTrans (key) {
+            console.log(key)
+            if (confirm('Bạn chắc chắn muốn xóa phương tiện này này?')) {
+                this.tour.progress[this.currentDay][this.currentCity].transport.splice(key, 1)
+                this.genNewTable()
+            }
+        },
+        removeFood (key) {
+            console.log(key)
+            if (confirm('Bạn chắc chắn muốn xóa món ăn này?')) {
+                this.tour.progress[this.currentDay][this.currentCity].food.splice(key, 1)
+                this.genNewTable()
+            }
+        },
+        revertTime(start, end) {
+            let startT = start.split(":");
+            let endT = end.split(":");
+            this.selectedTime = {
+                start: {
+                    HH: startT[0],
+                    mm: startT[1],
+                    ss: '00',
+                    a: 'am'
+                },
+                end: {
+                    HH: endT[0],
+                    mm: endT[1],
+                    ss: '00',
+                    a: 'am'
+                },
+            }
+        },
+        updateAct (key, city, day, start, end, id) {
+            this.$scrollTo('#act-tab')
+            this.revertTime(start, end)
+            this.updatingAct = true
+            this.currentTab = 1
+            this.currentDay = day
+            this.currentCity = city
+            this.currentUpdatingAct = key
+            this.selectedActivities = id
+
+            // this.updatingAct = false
+        },
+        updateTrans (key, city, day) {
+        
+            this.currentTab = 2
+            this.$scrollTo('#trans-tab')
+            this.updatingTrans = true
+            
+            this.currentDay = day
+            this.currentCity = city
+            this.selectedTransport = []
+            // this.tour.progress[this.currentDay][this.currentCity].transport.forEach(item => {
+            //     this.selectedTransport.push(item.id)
+            // })
+
+            // this.updatingAct = false
+        },
+        updateFood (key, city, day) {
+            this.currentTab = 3
+            this.$scrollTo('#food-tab')
+            this.updatingFood = true
+            
+            this.currentDay = day
+            this.currentCity = city
+            this.currentUpdatingFood = key
+            this.selectedFood = []
+            this.tour.progress[this.currentDay][this.currentCity].food.forEach(item => {
+                this.selectedFood.push(item.id)
+            })
+            // this.updatingAct = false
+        },
         overrideAct () {
-          this.tour.progress[this.currentDay][this.currentCity].activities.pop()
-          this.saveTime ()
+          this.tour.progress[this.currentDay][this.currentCity].activities[this.currentUpdatingAct] = {
+              city: {
+                    id: this.currentCity,
+                    name: this.cities[this.currentCity].name
+                },
+                start: this.convertTime(this.selectedTime).start,
+                end: this.convertTime(this.selectedTime).end,
+                activities: this.cities[this.currentCity].activities[this.selectedActivities],
+                price: this.cities[this.currentCity].activities[this.selectedActivities].price,
+          }
+          this.selectedActivities = 0
+          this.currentUpdatingAct = 0
+          this.updatingAct = false
+          this.toast('Đổi hoạt động thành công', 'success')
+          this.genNewTable()
         },
         addNewModalSubmit(type) {
             switch(type) {
@@ -1384,13 +1531,14 @@ export default {
             })
             this.currentTab = 3
             this.genNewTable()
-            this.toast('Thêm phương tiện thành công', 'success')
+            this.toast('Lưu phương tiện thành công', 'success')
           }
           
         },
         saveFoodMobile(id) {
             this.tour.progress[this.currentDay][this.currentCity].food.push(this.cities[this.currentCity].food[id])
             this.toast('Thêm món ăn thành công', 'success')
+            this.validDay.food = true
             this.genNewTable()
         },
         saveFood (type = 0) {
@@ -1462,6 +1610,7 @@ export default {
         nextTime () {
             this.selectedTime.start = this.selectedTime.end
         },
+        
         resetTime () {
             this.selectedTime = {
                 start: {
@@ -1877,6 +2026,14 @@ iframe {
         display: flex;
         justify-content: center;
     }
+}
+i.fa.fa-plus {
+    border: 1px solid;
+    padding: 5px;
+    border-radius: 100%;
+    width: 30px;
+    text-align: center;
+    margin-left: 10px;
 }
 
 </style>

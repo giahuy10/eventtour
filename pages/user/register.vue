@@ -3,10 +3,10 @@
         <div class="inner-box inner-register">
             <div class="text-center">
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-6 d-none d-sm-block">
                         <img class="logo-login" src="/imgs/logo.png" alt="">
                     </div>
-                    <div class="col-6 text-right">
+                    <div class="col-12 col-md-6 text-right text-center-mobile">
                         <h3 class="gr-title">ĐĂNG KÝ</h3>
                     </div>
                 </div>
@@ -27,6 +27,11 @@
                     </div>
 
                 </div>
+                <div class="col-12 d-block d-sm-none">
+                    <div class="form-group">
+                    <input type="text" v-on:keyup.enter="$event.target.nextElementSibling.focus()" v-model="regiser.displayName" placeholder="Họ tên" class="form-control">
+                    </div>
+                </div>
                 <div class="col-12 col-md-6">
                     <div class="form-group">
                     <input type="password" v-on:keyup.enter="$event.target.nextElementSibling.focus()" v-model="regiser.password" placeholder="Mật khẩu" class="visible-xs form-control">
@@ -34,7 +39,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-6 d-none d-sm-block">
                     <div class="form-group">
                     <input type="text" v-on:keyup.enter="$event.target.nextElementSibling.focus()" v-model="regiser.displayName" placeholder="Họ tên" class="form-control">
                     </div>
@@ -170,5 +175,10 @@ export default {
         
         }
     }
+}
+ @media screen and (max-width: 767px) {
+.text-center-mobile {
+    text-align: center !important;
+}
 }
 </style>

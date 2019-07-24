@@ -3,8 +3,8 @@
         
         <div class="login-box inner-box">
             <div class="text-center">
-                <img class="logo-login" src="/imgs/logo.png" alt="">
-                <hr>
+                <img class="logo-login d-none d-sm-block" src="/imgs/logo.png" alt="">
+                <hr class="d-none d-sm-block">
                 <h3 class="gr-title">ĐĂNG NHẬP</h3>
             </div>
             <div v-if="err.length > 0">

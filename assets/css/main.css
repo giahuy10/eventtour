@@ -69,7 +69,10 @@ section {padding:50px 0}
 .btn-login{margin-left: 5px}
 .btn-resg{margin-right: 5px}
 .register .btn {color: #fff ;width: 150px}
-.introduce2 {padding-top:50px;padding-bottom: 50px}
+.introduce2 {padding-top:50px; padding-bottom: 0;}
+.introduce3 {
+    padding-top: 0;
+}
 .introduce2 .fee{
     font-size: 24px;font-weight: 700;color: #c44635
 }
@@ -187,6 +190,6 @@ label {margin-bottom: 0;color: #2d4197}
     }
     .inner-page {
     
-        padding-top: 100px;
+        padding-top: 0px;
     }
 }

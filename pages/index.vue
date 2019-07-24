@@ -5,8 +5,8 @@
                 <p>Bạn ước mơ một ngày được khám phá xứ sở Kim Chi nhưng điều kiện chưa cho phép</p>
                 <a href="#" v-scroll-to="'#introduce4'" class="text-uppercase btn btn-join btn-warning">Tham gia cuộc thi</a>
                 <p class="normal">
-                    Do tổng cục Du Lịch Hàn Quốc (KTO) tổ chức <br>
-                    để nhận ngay tấm vé tới xử sở Kim Chi <br>
+                    Do Tổng cục Du Lịch Hàn Quốc (KTO) tổ chức <br>
+                    để nhận ngay tấm vé tới xứ sở Kim Chi <br>
                     <b>Hoàn toàn miễn phí</b>
                 </p>
             </div>
@@ -31,20 +31,7 @@
                 </div>
                 
                 <div class="row" style="margin-top: 20px">
-                    <div class="col-md-4 fix-bottom-parent">
-                        <div class="fix-bottom">
-                            <div class="img-block">
-                                <img src="/imgs/2.png" alt="">
-                                
-                            </div>
-                            <div class="img-content">
-                                <b>1 Giải nhì</b>
-                                <p><b class="fee">14.000.000VND/người</b></p>
-                                <p>Tài trợ 75% chi phí chuyến du lịch <br> Hàn Quốc cho đội thắng cuộc</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 fix-bottom-parent">
+                    <div class="col-md-4 fix-bottom-parent d-block d-sm-none">
                         <div class="fix-bottom">
                             <div class="img-block the-best">
                                 <img src="/imgs/1.png" alt="">
@@ -58,6 +45,35 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-4 fix-bottom-parent">
+                        <div class="fix-bottom">
+                            <div class="img-block">
+                                <img src="/imgs/2.png" alt="">
+                                
+                            </div>
+                            <div class="img-content">
+                                <b>01 Giải nhì</b>
+                                <p><b class="fee">14.000.000VND/người</b></p>
+                                <p>Tài trợ 75% chi phí chuyến du lịch <br> Hàn Quốc cho đội thắng cuộc</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 fix-bottom-parent d-none d-sm-block">
+                        <div class="fix-bottom">
+                            <div class="img-block the-best">
+                                <img src="/imgs/1.png" alt="">
+                            </div>
+                            <div class="img-content">
+                                <b>01 Giải Nhất</b>
+                                <p><b class="fee">16.000.000VND/người</b></p>
+                                <p><b>Tài trợ 100% chi phí</b><br>
+                                    Chuyến du lịch Hàn Quốc cho đội thắng cuộc
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
                      <div class="col-md-4 fix-bottom-parent">
                         <div class="fix-bottom">
                             <div class="img-block">
@@ -92,12 +108,15 @@
                <div class="row">
                    <div class="col-md-3">
                        <div class="item">
-                           <div class="icon-block" style="width:40px">
-                               <img src="/imgs/note.png" alt="">
+                           <div class="icon-block">
+                              
+                                   <img src="/imgs/note.png" alt=""> <b>Vòng 1</b>
+                              
+                               
                            </div>
                            <div class="content-block">
                                <div class="sub-title">
-                                    <b>Vòng 1</b>
+                                    
                                </div>
                                <p>
                                    Các cá nhân và đội nhóm sẽ tham gia xây dựng lịch trình du lịch tự túc tại Hàn Quốc hoặc đăng tải lịch trình đã được chuẩn bị sẵn lên trang web của KTO. BTC sẽ lựa chọn 12 lịch trình xuất sắc nhất để tham gia vào vòng thi thứ 2, ngoài ra sẽ có 100 phần quà kỷ niệm dành cho các đội chơi may mắn khác.
@@ -108,11 +127,11 @@
                    <div class="col-md-3">
                        <div class="item">
                            <div class="icon-block">
-                               <img src="/imgs/camera.png" alt="">
+                               <img src="/imgs/camera.png" alt=""> <b>Vòng 2</b>
                            </div>
                            <div class="content-block">
                                <div class="sub-title">
-                                    <b>Vòng 2</b>
+                                    
                                </div>
                                <p>
                                    12 cá nhân và/hoặc đội nhóm có lịch trình xuất sắc được lựa chọn từ vòng 1 sẽ thực hiện quay video trình bày ý tưởng về lịch trình đã xây dựng. BTC sẽ lựa chọn 3 lịch trình xuất sắc nhất và 3 lịch trình được yêu thích nhất để tham gia vòng 3, 6 lịch trình còn lại sẽ nhận quà tặng từ Ban tổ chức
@@ -123,11 +142,11 @@
                    <div class="col-md-3">
                        <div class="item">
                            <div class="icon-block">
-                               <img src="/imgs/report.png" alt="">
+                               <img src="/imgs/report.png" alt=""> <b>Vòng 3</b>
                            </div>
                            <div class="content-block">
                               <div class="sub-title">
-                                    <b>Vòng 3</b>
+                                    
                                </div>
                                <p>
                                    6 cá nhân và/hoặc đội nhóm xuất sắc vượt qua vòng 2 sẽ tham gia thuyết trình và phản biện về lịch trình tour du lịch đã xây dựng. BTC sẽ trao các giải Nhất, Nhì, Ba tương ứng
@@ -216,9 +235,10 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div>
-                            <h4 class="text-uppercase title">Lưu ý cho thí sinh</h4>
+                            <h4 class="text-uppercase title">Lưu ý chung</h4>
                             <p>
                                 - Bằng cách tham gia chương trình, người tham gia xem như đồng ý với tất cả thể lệ chương trình <br>
+                                - Đối với các cá nhân/nhóm đăng tải lịch trình đã chuẩn bị sẵn, không theo khung lịch trình mà KTO hướng dẫn thì trong lịch trình của các bạn cần đảm bảo có đầy đủ nội dung về các điểm tham quan/hoạt động trải nghiệm, khách sạn, phương tiện đi lại, chi phí dự kiến của từng ngày <br>
                                 - Nghiêm cấm các hình thức gian lận trong cuộc thi. BTC có quyền loại người tham gia nếu phát hiện gian lận <br>
                                 - Mỗi người tham gia chỉ được nhận tối đa 01 phần quà trong suốt chương trình. BTC không chịu trách nhiệm trong trường hợp không liên lạc được với người thắng cuộc do thông tin cung cấp không chính xác <br>
                                 - Thể lệ này có hiệu lực kể từ thời điểm được đăng tải lên fanpage chính thức của chương trình <br>
@@ -326,7 +346,7 @@ export default {
     }
 }
 .home-banner-m {
-    padding-top: 75px;
+    padding-top: 0;
     img {
         width: 100%;
     }
@@ -351,6 +371,30 @@ export default {
 .cloud-bg {
     background: url(/imgs/cloud-bg.png) no-repeat;
     background-size: 100% auto;
+}
+.introduce3 {
+    .icon-block {
+        display: block;
+        width: auto;
+        font-size: 24px;
+        img {
+            width: auto;
+            height: 60px;
+            margin-right: 10px;
+        }
+    }
+}
+.introduce4 {
+    .btn-login {
+        @media screen and (max-width: 767px) {
+            width: auto;
+        }
+    }
+    .register .btn {
+        @media screen and (max-width: 767px) {
+            width: auto;
+        }
+    }
 }
 </style>
 

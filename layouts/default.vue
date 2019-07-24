@@ -17,3 +17,11 @@
     }
   }
 </script>
+
+<style lang="scss">
+.navbar-fixed-top {
+  @media screen and (max-width: 767px) {
+    position: initial;
+  }
+}
+</style>

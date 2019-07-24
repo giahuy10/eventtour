@@ -23,7 +23,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="(cols, index) in rows" :key="index">
-                            <td :class="col.class" :rowspan="col.rowspan" v-for="(col, index) in cols" :key="index">{{col.val}}</td>
+                            <td :colspan="col.colspan" :class="col.class" :rowspan="col.rowspan" v-for="(col, index) in cols" :key="index">{{col.val}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -105,6 +105,7 @@ export default {
             let res = []
             let rows = []
             let total = []
+            let totalFinal = 0
             for (var key in this.tour.progress) {
                 var days = this.tour.progress[key]
                 let maxRow =0
@@ -151,9 +152,9 @@ export default {
                                 val: act.accommodation ? act.accommodation.name : '',
                                 rowspan: max
                             })
-
+                            let cityPrice = (parseFloat(totalact) + parseFloat(totaltrans) + parseFloat(totalfood) + parseFloat(totalacc)).toFixed(2)
                             cols.push({
-                                val: (parseFloat(totalact) + parseFloat(totaltrans) + parseFloat(totalfood) + parseFloat(totalacc)).toFixed(2),
+                                val: cityPrice,
                                 rowspan: max
                             })
                            
@@ -168,10 +169,11 @@ export default {
                 
                 res.push(maxRow)
                 total.push(parseFloat(totalact) + parseFloat(totaltrans) + parseFloat(totalfood) + parseFloat(totalacc))
+                totalFinal += parseFloat(parseFloat(totalact) + parseFloat(totaltrans) + parseFloat(totalfood) + parseFloat(totalacc))
             }
             console.log(rows)
             console.log(res)
-            console.log(total)
+            console.log('total', total)
             let day = [0]
             for(let i = 0; i < res.length; i++) {
                 if (i == 0 ) {
@@ -194,7 +196,10 @@ export default {
                 }
                 
             }
-            
+            console.log('totalFinal', totalFinal)
+            rows.push([
+                {val: 'Tổng', colspan: 7, class:'bold'},{class:'bold', val: totalFinal.toFixed(2)}
+            ])
             this.rows = rows
         },
     }
@@ -265,6 +270,9 @@ export default {
         }
         }
     }
+}
+.bold {
+    font-weight: bold;
 }
 .underline {
     span {

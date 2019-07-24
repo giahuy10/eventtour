@@ -20,7 +20,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-sm-3 ">
+                                    <label class="col-sm-3 col-form-label">
                                         <b>Tuổi:</b> <br>
                                         <i v-if="errors[1]" class="mes-err">{{ errors[1] }}</i>
                                     </label>
@@ -29,7 +29,7 @@
                                             <div class="col-sm-4">
                                                 <input v-model="person.age" type="number" placeholder="" class="form-control age-mobile">
                                             </div>
-                                            <div class="col-12 col-md-8">
+                                            <div class="col-12 col-md-8 v-align">
                                                 <label for="" class="custom-lable"> <b>Giới tính</b></label>
                                                 <b-form-radio v-model="person.sex" value="1">Nam</b-form-radio>
                                                 <b-form-radio v-model="person.sex" value="-1">Nữ</b-form-radio>
@@ -78,7 +78,7 @@
                                       
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-sm-3 ">
+                                        <label class="col-sm-3 col-form-label">
                                             <b>Tuổi:</b> <br>
                                         </label>
                                         <div class="col-sm-9">
@@ -86,7 +86,7 @@
                                                 <div class="col-sm-4">
                                                     <input v-model="persons[0].age" type="number" placeholder="" class="form-control age-mobile">
                                                 </div>
-                                                <div class="col-12 col-md-8">
+                                                <div class="col-12 col-md-8 v-align">
                                                     <label for="" class="custom-lable"> <b>Giới tính</b></label>
                                                     <b-form-radio v-model="persons[0].sex" value="1">Nam</b-form-radio>
                                                     <b-form-radio v-model="persons[0].sex" value="-1">Nữ</b-form-radio>
@@ -116,7 +116,7 @@
                                       
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-sm-3 ">
+                                        <label class="col-sm-3 col-form-label">
                                             <b>Tuổi:</b> <br>
                                         </label>
                                         <div class="col-sm-9">
@@ -124,7 +124,7 @@
                                                 <div class="col-sm-4">
                                                     <input v-model="persons[1].age" type="number" placeholder="" class="form-control age-mobile">
                                                 </div>
-                                                <div class="col-12 col-md-8">
+                                                <div class="col-12 col-md-8 v-align">
                                                     <label for="" class="custom-lable"> <b>Giới tính</b></label>
                                                     <b-form-radio v-model="persons[1].sex" value="1">Nam</b-form-radio>
                                                     <b-form-radio v-model="persons[1].sex" value="-1">Nữ</b-form-radio>
@@ -418,6 +418,17 @@ export default {
 }
 .user-info-inner {
     width: 800px;
+    label.col-sm-3.col-form-label {
+        padding: 0;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+    .v-align {
+        display: flex;
+       
+        align-items: center;
+    }
 }
 @media screen and (max-width: 767px){
     .form-group {
