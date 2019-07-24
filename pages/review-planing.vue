@@ -119,7 +119,7 @@ export default {
                     var act = days[key]
                     let max = Math.max(act.activities.length, act.food.length, act.transport.length)
                     maxRow+= max
-                    totalacc+=act.accommodation.price ? parseFloat(act.accommodation.price) : 0
+                    totalacc+=act.accommodation ? parseFloat(act.accommodation.price) : 0
                     for(let i = 0; i < max; i++) {
                         totalact+= act.activities[i] ? parseFloat(act.activities[i].activities.price) : 0
                         totaltrans+=act.transport[i] ? parseFloat(act.transport[i].price) : 0

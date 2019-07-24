@@ -78,7 +78,8 @@
             </div>
             <hr>
             <div class="text-center">Đã có tài khoản? <nuxt-link to="/user/login" class="reg"><b> Đăng nhập</b></nuxt-link></div>
-
+            {{regErr}}
+            {{regErrRes}}
         </div>
         
     </div>
@@ -93,6 +94,10 @@ export default {
     },
     data () {
         return {
+            regErr: {},
+            regErrRes:{},
+            submmited: [],
+            responsed: [],
             err: [],
             loading: false,
             regiser: {
@@ -110,6 +115,7 @@ export default {
             return re.test(email);
         },
         handleRegister () {
+            this.submmited.push('ok')
             this.err = []
             if (!this.regiser.username) {
                 this.err.push('Tài khoản không được bỏ trống')
@@ -150,32 +156,12 @@ export default {
                 this.$router.push({path: '/single-info'})
                 })
                 .catch((err) => {
-                    this.$axios.post(`https://www.visitkorea.org.vn/api/user/generate_auth_cookie/?username=${this.regiser.username}&password=${this.regiser.password}`)
-                    .then((response) => {
-                        console.log(response)
-                        if ( response.data.error ) {
-                            this.err.push('Tài khoản hoặc email đã tồn tại')
-                            this.loading = false
-                        } else {
-                            let resUser = {
-                                id: response.data.user.id,
-                                cookie: response.data.cookie,
-                                username: response.data.user.username,
-                                email: response.data.user.email,
-                                displayName: response.data.user.displayname
-                            }
-                            localStorage.setItem('checkUser', JSON.stringify(resUser))
-                        
-                            this.loading = false
-                        
-                            this.$router.push({path: '/single-info'})
-                        }
-                    }).catch((err) => {
-                        console.log(err)
-                    })
+                
+                    this.regErrRes = err.response
+                    this.regErr = err
                 })
             }).catch((err) => {
-                console.log(err)
+                
             })
             }
         }

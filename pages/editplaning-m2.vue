@@ -1112,7 +1112,7 @@ export default {
                     maxRow+= max
                     act.activities.sort((a,b) => (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0)); 
 
-                    totalacc+=act.accommodation.price ? parseFloat(act.accommodation.price) : 0
+                    totalacc+=act.accommodation ? parseFloat(act.accommodation.price) : 0
                     for(let i = 0; i < max; i++) {
                         totalact+= act.activities[i] ? parseFloat(act.activities[i].activities.price) : 0
                         totaltrans+=act.transport[i] ? parseFloat(act.transport[i].price) : 0

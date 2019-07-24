@@ -6,6 +6,9 @@ body {
 .cursor {
     cursor: pointer;
 }
+.bold {
+    font-weight: bold;
+}
 .btn-google {
   background: #dd4b39;
   color:#fff;

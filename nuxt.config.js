@@ -66,7 +66,8 @@ export default {
   plugins: [
     '~/plugins/vue-uid.js',
     '~/plugins/vue-moment.js',
-    '~/plugins/vue-social.js'
+    '~/plugins/vue-social.js',
+    '~/plugins/vue-clipboard.js'
   ],
   /*
   ** Nuxt.js modules

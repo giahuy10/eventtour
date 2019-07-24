@@ -1,25 +1,6 @@
 <template>
   <div class="final inner-page ">
     <div class="inner-box final-inner">
-      <h3 class="text-center">Share link sự kiện trên Facebook</h3>
-      <div class="text-center cursor">
-        <input type="text" readonly v-model="linkFacebook" class="form-control share-post">
-        <social-sharing url="https://kto-landing.firebaseapp.com"
-                      title="Tạo tour tự túc - Hạnh phúc đi Hàn"
-                      description="Bạn ước mơ một ngày được khám phá xứ sở Kim Chi nhưng điều kiện chưa cho phép? Tham gia ngay cuộc thi do tổng cục Du Lịch Hàn Quốc (KTO) tổ chức để nhận ngay tấm vé tới xử sở Kim Chi - Hoàn toàn miễn phí"
-                      quote="Tham gia ngay để nhận chuyến du lịch Hàn Quốc miễn phí nhé!"
-                      hashtags="KTO,VisitKorea"
-                     
-                      inline-template>
-          <div class="btn btn-fb">
-          
-              <network network="facebook">
-                <i class="fa fa-facebook"></i> Chia sẻ lên Facebook
-              </network>
-          
-          </div>
-          </social-sharing>
-      </div>
       <div class="gift-code">
         <p><b>* Phần dành cho khách hàng có mã GIFTCODE</b></p>
         <div class="form-group row">
@@ -39,6 +20,26 @@
         </b-button>
         <button v-else class="btn btn-primary" @click="checkGiftCode">Nhận quà</button>
       </div>
+      <h3 class="text-center">Share link sự kiện trên Facebook</h3>
+      <div class="text-center cursor">
+        <input type="text" @click="copy" readonly v-model="linkFacebook" class="form-control share-post cursor" title="Click để copy đường link">
+        <social-sharing @close="close()" url="https://kto-landing.firebaseapp.com"
+                      title="Tạo tour tự túc - Hạnh phúc đi Hàn"
+                      description="Bạn ước mơ một ngày được khám phá xứ sở Kim Chi nhưng điều kiện chưa cho phép? Tham gia ngay cuộc thi do tổng cục Du Lịch Hàn Quốc (KTO) tổ chức để nhận ngay tấm vé tới xử sở Kim Chi - Hoàn toàn miễn phí"
+                      quote="Tham gia ngay để nhận chuyến du lịch Hàn Quốc miễn phí nhé!"
+                      hashtags="KTO,VisitKorea"
+                     
+                      inline-template>
+          <div class="btn btn-fb">
+          
+              <network network="facebook">
+                <i class="fa fa-facebook"></i> Chia sẻ lên Facebook
+              </network>
+          
+          </div>
+          </social-sharing>
+      </div>
+      
     </div>
   </div>
 </template>
@@ -47,7 +48,7 @@
 export default {
   data () {
     return {
-      linkFacebook: 'http://visitkorea.org.vn/tao-tour-tu-tuc-hanh-phuc-di-han',
+      linkFacebook: 'https://visitkorea.org.vn/tao-tour-tu-tuc-hanh-phuc-di-han',
       giftcode: {
         code: '',
         phone: ''
@@ -67,6 +68,14 @@ export default {
 
   },
   methods: {
+    close (){
+      this.$router.push('/')
+    },
+    copy(){
+      this.$clipboard(this.linkFacebook)
+
+      this.toast('Đường link đã được copy vào clipboard', 'success')
+    },
     checkGiftCode () {
       this.err = []
       let check = true
@@ -119,7 +128,7 @@ export default {
   width: 700px;
   padding-top: 60px;
   .gift-code {
-    margin-top: 30px;
+    margin-bottom: 30px;
     p {
       color: #000;
     }

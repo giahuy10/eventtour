@@ -8,7 +8,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div>
-                                <h5 class="text-uppercase gr-title text-center">Thông tin người chơi</h5>
+                                <h5 class="text-uppercase gr-title text-center bold">Thông tin người chơi</h5>
   
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label"><b>Họ và tên:</b></label>
@@ -30,7 +30,7 @@
                                                 <input v-model="person.age" type="number" placeholder="" class="form-control age-mobile">
                                             </div>
                                             <div class="col-12 col-md-8 v-align">
-                                                <label for="" class="custom-lable"> <b>Giới tính</b></label>
+                                                <label for="" class="custom-lable gender-label"> <b>Giới tính</b></label>
                                                 <b-form-radio v-model="person.sex" value="1">Nam</b-form-radio>
                                                 <b-form-radio v-model="person.sex" value="-1">Nữ</b-form-radio>
                                                 <i v-if="errors[2]" class="mes-err">{{ errors[2] }}</i>
@@ -50,7 +50,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label"><b>Email:</b></label>
                                     <div class="col-sm-9">
-                                    <input type="email" v-model="person.email" placeholder="Email của bạn" class="form-control">
+                                    <input type="email" v-model="person.email" readonly placeholder="Email của bạn" class="form-control">
                                     </div>
                                     <div class="col-12">
                                         <i v-if="errors[4]" class="mes-err">{{ errors[4] }}</i>
@@ -87,7 +87,7 @@
                                                     <input v-model="persons[0].age" type="number" placeholder="" class="form-control age-mobile">
                                                 </div>
                                                 <div class="col-12 col-md-8 v-align">
-                                                    <label for="" class="custom-lable"> <b>Giới tính</b></label>
+                                                    <label for="" class="custom-lable gender-label"> <b>Giới tính</b></label>
                                                     <b-form-radio v-model="persons[0].sex" value="1">Nam</b-form-radio>
                                                     <b-form-radio v-model="persons[0].sex" value="-1">Nữ</b-form-radio>
                                                 </div>
@@ -125,7 +125,7 @@
                                                     <input v-model="persons[1].age" type="number" placeholder="" class="form-control age-mobile">
                                                 </div>
                                                 <div class="col-12 col-md-8 v-align">
-                                                    <label for="" class="custom-lable"> <b>Giới tính</b></label>
+                                                    <label for="" class="custom-lable gender-label"> <b>Giới tính</b></label>
                                                     <b-form-radio v-model="persons[1].sex" value="1">Nam</b-form-radio>
                                                     <b-form-radio v-model="persons[1].sex" value="-1">Nữ</b-form-radio>
                                                 </div>
@@ -170,6 +170,13 @@ export default {
             var checkedUser = JSON.parse(localStorage.getItem('checkUser'))
             this.person.fullName = checkedUser.displayName
             this.person.email = checkedUser.email
+            this.$axios.get('https://ktoevents.mokara.com.vn/check_data?email='+this.person.email)
+                .then(res => {
+                    if (res.data) {
+                        alert('Mỗi tài khoản chỉ được tham dự một lần!')
+                        this.$router.push('/')
+                    }
+                })
         } else {
             this.$router.push('/')
         }
@@ -423,6 +430,10 @@ export default {
         display: flex;
         justify-content: flex-end;
         align-items: center;
+        @media screen and (max-width: 767px) {
+            justify-content: flex-start;
+            padding: 0 15px;
+        }
     }
     .v-align {
         display: flex;
@@ -431,6 +442,9 @@ export default {
     }
 }
 @media screen and (max-width: 767px){
+    .gender-label {
+        margin-right: 15px !important;
+    }
     .form-group {
         padding: 0;
     }
