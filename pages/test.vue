@@ -21,6 +21,16 @@ export default {
                 .catch(err => console.log(err))
         }
 
+    },
+    mounted () {
+        let myObject = new Map();
+myObject.set('3', 33);
+myObject.set('1', 100);
+myObject.set('4', 3);
+console.log(myObject)
+for (let [key, value] of myObject) {
+  console.log(key, value);
+}
     }
 }
 </script>

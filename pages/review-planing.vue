@@ -114,9 +114,13 @@ export default {
                 let totalfood = 0
                 let totalacc = 0
                 
-                
-                for (var key in days) {
-                    var act = days[key]
+                var result = Object.keys(days).map(function(key) {
+                    return days[key];
+                    });
+                result.sort((a,b) => (a.ordering > b.ordering) ? 1 : ((b.ordering > a.ordering) ? -1 : 0));
+                result.forEach(act => {
+                // for (var key in days) {
+                //     var act = days[key]
                     let max = Math.max(act.activities.length, act.food.length, act.transport.length)
                     maxRow+= max
                     totalacc+=act.accommodation.hasOwnProperty('price') ? parseFloat(act.accommodation.price) : 0
@@ -164,7 +168,7 @@ export default {
                         // })
                         rows.push(cols)
                     }
-                }
+                })
                 
                 
                 res.push(maxRow)

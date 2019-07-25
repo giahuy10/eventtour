@@ -55,7 +55,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="(cols, rowindex) in rows" :key="rowindex">
-                            <td :class="col.class" :rowspan="col.rowspan" v-for="(col, index) in cols" :key="index">
+                            <td :class="col.class" :colspan="col.colspan" :rowspan="col.rowspan" v-for="(col, index) in cols" :key="index">
                                 {{col.val}}
                                 <br>
                                 <template v-if="col.val">
@@ -419,6 +419,7 @@ export default {
   },
     data () {
         return {
+            orderDay: 0,
             updatingAct: false,
             updatingTrans: false,
             updatingFoods: false,
@@ -1097,12 +1098,27 @@ export default {
                 } 
             }
         },
-      
+        sortProperties(obj)
+        {
+        // convert object into array
+            var sortable=[];
+            for(var key in obj)
+                if(obj.hasOwnProperty(key))
+                    sortable.push([key, obj[key]]); // each item is an array in format [key, value]
+            
+            // sort items by value
+            sortable.sort(function(a, b)
+            {
+            return a['ordering']-b['ordering']; // compare numbers
+            });
+            return sortable; // array in format [ [ key1, val1 ], [ key2, val2 ], ... ]
+        },
         genNewTable () {
             let res = []
             let rows = []
             let total = []
-          
+            let totalFinal = 0
+            
             for (var keyt in this.tour.progress) {
                 var days = this.tour.progress[keyt]
                 let maxRow =0
@@ -1110,9 +1126,13 @@ export default {
                 let totaltrans =0 
                 let totalfood = 0
                 let totalacc = 0
-                
-                for (var key in days) {
-                    var act = days[key]
+                var result = Object.keys(days).map(function(key) {
+                    return days[key];
+                    });
+                result.sort((a,b) => (a.ordering > b.ordering) ? 1 : ((b.ordering > a.ordering) ? -1 : 0));
+                result.forEach(act => {
+                //for (var key in days) {
+                   // var act = days[key]
            
                     let max = Math.max(act.activities.length, act.food.length, act.transport.length)
                     maxRow+= max
@@ -1185,23 +1205,25 @@ export default {
                         // })
                         rows.push(cols)
                     }
-                }
+                //}
+                })
                 rows.push([
                     { val: 'Tổng', class: 'bolder' },
                     { val: ''},
                     { val: ''},
-                    { val: totalact, class: 'bolder'},
+                    { val: totalact.toFixed(2), class: 'bolder'},
                     { val: ''},
-                    { val: totaltrans, class: 'bolder'},
+                    { val: totaltrans.toFixed(2), class: 'bolder'},
                     { val: ''},
-                    { val: totalfood, class: 'bolder'},
+                    { val: totalfood.toFixed(2), class: 'bolder'},
                     { val: ''},
-                    { val: totalacc, class: 'bolder'},
+                    { val: totalacc.toFixed(2), class: 'bolder'},
                     //{ val: ''}
                 ])
                 
                 res.push(maxRow)
                 total.push((parseFloat(totalact) + parseFloat(totaltrans) + parseFloat(totalfood) + parseFloat(totalacc)).toFixed(2))
+                totalFinal += parseFloat(parseFloat(totalact) + parseFloat(totaltrans) + parseFloat(totalfood) + parseFloat(totalacc))
             }
            
             let day = [0]
@@ -1229,7 +1251,9 @@ export default {
                 }
                 
             }
-            
+            rows.push([
+                {val: 'Tổng', colspan: 11, class:'bold'},{class:'bold', val: totalFinal.toFixed(2)}
+            ])
             this.rows = rows
             this.$scrollTo('#pros-table')
         },
@@ -1241,7 +1265,7 @@ export default {
         nextCity () {
 
           let check = true
-
+            
           if (this.tour.progress[this.currentDay][this.currentCity].transport.length == 0) {
             check = false
             this.toast('Vui lòng chọn phương tiện di chuyển cho thành phố này ', 'warning')
@@ -1252,6 +1276,7 @@ export default {
           }
 
           if (check) {
+              this.orderDay = this.orderDay + 1
             this.currentCity = 0
             this.currentTab = 1
             this.genNewTable()
@@ -1273,6 +1298,7 @@ export default {
                 check = false
             }
             if (check) {
+                this.orderDay = 0
               this.currentDay = this.currentDay + 1
               this.currentCity = 0
               this.currentTab = 1
@@ -1325,6 +1351,7 @@ export default {
                     
                     }
                 this.tour.progress[this.currentDay][this.currentCity].activities.push(act)
+                this.tour.progress[this.currentDay][this.currentCity].ordering = this.orderDay
                 this.selectedActivities = 0
                 this.nextTime()
                 this.genNewTable()
