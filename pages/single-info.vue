@@ -50,7 +50,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label"><b>Email:</b></label>
                                     <div class="col-sm-9">
-                                    <input type="email" v-model="person.email" readonly placeholder="Email của bạn" class="form-control">
+                                    <input type="email" v-model="person.email" placeholder="Email của bạn" class="form-control">
                                     </div>
                                     <div class="col-12">
                                         <i v-if="errors[4]" class="mes-err">{{ errors[4] }}</i>
@@ -63,7 +63,7 @@
                                         <label for="" class="col-sm-3"></label>
                                         <div class="col-sm-9">
                                         <span v-on:click="showMore = !showMore" class="item-non-choice place-name" v-if="!showMore"></span>
-                                        <img v-on:click="showMore = !showMore" v-else style=" width: 27px;vertical-align: unset;display: inline;" src="/imgs/tick.png" alt="">
+                                        <img v-on:click="showMore = !showMore" v-else style=" width: 27px;vertical-align: unset;display: inline;" src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/tick.png" alt="">
                                         <span v-on:click="showMore = !showMore" class="cursor">Tích vào đây nếu bạn đi theo nhóm</span>
                                         </div>
                                    
@@ -158,7 +158,7 @@
                 
             </div>
         </div>
-        <div style="background-image:url(/imgs/footter.png);height:390px"></div>
+        <div style="background-image:url(/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/footter.png);height:390px"></div>
     </div>
 </template>
 <script>
@@ -166,20 +166,66 @@ import VeeValidate from 'vee-validate';
 export default {
     // middleware: 'authenticated',
     mounted: function () {
-        if (localStorage.getItem('checkUser')) {
-            var checkedUser = JSON.parse(localStorage.getItem('checkUser'))
-            this.person.fullName = checkedUser.displayName
-            this.person.email = checkedUser.email
-            this.$axios.get('https://ktoevents.mokara.com.vn/check_data?email='+this.person.email)
-                .then(res => {
-                    if (res.data) {
-                        alert('Mỗi tài khoản chỉ được tham dự một lần!')
-                        this.$router.push('/')
+        if (this.$route.query.type) {
+            let ol = location.hash
+            if (ol.search("googleapis") < 0) {
+               // Facebook login
+                
+                var arr = ol.split("&")
+                var token = arr[0].split("=")
+                var access_token = token[1]
+                console.log(access_token)
+                this.$axios.get('https://graph.facebook.com/me?fields=name,email&access_token='+access_token)
+                .then(response => {
+                    console.log(response)
+                    let resUser = {
+                        id: response.data.id,
+                        username: response.data.id,
+                        email: response.data.email,
+                        displayName: response.data.name
                     }
+                    console.log(resUser)
+                    this.person.fullName = response.data.name
+                    this.person.email = response.data.email
+                    localStorage.setItem('checkUser', JSON.stringify(resUser))
+                    this.checkEmail(response.data.email)
+                    
                 })
+            } else {
+                // Google login
+                var arr = ol.split("&")
+                var token = arr[1].split("=")
+                var access_token = token[1]
+                console.log(access_token)
+                this.$axios.get('https://www.googleapis.com/plus/v1/people/me?access_token='+access_token)
+                    .then(response => {
+                        console.log(response)
+                        let resUser = {
+                            id: response.data.id,
+                            username: response.data.id,
+                            email: response.data.emails[0].value,
+                            displayName: response.data.displayName
+                        }
+                        console.log(resUser)
+                         this.person.fullName = response.data.displayName
+                            this.person.email = response.data.emails[0].value
+                            localStorage.setItem('checkUser', JSON.stringify(resUser))
+                            this.checkEmail(response.data.email)
+                    })
+            }
         } else {
-            this.$router.push('/')
+            if (localStorage.getItem('checkUser')) {
+                var checkedUser = JSON.parse(localStorage.getItem('checkUser'))
+                this.person.fullName = checkedUser.displayName
+                this.person.email = checkedUser.email
+                this.checkEmail(checkedUser.email)
+            } else {
+                this.$router.push({name: 'index'})
+            }
         }
+        
+        
+        
     },
 
 
@@ -203,6 +249,15 @@ export default {
     },
 
     methods: {
+        checkEmail(email) {
+            this.$axios.get('https://ktoevents.mokara.com.vn/check_data?email='+email)
+                    .then(res => {
+                        if (res.data) {
+                            alert('Mỗi tài khoản chỉ được tham dự một lần!')
+                            this.$router.push({name: 'index'})
+                        }
+                    })
+        },
         toast(msg, type) {
 
             this.$bvToast.toast(msg, {
@@ -243,6 +298,7 @@ export default {
             } else {
                 if (!this.validateEmail(this.person.email)) {
                     check = false
+                    this.person.email = ''
                     this.toast('Định dạng email không chính xác', 'warning')
                 }
                 
@@ -318,9 +374,9 @@ export default {
                 }
                 
                 if (type == 1) {
-                    this.$router.push('/upload-tour');
+                    this.$router.push({name :'upload-tour'});
                 } else {
-                    this.$router.push('/editplaning-m2');
+                    this.$router.push({ name: 'editplaning-m2'});
                 }
                 
             }

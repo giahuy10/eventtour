@@ -50,7 +50,7 @@
             </div>
             </div>
         </div>
-        <img src="/imgs/footter.png" alt="">
+        <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/footter.png" alt="">
     </div>
 </template>
 
@@ -73,7 +73,7 @@ export default {
             this.tour.type = 2
             this.genTable()
         } else {
-            this.$router.push('/editplaning-m2')
+            this.$router.push({name : 'editplaning-m2'})
         }
         
     },
@@ -94,7 +94,7 @@ export default {
                     this.tour.id = res.data.result
                     this.loading = false
                     localStorage.setItem('tour', JSON.stringify(this.tour))
-                    this.$router.push('/final')
+                    this.$router.push({name: 'final'})
                 })
                 .catch(err => console.log(err))
                 
@@ -114,16 +114,20 @@ export default {
                 let totalfood = 0
                 let totalacc = 0
                 
-                
-                for (var key in days) {
-                    var act = days[key]
+                var result = Object.keys(days).map(function(key) {
+                    return days[key];
+                    });
+                result.sort((a,b) => (a.ordering > b.ordering) ? 1 : ((b.ordering > a.ordering) ? -1 : 0));
+                result.forEach(act => {
+                // for (var key in days) {
+                //     var act = days[key]
                     let max = Math.max(act.activities.length, act.food.length, act.transport.length)
                     maxRow+= max
-                    totalacc+=act.accommodation ? parseFloat(act.accommodation.price) : 0
+                    totalacc+=act.accommodation.hasOwnProperty('price') ? parseFloat(act.accommodation.price) : 0
                     for(let i = 0; i < max; i++) {
                         totalact+= act.activities[i] ? parseFloat(act.activities[i].activities.price) : 0
                         totaltrans+=act.transport[i] ? parseFloat(act.transport[i].price) : 0
-                        totalfood+=act.food[i] ? parseFloat(act.food[i].price) : 0
+                        totalfood+= act.food.length > 0 && act.food[i] ? parseFloat(act.food[i].price) : 0
                         
                         let cols = [
                          
@@ -164,7 +168,7 @@ export default {
                         // })
                         rows.push(cols)
                     }
-                }
+                })
                 
                 
                 res.push(maxRow)
@@ -254,7 +258,7 @@ export default {
         &::before {
             left: -50px;
             content: '';
-            background: url('/imgs/question.png');
+            background: url('/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/question.png');
             display: block;
             width: 55px;
             height: 55px;

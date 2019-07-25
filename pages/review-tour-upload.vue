@@ -8,7 +8,7 @@
       <div class="underline text-center"><span></span></div>
       <div class="text-center review-mail">
         <a :href="tour.link" target="_blank">
-        <img src="/imgs/review-mail.png" alt="">
+        <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/review-mail.png" alt="">
         </a>
       </div>
       <div class="url">
@@ -37,7 +37,7 @@
         </div>
       </div>
     </div>
-    <img src="/imgs/footter.png" alt="">
+    <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/footter.png" alt="">
   </div>
 </template>
 
@@ -59,7 +59,7 @@ export default {
       this.tour.type = 1
     } else {
       
-      this.$router.push('/upload-tour')
+      this.$router.push({name : 'upload-tour'})
     }
   },
   methods: {
@@ -84,7 +84,7 @@ export default {
             console.log(res)
             this.tour.id = res.data.result
             localStorage.setItem('tour', JSON.stringify(this.tour))
-            this.$router.push('/final')
+            this.$router.push({name : 'final'})
           })
           .catch(err => console.log(err))
         
@@ -126,7 +126,7 @@ export default {
       border-radius: 20px;
       font-size: 20px;
       text-indent: 40px;
-      background-image: url('/imgs/pencil.png');
+      background-image: url('/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/pencil.png');
       background-repeat: no-repeat;
       background-position: right center;
           padding-right: 50px;
@@ -162,7 +162,7 @@ export default {
       &::before {
         left: -50px;
         content: '';
-        background: url('/imgs/question.png');
+        background: url('/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/question.png');
         display: block;
         width: 55px;
         height: 55px;

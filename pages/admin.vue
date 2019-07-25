@@ -25,7 +25,7 @@
                         <td v-text="item.code"></td>
                         <td>{{item.date ? item.date.$date : '' | moment('timezone', 'Etc/UTC','dddd, MMMM Do YYYY, h:mm:ss a')}}</td>
                         <td>
-                            <a :href="'/user?id='+item._id.$oid" class="btn btn-success" target="_blank" >Xem</a>
+                            <a :href="'/tao-tour-tu-tuc-hanh-phuc-di-han/user?id='+item._id.$oid" class="btn btn-success" target="_blank" >Xem</a>
                         </td>
                     </tr>
                 </tbody>

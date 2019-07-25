@@ -77,7 +77,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="(cols, index) in rows" :key="index">
-                            <td :class="col.class" :rowspan="col.rowspan" v-for="(col, index) in cols" :key="index">{{col.val}}</td>
+                            <td :class="col.class" :colspan="col.colspan" :rowspan="col.rowspan" v-for="(col, index) in cols" :key="index">{{col.val}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -109,7 +109,7 @@ export default {
             let res = []
             let rows = []
             let total = []
-          
+          let totalFinal = 0
             for (var key in this.tour.progress) {
                 var days = this.tour.progress[key]
                 let maxRow =0
@@ -117,9 +117,13 @@ export default {
                 let totaltrans =0 
                 let totalfood = 0
                 let totalacc = 0
-                
-                for (var key in days) {
-                    var act = days[key]
+                var result = Object.keys(days).map(function(key) {
+                    return days[key];
+                    });
+                result.sort((a,b) => (a.ordering > b.ordering) ? 1 : ((b.ordering > a.ordering) ? -1 : 0));
+                result.forEach(act => {
+                // for (var key in days) {
+                //     var act = days[key]
            
                     let max = Math.max(act.activities.length, act.food.length, act.transport.length)
                     maxRow+= max
@@ -173,7 +177,7 @@ export default {
                         // })
                         rows.push(cols)
                     }
-                }
+                })
                 rows.push([
                     { val: 'Tổng', class: 'bolder' },
                     { val: ''},
@@ -190,6 +194,7 @@ export default {
                 
                 res.push(maxRow)
                 total.push((parseFloat(totalact) + parseFloat(totaltrans) + parseFloat(totalfood) + parseFloat(totalacc)).toFixed(2))
+                totalFinal += parseFloat(parseFloat(totalact) + parseFloat(totaltrans) + parseFloat(totalfood) + parseFloat(totalacc))
             }
            
             let day = [0]
@@ -217,7 +222,9 @@ export default {
                 }
                 
             }
-            
+            rows.push([
+                {val: 'Tổng', colspan: 11, class:'bold'},{class:'bold', val: totalFinal.toFixed(2)}
+            ])
             this.rows = rows
        
         },

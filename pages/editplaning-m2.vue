@@ -55,7 +55,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="(cols, rowindex) in rows" :key="rowindex">
-                            <td :class="col.class" :rowspan="col.rowspan" v-for="(col, index) in cols" :key="index">
+                            <td :class="col.class" :colspan="col.colspan" :rowspan="col.rowspan" v-for="(col, index) in cols" :key="index">
                                 {{col.val}}
                                 <br>
                                 <template v-if="col.val">
@@ -129,7 +129,7 @@
                                 <div class="activity-selection  text-center" v-if="activity.id == mobileSliderAct">
                                     <div class="row" >
                                         <div class="col-6">
-                                            <img :src="'/imgs/act/'+currentCity+'/'+activity.id+'.jpg'" />
+                                            <img :src="'/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/act/'+currentCity+'/'+activity.id+'.jpg'" />
                                         </div>
                                         <div class="col-6 v-center">
                                             <div>
@@ -154,7 +154,7 @@
                                 <div class="activity-selection  text-center" v-if="food.id == mobileSliderFood">
                                     <div class="row" >
                                         <div class="col-6">
-                                            <img :src="'/imgs/food/'+currentCity+'/'+food.id+'.jpg'" />
+                                            <img :src="'/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/food/'+currentCity+'/'+food.id+'.jpg'" />
                                         </div>
                                         <div class="col-6 v-center">
                                             <div>
@@ -251,7 +251,7 @@
                                 <div class="row" v-if="currentCity">
                                     <div class="col-12 col-md-4" v-for="activity in cities[currentCity].activities" :key="activity.id">
                                         <div class="activity-selection  text-center">
-                                            <img :src="'/imgs/act/'+currentCity+'/'+activity.id+'.jpg'" />
+                                            <img :src="'/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/act/'+currentCity+'/'+activity.id+'.jpg'" />
                                             <label><input type="radio" :value="activity.id" v-model="selectedActivities"/> {{activity.name}}</label> <br>
                                                 Giá: {{activity.price > 0 ? '$'+activity.price : 'Miễn phí'}}
                                         </div>
@@ -306,7 +306,7 @@
                                 <div class="row" v-if="currentCity">
                                     <div class="col-12 col-md-4" v-for="food in cities[currentCity].food" :key="food.id">
                                         <div class="food-selection  text-center">
-                                            <img :src="'/imgs/food/'+currentCity+'/'+food.id+'.jpg'" />
+                                            <img :src="'/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/food/'+currentCity+'/'+food.id+'.jpg'" />
                                             <label><input type="checkbox" :value="food.id" v-model="selectedFood"/>{{food.name}} </label><br>
                                             Giá: ${{food.price}}
                                         </div>
@@ -367,8 +367,9 @@
         </div>
     <b-modal id="modal-1" ref="my-modal"  size="lg" title="Hướng dẫn tạo lịch trình" hide-footer>
         <div class="text-center">
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/Lky60WNXOro" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/aTLbYb3RbGs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>        
+
+</div>
     </b-modal>
 
     <b-modal id="modal-2" ref="my-modal-2" :title="addNewModal.title" hide-footer>
@@ -383,7 +384,7 @@
             <button class="btn btn-success" @click="addNewModalSubmit(addNewModal.type)">Thêm</button>
         </div>
     </b-modal>
-     <img src="/imgs/footter.png" alt="">
+     <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/footter.png" alt="">
     </div>
 </template>
 
@@ -405,16 +406,21 @@ export default {
     },
     mounted () {
         if (!localStorage.getItem('person')) {
-            this.$router.push('/single-info')
+            this.$router.push({name : 'single-info'})
         }
         window.addEventListener('beforeunload', (event) => {
             event.returnValue = `Are you sure you want to leave?`;
         });
+        window.addEventListener("backbutton", this.yourCallBackFunction, false);
+
         
     },
- 
+    beforeDestroy () {
+    document.removeEventListener("backbutton", this.yourCallBackFunction);
+  },
     data () {
         return {
+            orderDay: 0,
             updatingAct: false,
             updatingTrans: false,
             updatingFoods: false,
@@ -1068,7 +1074,9 @@ export default {
         }
     },
     methods: {
-   
+        yourCallBackFunction () {
+            console.log('done back')
+        },
         moveAct(type = 1) {
             if (type == 1) {
                 if (this.mobileSliderAct > 1) {
@@ -1091,12 +1099,27 @@ export default {
                 } 
             }
         },
-      
+        sortProperties(obj)
+        {
+        // convert object into array
+            var sortable=[];
+            for(var key in obj)
+                if(obj.hasOwnProperty(key))
+                    sortable.push([key, obj[key]]); // each item is an array in format [key, value]
+            
+            // sort items by value
+            sortable.sort(function(a, b)
+            {
+            return a['ordering']-b['ordering']; // compare numbers
+            });
+            return sortable; // array in format [ [ key1, val1 ], [ key2, val2 ], ... ]
+        },
         genNewTable () {
             let res = []
             let rows = []
             let total = []
-          
+            let totalFinal = 0
+            
             for (var keyt in this.tour.progress) {
                 var days = this.tour.progress[keyt]
                 let maxRow =0
@@ -1104,19 +1127,23 @@ export default {
                 let totaltrans =0 
                 let totalfood = 0
                 let totalacc = 0
-                
-                for (var key in days) {
-                    var act = days[key]
+                var result = Object.keys(days).map(function(key) {
+                    return days[key];
+                    });
+                result.sort((a,b) => (a.ordering > b.ordering) ? 1 : ((b.ordering > a.ordering) ? -1 : 0));
+                result.forEach(act => {
+                //for (var key in days) {
+                   // var act = days[key]
            
                     let max = Math.max(act.activities.length, act.food.length, act.transport.length)
                     maxRow+= max
                     act.activities.sort((a,b) => (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0)); 
 
-                    totalacc+=act.accommodation ? parseFloat(act.accommodation.price) : 0
+                    totalacc+=act.accommodation.hasOwnProperty('price') ? parseFloat(act.accommodation.price) : 0
                     for(let i = 0; i < max; i++) {
                         totalact+= act.activities[i] ? parseFloat(act.activities[i].activities.price) : 0
                         totaltrans+=act.transport[i] ? parseFloat(act.transport[i].price) : 0
-                        totalfood+=act.food[i] ? parseFloat(act.food[i].price) : 0
+                        totalfood+=act.food.length > 0 && act.food[i] ? parseFloat(act.food[i].price) : 0
                         
                         let cols = [
                          
@@ -1179,23 +1206,25 @@ export default {
                         // })
                         rows.push(cols)
                     }
-                }
+                //}
+                })
                 rows.push([
                     { val: 'Tổng', class: 'bolder' },
                     { val: ''},
                     { val: ''},
-                    { val: totalact, class: 'bolder'},
+                    { val: totalact.toFixed(2), class: 'bolder'},
                     { val: ''},
-                    { val: totaltrans, class: 'bolder'},
+                    { val: totaltrans.toFixed(2), class: 'bolder'},
                     { val: ''},
-                    { val: totalfood, class: 'bolder'},
+                    { val: totalfood.toFixed(2), class: 'bolder'},
                     { val: ''},
-                    { val: totalacc, class: 'bolder'},
+                    { val: totalacc.toFixed(2), class: 'bolder'},
                     //{ val: ''}
                 ])
                 
                 res.push(maxRow)
                 total.push((parseFloat(totalact) + parseFloat(totaltrans) + parseFloat(totalfood) + parseFloat(totalacc)).toFixed(2))
+                totalFinal += parseFloat(parseFloat(totalact) + parseFloat(totaltrans) + parseFloat(totalfood) + parseFloat(totalacc))
             }
            
             let day = [0]
@@ -1223,7 +1252,9 @@ export default {
                 }
                 
             }
-            
+            rows.push([
+                {val: 'Tổng', colspan: 11, class:'bold'},{class:'bold', val: totalFinal.toFixed(2)}
+            ])
             this.rows = rows
             this.$scrollTo('#pros-table')
         },
@@ -1235,7 +1266,7 @@ export default {
         nextCity () {
 
           let check = true
-
+            
           if (this.tour.progress[this.currentDay][this.currentCity].transport.length == 0) {
             check = false
             this.toast('Vui lòng chọn phương tiện di chuyển cho thành phố này ', 'warning')
@@ -1246,6 +1277,7 @@ export default {
           }
 
           if (check) {
+              this.orderDay = this.orderDay + 1
             this.currentCity = 0
             this.currentTab = 1
             this.genNewTable()
@@ -1267,6 +1299,7 @@ export default {
                 check = false
             }
             if (check) {
+                this.orderDay = 0
               this.currentDay = this.currentDay + 1
               this.currentCity = 0
               this.currentTab = 1
@@ -1301,7 +1334,7 @@ export default {
                 this.$scrollTo('#tour-title')
             } else {
                 localStorage.setItem('tour', JSON.stringify(this.tour))
-                this.$router.push('/review-planing')
+                this.$router.push({name :'review-planing'})
             }
             
         },
@@ -1319,6 +1352,7 @@ export default {
                     
                     }
                 this.tour.progress[this.currentDay][this.currentCity].activities.push(act)
+                this.tour.progress[this.currentDay][this.currentCity].ordering = this.orderDay
                 this.selectedActivities = 0
                 this.nextTime()
                 this.genNewTable()
@@ -1664,43 +1698,43 @@ export default {
         accThumb(id) {
             switch(id) {
                 case 1:
-                    return '/imgs/resort.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/resort.png'
                     break
                 case 2:
-                    return '/imgs/hotel.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/hotel.png'
                     break
                 case 3:
-                    return '/imgs/old-house.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/old-house.png'
                     break
                 case 4:
-                    return '/imgs/homestay.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/homestay.png'
                     break
                 case 5:
-                    return '/imgs/motel.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/motel.png'
                     break
                 default:
-                    return '/imgs/resort.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/resort.png'
             }
         },
         tranThumb(id) {
             switch(id) {
                 case 1:
-                    return '/imgs/bus.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/bus.png'
                     break
                 case 2:
-                    return '/imgs/subway.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/subway.png'
                     break
                 case 3:
-                    return '/imgs/metro.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/metro.png'
                     break
                 case 4:
-                    return '/imgs/taxi.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/taxi.png'
                     break
                 case 5:
-                    return '/imgs/train.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/train.png'
                     break
                 default:
-                    return '/imgs/bus.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/bus.png'
             }
         },
         openVideo () {
@@ -1740,6 +1774,9 @@ export default {
         }
     },
     watch: {
+        '$route' (to, from) {
+            console.log('from ' ,from, ' to ', to)
+        },
         selectedCity(old) {
             let cities = {}
             this.currentCity = old[0].id
@@ -1801,6 +1838,9 @@ export default {
     }
     .overview {
         padding: 20px 20px 40px 20px;
+        @media screen and(max-width: 767px) {
+            padding-bottom: 0px;
+        }
         .select-days {
             width: 80%;
             margin: 0 auto;
@@ -1991,7 +2031,7 @@ iframe {
         font-size: 16px;
         font-weight: bold;
         color: #083e7c;
-        background: url(/imgs/head-line.png) no-repeat;
+        background: url(/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/head-line.png) no-repeat;
         padding-left: 10px;
         margin-bottom: 15px;
     }
@@ -2035,6 +2075,11 @@ i.fa.fa-plus {
     text-align: center;
     margin-left: 10px;
 }
-
+iframe {
+    @media screen and (max-width: 767px) {
+        width: 100%;
+        height: 200px;
+    }
+}
 </style>
 
