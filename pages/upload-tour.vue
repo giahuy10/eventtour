@@ -34,7 +34,7 @@
             <button type="submit" class="btn btn-submit" @click="save">Tiếp theo</button>
         </div>
     </div>
-    <img src="/imgs/footter.png" alt="">
+    <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/footter.png" alt="">
   </div>
 </template>
 
@@ -51,7 +51,7 @@ export default {
   },
   mounted () {
     if (!localStorage.getItem('person')) {
-      this.$router.push('/single-info')
+      this.$router.push({name : 'single-info'})
     }
   },
   methods: {
@@ -69,7 +69,7 @@ export default {
 
       if (check) {
         localStorage.setItem('tour-upload', JSON.stringify(this.tour))
-        this.$router.push('/review-tour-upload')
+        this.$router.push({name : 'review-tour-upload'})
       } 
       
     }

@@ -15,16 +15,16 @@
                 <div class="col-md-6">
                    <div class="row">
                         <div class="col-6 logo-white ">
-                           <img src="/imgs/logo-kr.png" alt="">
+                           <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/logo-kr.png" alt="">
                         </div>
                         <div class="col-6 logo">
-                           <img src="/imgs/logo_white.png" alt="">
+                           <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/logo_white.png" alt="">
                         </div>
                        
                    </div>
                 </div>
                 <div class="col-md-12">
-                    <p class="text-center copyright">Copyright &copy;KOREA TOURISM ORGANIZAION KTO IN VIETNAM. ALL RIGHTS RESERVED</p>
+                    <p class="text-center copyright">Copyright &copy;KOREA TOURISM ORGANIZATION KTO IN VIETNAM. ALL RIGHTS RESERVED</p>
                 </div>
             </div>
         </div>

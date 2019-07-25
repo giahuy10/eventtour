@@ -33,7 +33,7 @@ export default {
       {
         hid: 'og:url',
         property: 'og:url',
-        content: 'https://kto-landing.firebaseapp.com'
+        content: 'https://www.visitkorea.org.vn/tao-tour-tu-tuc-hanh-phuc-di-han/'
       },
       {
         hid: 'og:image',
@@ -76,8 +76,25 @@ export default {
     // Doc: https://bootstrap-vue.js.org/docs/
     'bootstrap-vue/nuxt',
     '@nuxtjs/axios',
+    '@nuxtjs/auth',
     'vue-scrollto/nuxt'
   ],
+  auth: {
+    redirect: {
+      callback: '/tao-tour-tu-tuc-hanh-phuc-di-han/single-info?type=facebook'
+    },
+    strategies: {
+        facebook: {
+          client_id: '995822403945432',
+          userinfo_endpoint: 'https://graph.facebook.com/v2.12/me?fields=about,name,picture{url},email,birthday',
+          scope: ['public_profile', 'email']
+        },
+        google: {
+          client_id:
+            '343465466923-iutgjkdsal6t88458rv11475k71gl4ks.apps.googleusercontent.com'
+        },
+    }
+    },
   /*
   ** Build configuration
   */
@@ -87,5 +104,8 @@ export default {
     */
     extend(config, ctx) {
     }
-  }
+  },
+  router: {
+    base: '/tao-tour-tu-tuc-hanh-phuc-di-han/'
+  },
 }

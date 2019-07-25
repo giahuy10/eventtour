@@ -32,7 +32,7 @@ a.reg {
     color: green;
 }
 .inner-page {
-    background: url('/imgs/clouds.png') no-repeat;
+    background: url('/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/clouds.png') no-repeat;
     padding-top: 170px;
 }
 .inner-box {
@@ -53,7 +53,7 @@ img{max-width: 100%}
 .nav-item {margin:0 20px}
 .footer{
     background-color: #4288bc;color: #73a3b0;
-    background-image: url('/imgs/footer-shadow.png');
+    background-image: url('/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/footer-shadow.png');
     background-repeat: no-repeat;
 }
 .footer p, .footer h6{
@@ -92,7 +92,7 @@ section {padding:50px 0}
 p {color: #9b9ca1}
 .title{color: #14d4c9}
 .introduce .content, .introduce2 .content{color: #083e7c}
-/* .introduce2{ background-image: url("/imgs/footer-img.png");} */
+/* .introduce2{ background-image: url("/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/footer-img.png");} */
 .introduce2 .content{font-size: 1.75rem}
 .sub-title b {color: #265ba9}
 .fix-bottom-parent {
@@ -108,7 +108,7 @@ p {color: #9b9ca1}
 }
 .introduce3{
     padding-bottom: 0px;
-    background-image: url(/imgs/CV.png);
+    background-image: url(/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/CV.png);
     background-size:20%; 
     background-repeat: no-repeat;
     background-position:87% 49%
@@ -122,7 +122,7 @@ p {color: #9b9ca1}
 }
 .bottom-img{padding: 0}
 .introduce4 {
-    background-image: url(/imgs/introduce2.png);
+    background-image: url(/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/introduce2.png);
     background-size:50%; 
     background-repeat: no-repeat;
     background-position: -130px 0;
@@ -163,7 +163,7 @@ p {color: #9b9ca1}
     .introduce4 .left-content {padding-right: 60px}
     .introduce2 .container {padding-left: 50px;padding-right: 50px}
    
-    /* .introduce2 {padding-top:100px;padding-bottom: 250px;background-image: url(/imgs/footer-img.png);background-size:100% 100% } */
+    /* .introduce2 {padding-top:100px;padding-bottom: 250px;background-image: url(/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/footer-img.png);background-size:100% 100% } */
 }
 .modal-title {text-align: center;text-transform: uppercase;color: #2d4197}
 .dl-grid{

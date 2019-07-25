@@ -23,7 +23,7 @@
       <h3 class="text-center">Share link sự kiện trên Facebook</h3>
       <div class="text-center cursor">
         <input type="text" @click="copy" readonly v-model="linkFacebook" class="form-control share-post cursor" title="Click để copy đường link">
-        <social-sharing @close="close()" url="https://kto-landing.firebaseapp.com"
+        <social-sharing @close="close()" url="https://www.visitkorea.org.vn/tao-tour-tu-tuc-hanh-phuc-di-han/"
                       title="Tạo tour tự túc - Hạnh phúc đi Hàn"
                       description="Bạn ước mơ một ngày được khám phá xứ sở Kim Chi nhưng điều kiện chưa cho phép? Tham gia ngay cuộc thi do tổng cục Du Lịch Hàn Quốc (KTO) tổ chức để nhận ngay tấm vé tới xử sở Kim Chi - Hoàn toàn miễn phí"
                       quote="Tham gia ngay để nhận chuyến du lịch Hàn Quốc miễn phí nhé!"
@@ -48,7 +48,7 @@
 export default {
   data () {
     return {
-      linkFacebook: 'https://visitkorea.org.vn/tao-tour-tu-tuc-hanh-phuc-di-han',
+      linkFacebook: 'https://www.visitkorea.org.vn/tao-tour-tu-tuc-hanh-phuc-di-han/',
       giftcode: {
         code: '',
         phone: ''
@@ -63,13 +63,13 @@ export default {
       this.tour = JSON.parse(localStorage.getItem('tour'))
       console.log(this.tour)
     } else {
-      this.$router.push('/single-info')
+      this.$router.push({name : 'single-info'})
     }
 
   },
   methods: {
     close (){
-      this.$router.push('/')
+      this.$router.push({name: 'index'})
     },
     copy(){
       this.$clipboard(this.linkFacebook)

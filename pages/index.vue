@@ -14,7 +14,7 @@
 
         <div class="home-banner-m d-block d-sm-none">
             <a href="#" v-scroll-to="'#introduce4'">
-            <img src="/imgs/Mobile_Home.png" alt="">
+            <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/Mobile_Home.png" alt="">
             </a>
         </div>
 
@@ -34,7 +34,7 @@
                     <div class="col-md-4 fix-bottom-parent d-block d-sm-none">
                         <div class="fix-bottom">
                             <div class="img-block the-best">
-                                <img src="/imgs/1.png" alt="">
+                                <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/1.png" alt="">
                             </div>
                             <div class="img-content">
                                 <b>01 Giải Nhất</b>
@@ -48,7 +48,7 @@
                     <div class="col-md-4 fix-bottom-parent">
                         <div class="fix-bottom">
                             <div class="img-block">
-                                <img src="/imgs/2.png" alt="">
+                                <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/2.png" alt="">
                                 
                             </div>
                             <div class="img-content">
@@ -62,7 +62,7 @@
                     <div class="col-md-4 fix-bottom-parent d-none d-sm-block">
                         <div class="fix-bottom">
                             <div class="img-block the-best">
-                                <img src="/imgs/1.png" alt="">
+                                <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/1.png" alt="">
                             </div>
                             <div class="img-content">
                                 <b>01 Giải Nhất</b>
@@ -77,7 +77,7 @@
                      <div class="col-md-4 fix-bottom-parent">
                         <div class="fix-bottom">
                             <div class="img-block">
-                                <img src="/imgs/3.png" alt="">
+                                <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/3.png" alt="">
                             </div>
                             <div class="img-content">
                                 <b>01 Giải Ba</b>
@@ -91,7 +91,7 @@
                 <h5 style="color:#083e7c;margin-top:30px; font-weight: bold;" class="text-uppercase title text-center">và hàng trăm giải thưởng hấp dẫn khác</h5>
             </div>
             <!-- <div>
-                <img src="/imgs/footer-img.png" alt="">
+                <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/footer-img.png" alt="">
             </div> -->
         </section>
 
@@ -110,7 +110,7 @@
                        <div class="item">
                            <div class="icon-block">
                               
-                                   <img src="/imgs/note.png" alt=""> <b>Vòng 1</b>
+                                   <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/note.png" alt=""> <b>Vòng 1</b>
                               
                                
                            </div>
@@ -127,7 +127,7 @@
                    <div class="col-md-3">
                        <div class="item">
                            <div class="icon-block">
-                               <img src="/imgs/camera.png" alt=""> <b>Vòng 2</b>
+                               <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/camera.png" alt=""> <b>Vòng 2</b>
                            </div>
                            <div class="content-block">
                                <div class="sub-title">
@@ -142,7 +142,7 @@
                    <div class="col-md-3">
                        <div class="item">
                            <div class="icon-block">
-                               <img src="/imgs/report.png" alt=""> <b>Vòng 3</b>
+                               <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/report.png" alt=""> <b>Vòng 3</b>
                            </div>
                            <div class="content-block">
                               <div class="sub-title">
@@ -169,7 +169,7 @@
                     
                     <div class="col-md-6">
                         <div>
-                            <!-- <img src="/imgs/introduce2.png" alt=""> -->
+                            <!-- <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/introduce2.png" alt=""> -->
                         </div>
                     </div>
                     <div class="col-md-6 left-content">
@@ -288,6 +288,7 @@ export default {
         if (localStorage.getItem('checkUser')) {
             this.checkedUser = JSON.parse(localStorage.getItem('checkUser'))
         }
+        console.log(48.70)
     },
     methods: {
         logout() {
@@ -313,7 +314,7 @@ export default {
 
 <style lang="scss">
 .home-banner {
-    background: url('/imgs/home-banner.jpg');
+    background: url('/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/home-banner.jpg');
     background-position: center bottom;
     .header-content {
         text-align: center;
@@ -369,7 +370,7 @@ export default {
     }
 }
 .cloud-bg {
-    background: url(/imgs/cloud-bg.png) no-repeat;
+    background: url(/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/cloud-bg.png) no-repeat;
     background-size: 100% auto;
 }
 .introduce3 {

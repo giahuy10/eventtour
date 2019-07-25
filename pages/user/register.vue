@@ -4,7 +4,7 @@
             <div class="text-center">
                 <div class="row">
                     <div class="col-6 d-none d-sm-block">
-                        <img class="logo-login" src="/imgs/logo.png" alt="">
+                        <img class="logo-login" src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/logo.png" alt="">
                     </div>
                     <div class="col-12 col-md-6 text-right text-center-mobile">
                         <h3 class="gr-title">ĐĂNG KÝ</h3>

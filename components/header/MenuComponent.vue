@@ -2,8 +2,8 @@
     <div>
         <b-navbar toggleable="lg" class="navbar-fixed-top">
             <div class="container">
-            <b-navbar-brand href="/">
-                <img src="/imgs/logo.png" alt="">
+            <b-navbar-brand href="#" @click="$router.push({name: 'index'})">
+                <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/logo.png" alt="">
             </b-navbar-brand>
 
             <!-- <b-navbar-toggle target="nav-collapse"></b-navbar-toggle> -->
@@ -31,7 +31,7 @@ export default {
         logout() {
             // Code will also be required to invalidate the JWT Cookie on external API
             localStorage.clear()
-            this.$router.push('/');
+            this.$router.push({name: 'index'});
         }
     }
 }

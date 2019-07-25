@@ -3,7 +3,7 @@
         
         <div class="login-box inner-box">
             <div class="text-center">
-                <img class="logo-login d-none d-sm-block" src="/imgs/logo.png" alt="">
+                <img class="logo-login d-none d-sm-block" src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/logo.png" alt="">
                 <hr class="d-none d-sm-block">
                 <h3 class="gr-title">ĐĂNG NHẬP</h3>
             </div>
@@ -57,7 +57,7 @@
                 
             </div>
         </div>
-        <img src="/imgs/footter.png" alt="">
+        <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/footter.png" alt="">
     </div>
 </template>
 

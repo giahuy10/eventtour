@@ -129,7 +129,7 @@
                                 <div class="activity-selection  text-center" v-if="activity.id == mobileSliderAct">
                                     <div class="row" >
                                         <div class="col-6">
-                                            <img :src="'/imgs/act/'+currentCity+'/'+activity.id+'.jpg'" />
+                                            <img :src="'/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/act/'+currentCity+'/'+activity.id+'.jpg'" />
                                         </div>
                                         <div class="col-6 v-center">
                                             <div>
@@ -154,7 +154,7 @@
                                 <div class="activity-selection  text-center" v-if="food.id == mobileSliderFood">
                                     <div class="row" >
                                         <div class="col-6">
-                                            <img :src="'/imgs/food/'+currentCity+'/'+food.id+'.jpg'" />
+                                            <img :src="'/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/food/'+currentCity+'/'+food.id+'.jpg'" />
                                         </div>
                                         <div class="col-6 v-center">
                                             <div>
@@ -251,7 +251,7 @@
                                 <div class="row" v-if="currentCity">
                                     <div class="col-12 col-md-4" v-for="activity in cities[currentCity].activities" :key="activity.id">
                                         <div class="activity-selection  text-center">
-                                            <img :src="'/imgs/act/'+currentCity+'/'+activity.id+'.jpg'" />
+                                            <img :src="'/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/act/'+currentCity+'/'+activity.id+'.jpg'" />
                                             <label><input type="radio" :value="activity.id" v-model="selectedActivities"/> {{activity.name}}</label> <br>
                                                 Giá: {{activity.price > 0 ? '$'+activity.price : 'Miễn phí'}}
                                         </div>
@@ -306,7 +306,7 @@
                                 <div class="row" v-if="currentCity">
                                     <div class="col-12 col-md-4" v-for="food in cities[currentCity].food" :key="food.id">
                                         <div class="food-selection  text-center">
-                                            <img :src="'/imgs/food/'+currentCity+'/'+food.id+'.jpg'" />
+                                            <img :src="'/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/food/'+currentCity+'/'+food.id+'.jpg'" />
                                             <label><input type="checkbox" :value="food.id" v-model="selectedFood"/>{{food.name}} </label><br>
                                             Giá: ${{food.price}}
                                         </div>
@@ -383,7 +383,7 @@
             <button class="btn btn-success" @click="addNewModalSubmit(addNewModal.type)">Thêm</button>
         </div>
     </b-modal>
-     <img src="/imgs/footter.png" alt="">
+     <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/footter.png" alt="">
     </div>
 </template>
 
@@ -405,14 +405,18 @@ export default {
     },
     mounted () {
         if (!localStorage.getItem('person')) {
-            this.$router.push('/single-info')
+            this.$router.push({name : 'single-info'})
         }
         window.addEventListener('beforeunload', (event) => {
             event.returnValue = `Are you sure you want to leave?`;
         });
+        window.addEventListener("backbutton", this.yourCallBackFunction, false);
+
         
     },
- 
+    beforeDestroy () {
+    document.removeEventListener("backbutton", this.yourCallBackFunction);
+  },
     data () {
         return {
             updatingAct: false,
@@ -1068,7 +1072,9 @@ export default {
         }
     },
     methods: {
-   
+        yourCallBackFunction () {
+            console.log('done back')
+        },
         moveAct(type = 1) {
             if (type == 1) {
                 if (this.mobileSliderAct > 1) {
@@ -1112,11 +1118,11 @@ export default {
                     maxRow+= max
                     act.activities.sort((a,b) => (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0)); 
 
-                    totalacc+=act.accommodation ? parseFloat(act.accommodation.price) : 0
+                    totalacc+=act.accommodation.hasOwnProperty('price') ? parseFloat(act.accommodation.price) : 0
                     for(let i = 0; i < max; i++) {
                         totalact+= act.activities[i] ? parseFloat(act.activities[i].activities.price) : 0
                         totaltrans+=act.transport[i] ? parseFloat(act.transport[i].price) : 0
-                        totalfood+=act.food[i] ? parseFloat(act.food[i].price) : 0
+                        totalfood+=act.food.length > 0 && act.food[i] ? parseFloat(act.food[i].price) : 0
                         
                         let cols = [
                          
@@ -1301,7 +1307,7 @@ export default {
                 this.$scrollTo('#tour-title')
             } else {
                 localStorage.setItem('tour', JSON.stringify(this.tour))
-                this.$router.push('/review-planing')
+                this.$router.push({name :'review-planing'})
             }
             
         },
@@ -1664,43 +1670,43 @@ export default {
         accThumb(id) {
             switch(id) {
                 case 1:
-                    return '/imgs/resort.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/resort.png'
                     break
                 case 2:
-                    return '/imgs/hotel.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/hotel.png'
                     break
                 case 3:
-                    return '/imgs/old-house.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/old-house.png'
                     break
                 case 4:
-                    return '/imgs/homestay.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/homestay.png'
                     break
                 case 5:
-                    return '/imgs/motel.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/motel.png'
                     break
                 default:
-                    return '/imgs/resort.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/resort.png'
             }
         },
         tranThumb(id) {
             switch(id) {
                 case 1:
-                    return '/imgs/bus.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/bus.png'
                     break
                 case 2:
-                    return '/imgs/subway.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/subway.png'
                     break
                 case 3:
-                    return '/imgs/metro.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/metro.png'
                     break
                 case 4:
-                    return '/imgs/taxi.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/taxi.png'
                     break
                 case 5:
-                    return '/imgs/train.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/train.png'
                     break
                 default:
-                    return '/imgs/bus.png'
+                    return '/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/bus.png'
             }
         },
         openVideo () {
@@ -1740,6 +1746,9 @@ export default {
         }
     },
     watch: {
+        '$route' (to, from) {
+            console.log('from ' ,from, ' to ', to)
+        },
         selectedCity(old) {
             let cities = {}
             this.currentCity = old[0].id
@@ -1801,6 +1810,9 @@ export default {
     }
     .overview {
         padding: 20px 20px 40px 20px;
+        @media screen and(max-width: 767px) {
+            padding-bottom: 0px;
+        }
         .select-days {
             width: 80%;
             margin: 0 auto;
@@ -1991,7 +2003,7 @@ iframe {
         font-size: 16px;
         font-weight: bold;
         color: #083e7c;
-        background: url(/imgs/head-line.png) no-repeat;
+        background: url(/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/head-line.png) no-repeat;
         padding-left: 10px;
         margin-bottom: 15px;
     }
