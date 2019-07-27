@@ -87,7 +87,7 @@ export default {
             }
             if (check) {
                 this.loading = true
-         
+                this.tour.question = this.question;
                 this.$axios.post('https://ktoevents.mokara.com.vn/add_result', this.tour)
                 .then(res => {
                     console.log(res)

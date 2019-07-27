@@ -81,6 +81,8 @@
                         </tr>
                     </tbody>
                 </table>
+                <h4>Câu hỏi truyền cảm hứng</h4>
+                <div v-html="tour.question"></div>
             </div>
         </div>
     </div>
@@ -109,9 +111,10 @@ export default {
             let res = []
             let rows = []
             let total = []
-          let totalFinal = 0
-            for (var key in this.tour.progress) {
-                var days = this.tour.progress[key]
+            let totalFinal = 0
+            
+            for (var keyt in this.tour.progress) {
+                var days = this.tour.progress[keyt]
                 let maxRow =0
                 let totalact = 0
                 let totaltrans =0 
@@ -122,36 +125,55 @@ export default {
                     });
                 result.sort((a,b) => (a.ordering > b.ordering) ? 1 : ((b.ordering > a.ordering) ? -1 : 0));
                 result.forEach(act => {
-                // for (var key in days) {
-                //     var act = days[key]
+                //for (var key in days) {
+                   // var act = days[key]
            
                     let max = Math.max(act.activities.length, act.food.length, act.transport.length)
                     maxRow+= max
-                    totalacc+=act.accommodation.price ? parseFloat(act.accommodation.price) : 0
+                    act.activities.sort((a,b) => (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0)); 
+
+                    totalacc+=act.accommodation && act.accommodation.price ? parseFloat(act.accommodation.price) : 0
                     for(let i = 0; i < max; i++) {
                         totalact+= act.activities[i] ? parseFloat(act.activities[i].activities.price) : 0
                         totaltrans+=act.transport[i] ? parseFloat(act.transport[i].price) : 0
-                        totalfood+=act.food[i] ? parseFloat(act.food[i].price) : 0
+                        totalfood+=act.food.length > 0 && act.food[i] ? parseFloat(act.food[i].price) : 0
                         
                         let cols = [
                          
                             {
-                                val: act.activities[i] ? act.activities[i].start +' - '+act.activities[i].end : ''
+                                val: act.activities[i] ? act.activities[i].start +' - '+act.activities[i].end : '',
+                                type: 'time'
                             },
                             {
-                                val: act.activities[i] ? act.activities[i].activities.name: ''
+                                val: act.activities[i] ? act.activities[i].activities.name: '',
+                                type: 'act',
+                                key: i,
+                                day: keyt,
+                                city: act.city.id, 
+                                id: act.activities[i] ? act.activities[i].activities.id : 0,
+                                start: act.activities[i] ? act.activities[i].start : '',
+                                end: act.activities[i] ? act.activities[i].end: ''
+
                             },
                             {
                                 val: act.activities[i] ? act.activities[i].activities.price : ''
                             },
                             {
-                                val: act.transport[i] ? act.transport[i].name : ''
+                                val: act.transport[i] ? act.transport[i].name : '',
+                                type: 'trans',
+                                key: i,
+                                day: keyt,
+                                city: act.city.id,
                             },
                             {
                                 val: act.transport[i] ? act.transport[i].price : ''
                             },
                             {
-                                val: act.food[i] ? act.food[i].name : ''
+                                val: act.food[i] ? act.food[i].name : '',
+                                type: 'food',
+                                key: i,
+                                day: keyt,
+                                city: act.city.id,
                             },
                             {
                                 val: act.food[i] ? act.food[i].price : ''
@@ -177,18 +199,19 @@ export default {
                         // })
                         rows.push(cols)
                     }
+                //}
                 })
                 rows.push([
                     { val: 'Tổng', class: 'bolder' },
                     { val: ''},
                     { val: ''},
-                    { val: totalact, class: 'bolder'},
+                    { val: totalact.toFixed(2), class: 'bolder'},
                     { val: ''},
-                    { val: totaltrans, class: 'bolder'},
+                    { val: totaltrans.toFixed(2), class: 'bolder'},
                     { val: ''},
-                    { val: totalfood, class: 'bolder'},
+                    { val: totalfood.toFixed(2), class: 'bolder'},
                     { val: ''},
-                    { val: totalacc, class: 'bolder'},
+                    { val: totalacc.toFixed(2), class: 'bolder'},
                     //{ val: ''}
                 ])
                 

@@ -629,7 +629,7 @@ export default {
                     },
                     activities: {
                         1: { id: 1, name: 'Vui chơi, mua sắm tại đảo Wolmido', address:'36, Wolmimunhwa-ro, Jung-gu, Incheon', time:'Luôn mở cửa', price: '0', thumb: ''},
-                        2: { id: 2, name: 'Vui chơi tại công viên trung tâm Songdo', address:'196 Technopark-ro, Songdo-dong, Yeonsu-gu, Incheon', time:'Luôn mở cửa', price: '0 vào cổng', thumb: ''},
+                        2: { id: 2, name: 'Vui chơi tại công viên trung tâm Songdo', address:'196 Technopark-ro, Songdo-dong, Yeonsu-gu, Incheon', time:'Luôn mở cửa', price: '0', thumb: ''},
                         3: { id: 3, name: 'Mua sắm, ăn uống tại Incheon Chinatown', address:'Gaho-dong, Jung-gu, Incheon', time:'Luôn mở cửa', price: '0', thumb: ''},
                         4: { id: 4, name: 'Thăm quan làng cổ tích Songwol-dong', address:'Jayugongwonseo-ro 45beon-gil, Songwol-dong 3(sam)-ga, Jung-gu, Incheon', time:'Luôn mở cửa', price: '0', thumb: ''},
                         5: { id: 5, name: 'Mua sắm ở chợ quốc tế Sinpo', address:'11-5 Uhyeon-ro 49beon-gil, Sinpo-dong, Jung-gu, Incheon', time:'Luôn mở cửa', price: '0', thumb: ''},
@@ -1290,6 +1290,14 @@ export default {
         nextDay (type = 0) {
             
             let check = true
+            if (this.tour.progress[this.currentDay][this.currentCity].activities.length == 0) {
+                check = false
+                this.toast('Vui lòng chọn hoạt động cho thành phố này ', 'warning')
+            }
+            if (this.tour.progress[this.currentDay][this.currentCity].transport.length == 0) {
+                check = false
+                this.toast('Vui lòng chọn phương tiện di chuyển cho thành phố này ', 'warning')
+            }
             if (!this.validDay.acc) {
                 check = false
                 this.toast('Vui lòng chọn nơi ở trong ngày này ', 'warning')
@@ -1340,24 +1348,31 @@ export default {
         },
         saveTime () {
             if (this.selectedActivities) {
-                let act = {
+                let start = this.convertTime(this.selectedTime).start
+                let end = this.convertTime(this.selectedTime).end
+                if (start == end) {
+                    this.toast('Thời gian bắt đầu và thời gian kết thúc không được trùng nhau', 'warning')
+                } else {
+                    let act = {
                         city: {
                             id: this.currentCity,
                             name: this.cities[this.currentCity].name
                         },
-                        start: this.convertTime(this.selectedTime).start,
-                        end: this.convertTime(this.selectedTime).end,
+                        start: start,
+                        end: end,
                         activities: this.cities[this.currentCity].activities[this.selectedActivities],
                         price: this.cities[this.currentCity].activities[this.selectedActivities].price,
                     
                     }
-                this.tour.progress[this.currentDay][this.currentCity].activities.push(act)
-                this.tour.progress[this.currentDay][this.currentCity].ordering = this.orderDay
-                this.selectedActivities = 0
-                this.nextTime()
-                this.genNewTable()
-                this.currentTab = 2
-                this.toast('Thêm hoạt động thành công', 'success')
+                    this.tour.progress[this.currentDay][this.currentCity].activities.push(act)
+                    this.tour.progress[this.currentDay][this.currentCity].ordering = this.orderDay
+                    this.selectedActivities = 0
+                    this.nextTime()
+                    this.genNewTable()
+                    this.currentTab = 2
+                    this.toast('Thêm hoạt động thành công', 'success')
+                }
+                
             } else{
                 this.toast('Vui lòng chọn hoạt động trước', 'warning')
             }
