@@ -1,7 +1,20 @@
 <template>
   <div class="final inner-page ">
     <div class="inner-box final-inner">
-      <div class="gift-code">
+      <div class="message text-center">
+        <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/baby.png" alt="">
+        <h3>Chúc mừng</h3>
+        <h4>Bạn đã hoàn thành bài thi vòng 1 cuộc thi "Tạo tour tự túc - hạnh phúc đi hàn"</h4>
+        <hr>
+        <p>Theo dõi kết quả vòng 1 vào ngày 14/08/2019 <br>
+        trên Kênh thông tin chính thức của Tổng cục Du lịch Hàn Quốc (KTO) tại Việt Nam
+        </p>
+        <div class="underline text-center"><span></span></div>
+      </div>
+      <div class="alert alert-success" v-if="giftOk">
+        Sử dụng GIFTCODE thành công. Phần quà sẽ được gửi đến SĐT mà bạn đăng ký!
+      </div>
+      <div class="gift-code" v-else>
         <p><b>* Phần dành cho khách hàng có mã GIFTCODE</b></p>
         <div class="form-group row">
           <label for="" class="col-sm-6">Điền thông tin GIFTCODE</label>
@@ -41,6 +54,15 @@
       </div>
       
     </div>
+    <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/footter.png" alt="">
+     <div class="help-video" :class="openVideo ? 'open' : 'hide-video'">
+          <i  @click="openVideo = !openVideo" v-if="openVideo" class="cursor fa fa-times" aria-hidden="true"></i>
+
+          <iframe v-if="openVideo" width="500" height="315" class="d-block d-sm-none mobile-video" src="https://www.youtube.com/embed/IK36HZA59L4?rel=0&enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>   
+          <iframe v-if="openVideo" width="500" height="315" class="d-none d-md-block" src="https://www.youtube.com/embed/nSOYKyntx1M?rel=0&enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>     
+          <span class="cursor" @click="openVideo = !openVideo">Video hướng dẫn tham dự cuộc thi</span>
+
+        </div>
   </div>
 </template>
 
@@ -48,6 +70,7 @@
 export default {
   data () {
     return {
+      openVideo: true,
       linkFacebook: 'https://www.visitkorea.org.vn/tao-tour-tu-tuc-hanh-phuc-di-han/',
       giftcode: {
         code: '',
@@ -55,12 +78,14 @@ export default {
       },
       err: [],
       loading: false,
-      tour:{}
+      tour:{},
+      giftOk: false
     }
   },
   mounted () {
     if (localStorage.getItem('tour')) {
       this.tour = JSON.parse(localStorage.getItem('tour'))
+      this.giftcode.phone = this.tour.person.phoneNumber
       console.log(this.tour)
     } else {
       this.$router.push({name : 'single-info'})
@@ -90,18 +115,19 @@ export default {
       if (check) {
         this.loading = true
         let tourId = this.tour.id ? this.tour.id.$oid: '0'
-        this.$axios.get('https://ktoevents.mokara.com.vn/check_code?code='+this.giftcode.code+'&phone='+this.giftcode.phone+'&tourid='+tourId)
+        this.$axios.get('https://new.pathoftheelders.com/code.php?code='+this.giftcode.code+'&phone='+this.giftcode.phone+'&tourid='+tourId+'&email='+this.tour.person.email+'&name='+this.tour.person.fullName)
           .then(res => {
             console.log(res)
             if (res.data.status == 1) {
-              this.toast(res.data.data, 'success')
+              
+              this.giftOk = true
             } else {
               this.toast(res.data.data, 'warning')
             }
             this.loading = false
             this.giftcode = {
               code: '',
-              phone: ''
+              phone: this.tour.person.phoneNumber
             }
           })
           .catch(err => console.log(err))
@@ -121,11 +147,37 @@ export default {
 
 <style lang="scss">
 .final-inner {
+  .underline {
+    span {
+      display: inline-block;
+      width: 30px;
+      height: 2px;
+      background: #4e4e4e;
+      margin-bottom: 25px;
+    }
+  }
   .btn.btn-fb {
     background: #3b64bd;
     color: #fff;
-}
-  width: 700px;
+  }
+  .message {
+    
+    h3 {
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: 24px;
+      color: #3b64bd;
+      margin: 30px 0 0; 
+    }
+    h4 {
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: 20px;
+      color: #5f5f5f;
+     
+    }
+  }
+  width: 900px;
   padding-top: 60px;
   .gift-code {
     margin-bottom: 30px;

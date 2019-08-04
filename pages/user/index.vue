@@ -132,11 +132,11 @@ export default {
                     maxRow+= max
                     act.activities.sort((a,b) => (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0)); 
 
-                    totalacc+=act.accommodation && act.accommodation.price ? parseFloat(act.accommodation.price) : 0
+                    totalacc+=act.accommodation.hasOwnProperty('price') && act.accommodation.price? parseFloat(act.accommodation.price) : 0
                     for(let i = 0; i < max; i++) {
-                        totalact+= act.activities[i] ? parseFloat(act.activities[i].activities.price) : 0
-                        totaltrans+=act.transport[i] ? parseFloat(act.transport[i].price) : 0
-                        totalfood+=act.food.length > 0 && act.food[i] ? parseFloat(act.food[i].price) : 0
+                        totalact+= act.activities[i] && act.activities[i].activities.price ? parseFloat(act.activities[i].activities.price) : 0
+                        totaltrans+=act.transport[i] && act.transport[i].price ? parseFloat(act.transport[i].price) : 0
+                        totalfood+=act.food.length > 0 && act.food[i] && act.food[i].price? parseFloat(act.food[i].price) : 0
                         
                         let cols = [
                          

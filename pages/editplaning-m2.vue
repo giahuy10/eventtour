@@ -86,7 +86,7 @@
             </div>
             <div class="progress-list" v-if="!readySubmit">
                 <h3 class="text-uppercase text-center gr-title text-blue">Lịch trình </h3>
-                <p @click="openVideo" class="cursor text-center"><i  class=" fa fa-question-circle" aria-hidden="true"></i> Hướng dẫn tạo lịch trình</p>
+                
                 <div class="days-button text-center">
                     <button class="btn btn-day" v-for="(day, index) in numberDays" :key="index" :class="currentDay == day ? 'active' : ''">Ngày {{day}}</button>
                 </div>
@@ -385,6 +385,14 @@
         </div>
     </b-modal>
      <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/footter.png" alt="">
+     <div class="help-video" :class="openVideo ? 'open' : 'hide-video'">
+          <i  @click="openVideo = !openVideo" v-if="openVideo" class="cursor fa fa-times" aria-hidden="true"></i>
+
+          <iframe v-if="openVideo" width="500" height="315" class="d-block d-sm-none mobile-video" src="https://www.youtube.com/embed/IK36HZA59L4?rel=0&enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>   
+          <iframe v-if="openVideo" width="500" height="315" class="d-none d-md-block" src="https://www.youtube.com/embed/nSOYKyntx1M?rel=0&enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>     
+          <span class="cursor" @click="openVideo = !openVideo">Video hướng dẫn tham dự cuộc thi</span>
+
+        </div>
     </div>
 </template>
 
@@ -420,6 +428,7 @@ export default {
   },
     data () {
         return {
+            openVideo: true,
             orderDay: 0,
             updatingAct: false,
             updatingTrans: false,
@@ -1139,11 +1148,11 @@ export default {
                     maxRow+= max
                     act.activities.sort((a,b) => (a.start > b.start) ? 1 : ((b.start > a.start) ? -1 : 0)); 
 
-                    totalacc+=act.accommodation.hasOwnProperty('price') ? parseFloat(act.accommodation.price) : 0
+                    totalacc+=act.accommodation.hasOwnProperty('price') && act.accommodation.price? parseFloat(act.accommodation.price) : 0
                     for(let i = 0; i < max; i++) {
-                        totalact+= act.activities[i] ? parseFloat(act.activities[i].activities.price) : 0
-                        totaltrans+=act.transport[i] ? parseFloat(act.transport[i].price) : 0
-                        totalfood+=act.food.length > 0 && act.food[i] ? parseFloat(act.food[i].price) : 0
+                        totalact+= act.activities[i] && act.activities[i].activities.price ? parseFloat(act.activities[i].activities.price) : 0
+                        totaltrans+=act.transport[i] && act.transport[i].price ? parseFloat(act.transport[i].price) : 0
+                        totalfood+=act.food.length > 0 && act.food[i] && act.food[i].price? parseFloat(act.food[i].price) : 0
                         
                         let cols = [
                          
@@ -2096,5 +2105,6 @@ iframe {
         height: 200px;
     }
 }
+
 </style>
 

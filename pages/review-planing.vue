@@ -51,6 +51,14 @@
             </div>
         </div>
         <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/footter.png" alt="">
+         <div class="help-video" :class="openVideo ? 'open' : 'hide-video'">
+          <i  @click="openVideo = !openVideo" v-if="openVideo" class="cursor fa fa-times" aria-hidden="true"></i>
+
+          <iframe v-if="openVideo" width="500" height="315" class="d-block d-sm-none mobile-video" src="https://www.youtube.com/embed/IK36HZA59L4?rel=0&enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>   
+          <iframe v-if="openVideo" width="500" height="315" class="d-none d-md-block" src="https://www.youtube.com/embed/nSOYKyntx1M?rel=0&enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>     
+          <span class="cursor" @click="openVideo = !openVideo">Video hướng dẫn tham dự cuộc thi</span>
+
+        </div>
     </div>
 </template>
 
@@ -58,6 +66,7 @@
 export default {
     data () {
         return {
+            openVideo: true,
             tour: {},
             rows: [],
             question: '',
@@ -123,11 +132,11 @@ export default {
                 //     var act = days[key]
                     let max = Math.max(act.activities.length, act.food.length, act.transport.length)
                     maxRow+= max
-                    totalacc+=act.accommodation.hasOwnProperty('price') ? parseFloat(act.accommodation.price) : 0
+                    totalacc+=act.accommodation.hasOwnProperty('price') && act.accommodation.price? parseFloat(act.accommodation.price) : 0
                     for(let i = 0; i < max; i++) {
-                        totalact+= act.activities[i] ? parseFloat(act.activities[i].activities.price) : 0
-                        totaltrans+=act.transport[i] ? parseFloat(act.transport[i].price) : 0
-                        totalfood+= act.food.length > 0 && act.food[i] ? parseFloat(act.food[i].price) : 0
+                        totalact+= act.activities[i] && act.activities[i].activities.price ? parseFloat(act.activities[i].activities.price) : 0
+                        totaltrans+=act.transport[i] && act.transport[i].price ? parseFloat(act.transport[i].price) : 0
+                        totalfood+=act.food.length > 0 && act.food[i] && act.food[i].price? parseFloat(act.food[i].price) : 0
                         
                         let cols = [
                          

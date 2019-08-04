@@ -110,7 +110,8 @@
                        <div class="item">
                            <div class="icon-block">
                               
-                                   <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/note.png" alt=""> <b>Vòng 1</b>
+                                   <img class="float-left" src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/note.png" alt=""> 
+                                   <b class="float-left">Vòng 1 <br> <span class="text-red">25/07 - 08/08</span></b>
                               
                                
                            </div>
@@ -127,7 +128,7 @@
                    <div class="col-md-3">
                        <div class="item">
                            <div class="icon-block">
-                               <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/camera.png" alt=""> <b>Vòng 2</b>
+                               <img class="float-left" src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/camera.png" alt=""> <b class="float-left">Vòng 2 <br><span class="text-red"> 17/08 - 22/08 </span></b>
                            </div>
                            <div class="content-block">
                                <div class="sub-title">
@@ -142,7 +143,7 @@
                    <div class="col-md-3">
                        <div class="item">
                            <div class="icon-block">
-                               <img src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/report.png" alt=""> <b>Vòng 3</b>
+                               <img class="float-left" src="/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/report.png" alt=""> <b class="float-left">Vòng 3 <br><span class="text-red">28/08</span></b>
                            </div>
                            <div class="content-block">
                               <div class="sub-title">
@@ -374,11 +375,14 @@ export default {
     background: url(/tao-tour-tu-tuc-hanh-phuc-di-han/imgs/cloud-bg.png) no-repeat;
     background-size: 100% auto;
 }
+.text-red {
+    color: #c44635;
+}
 .introduce3 {
     .icon-block {
         display: block;
         width: auto;
-        font-size: 24px;
+        font-size: 21px;
         img {
             width: auto;
             height: 60px;

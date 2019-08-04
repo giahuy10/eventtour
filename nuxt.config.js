@@ -65,6 +65,7 @@ export default {
   */
   plugins: [
     '~/plugins/vue-uid.js',
+    '~/plugins/vue-excel.js',
     '~/plugins/vue-moment.js',
     '~/plugins/vue-social.js',
     '~/plugins/vue-clipboard.js'
